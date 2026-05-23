@@ -16,7 +16,7 @@
 
 ## History
 
-<!-- Keep this updated. Earliest to latest -->
-
 - 2026-05-23: Initial Next.js 16.2.6 setup with React 19.2.4
+
+- 2026-05-23: Dashboard UI Phase 1 — ShadCN init, layout, dark mode, top bar, placeholders
 

@@ -284,6 +284,13 @@ model TagsOnItems {
 - Clean typography, generous whitespace, subtle borders/shadows
 - Desktop-first; mobile-usable
 
+## Reference UI 
+
+Refer to the files below as a base for the dashboard UI. It doesn't have to be exact. Use it as a reference:
+
+- @context/devstashui/devstash-dashboard-context.md
+- @context/devstashui/devstash-drawer-context.md
+
 ### Micro-interactions
 
 - Smooth transitions

@@ -1,6 +1,8 @@
 # Current Feature
 
-Dashboard Items — Replace dummy item data with real data from the database
+<!-- Feature name and short description -->
+
+Stats & Sidebar — Display real database stats in the main area and show system item types with actual collection data in the sidebar.
 
 ## Status
 
@@ -8,20 +10,19 @@ Completed
 
 ## Goals
 
-- Create `src/lib/db/items.ts` with data fetching functions
-- Fetch items directly in server component
-- Item card icon/border derived from the item type
-- Display item type tags and everything else currently shown
-- If no pinned items, hide the pinned section entirely
-- Update collection stats display
+- Display stats from database data, keeping the current design/layout
+- Display item types in sidebar with their icons, linking to /items/[typename]
+- Add "View all collections" link under the collections list that goes to /collections
+- Keep star icons for favorite collections; for recents, show a colored circle based on the most-used item type in that collection
+- Create `@src/lib/db/items.ts` with database functions
 
 ## Notes
 
-- Reference the screenshot at `@context/screenshots/dashboard-ui-main.png`
-- Layout and design are already in place; just swap mock data for real DB data
+<!-- Any extra notes -->
 
 ## History
 
+- 2026-05-25: Stats & Sidebar — Replace mock data with real database stats and populate sidebar with item types + collections [Completed]
 - 2026-05-25: Dashboard Items — Replace dummy item data with real data from the database [Completed]
 - 2026-05-25: Dashboard Collections — Replace mock data with real data from the database [Completed]
 - 2026-05-25: Seed Script — Populate database with sample data for development and demos [Completed]

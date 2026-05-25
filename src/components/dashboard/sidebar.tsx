@@ -19,7 +19,7 @@ import {
 
 import { Separator } from "@/components/ui/separator"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
-import { currentUser, itemTypes, collections, items } from "@/lib/mock-data"
+import type { SidebarData } from "@/lib/db/items"
 
 const iconMap: Record<string, typeof Code2> = {
   Code: Code2,
@@ -31,42 +31,34 @@ const iconMap: Record<string, typeof Code2> = {
   Link: Link2,
 }
 
-const typeCounts: Record<string, number> = {}
-for (const item of items) {
-  typeCounts[item.itemTypeId] = (typeCounts[item.itemTypeId] || 0) + 1
-}
-
-const favoriteCollections = collections.filter((c) => c.isFavorite)
-
-const recentCollections = [...collections]
-  .filter((c) => !c.isFavorite)
-  .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-
-const initials = currentUser.name
-  .split(" ")
-  .map((n) => n[0])
-  .join("")
-
-export function Sidebar() {
+export function Sidebar({ data }: { data: SidebarData }) {
   const [collapsed, setCollapsed] = useState(false)
 
   return (
     <aside
       className={`shrink-0 border-r border-border transition-[width] duration-200 ${collapsed ? "w-14" : "w-60"}`}
     >
-      <SidebarContent collapsed={collapsed} onToggle={() => setCollapsed((v) => !v)} />
+      <SidebarContent data={data} collapsed={collapsed} onToggle={() => setCollapsed((v) => !v)} />
     </aside>
   )
 }
 
 export function SidebarContent({
+  data,
   collapsed,
   onToggle,
 }: {
+  data: SidebarData
   collapsed: boolean
   onToggle?: () => void
 }) {
   const [collectionsOpen, setCollectionsOpen] = useState(true)
+  const { user, itemTypes, favoriteCollections, recentCollections } = data
+
+  const initials = user.name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
 
   const linkClass =
     "flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-muted"
@@ -106,7 +98,6 @@ export function SidebarContent({
         <nav className="flex flex-col gap-0.5">
           {itemTypes.map((type) => {
             const Icon = iconMap[type.icon] || Code2
-            const count = typeCounts[type.id] || 0
             return collapsed ? (
               <Link
                 key={type.id}
@@ -124,7 +115,7 @@ export function SidebarContent({
               >
                 <Icon className="size-4 shrink-0" style={{ color: type.color }} />
                 <span className="flex-1 capitalize">{type.name}s</span>
-                <span className="text-xs text-muted-foreground">{count}</span>
+                <span className="text-xs text-muted-foreground">{type.count}</span>
               </Link>
             )
           })}
@@ -188,20 +179,36 @@ export function SidebarContent({
               All Collections
             </button>
             {collectionsOpen && (
-              <nav className="flex flex-col gap-0.5">
-                {recentCollections.map((col) => (
-                  <Link
-                    key={col.id}
-                    href={`/collections/${col.id}`}
-                    className={linkClass}
-                  >
-                    <span className="size-2 shrink-0 rounded-full bg-orange-500" />
-                    <span>{col.name}</span>
-                  </Link>
-                ))}
-              </nav>
+              <div className="flex flex-col gap-1">
+                <span className="flex items-center gap-1 px-1 pt-1 text-xs font-medium text-muted-foreground/60">
+                  Recent
+                </span>
+                <nav className="flex flex-col gap-0.5">
+                  {recentCollections.map((col) => (
+                    <Link
+                      key={col.id}
+                      href={`/collections/${col.id}`}
+                      className={linkClass}
+                    >
+                      <span
+                        className="size-2 shrink-0 rounded-full"
+                        style={{ backgroundColor: col.dominantTypeColor ?? "#6b7280" }}
+                      />
+                      <span>{col.name}</span>
+                    </Link>
+                  ))}
+                </nav>
+              </div>
             )}
           </>
+        )}
+        {!collapsed && (
+          <Link
+            href="/collections"
+            className="text-xs text-muted-foreground hover:text-foreground px-1"
+          >
+            View all collections
+          </Link>
         )}
       </div>
 
@@ -212,19 +219,19 @@ export function SidebarContent({
       {collapsed ? (
         <div className="flex justify-center px-2 py-3">
           <Avatar size="sm">
-            <AvatarImage src={currentUser.image} alt={currentUser.name} />
+            <AvatarImage src={user.image ?? undefined} alt={user.name} />
             <AvatarFallback className="text-[10px]">{initials}</AvatarFallback>
           </Avatar>
         </div>
       ) : (
         <div className="flex items-center gap-3 px-3 py-3">
           <Avatar size="sm">
-            <AvatarImage src={currentUser.image} alt={currentUser.name} />
+            <AvatarImage src={user.image ?? undefined} alt={user.name} />
             <AvatarFallback>{initials}</AvatarFallback>
           </Avatar>
           <div className="flex min-w-0 flex-1 flex-col">
-            <span className="truncate text-sm font-medium">{currentUser.name}</span>
-            <span className="truncate text-xs text-muted-foreground">{currentUser.email}</span>
+            <span className="truncate text-sm font-medium">{user.name}</span>
+            <span className="truncate text-xs text-muted-foreground">{user.email}</span>
           </div>
           <button
             type="button"

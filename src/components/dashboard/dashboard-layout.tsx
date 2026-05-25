@@ -7,8 +7,9 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Sidebar, SidebarContent } from "@/components/dashboard/sidebar"
+import type { SidebarData } from "@/lib/db/items"
 
-export function DashboardLayout({ children }: { children: ReactNode }) {
+export function DashboardLayout({ children, sidebarData }: { children: ReactNode; sidebarData: SidebarData }) {
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
@@ -49,14 +50,14 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
                 <PanelLeft className="size-4" />
               </SheetTrigger>
               <SheetContent side="left" className="w-64 p-0">
-                <SidebarContent collapsed={false} />
+                <SidebarContent data={sidebarData} collapsed={false} />
               </SheetContent>
             </Sheet>
           )}
         </div>
       </header>
       <div className="flex flex-1 overflow-hidden">
-        {!isMobile && <Sidebar />}
+        {!isMobile && <Sidebar data={sidebarData} />}
         <main className="flex-1 overflow-y-auto p-6">{children}</main>
       </div>
     </div>

@@ -1,21 +1,28 @@
 # Current Feature
 
-<!-- Feature name and short description -->
+Dashboard Items — Replace dummy item data with real data from the database
 
 ## Status
 
-<!-- Not Started | In Progress | Completed -->
+Completed
 
 ## Goals
 
-<!-- Goals and requirements -->
+- Create `src/lib/db/items.ts` with data fetching functions
+- Fetch items directly in server component
+- Item card icon/border derived from the item type
+- Display item type tags and everything else currently shown
+- If no pinned items, hide the pinned section entirely
+- Update collection stats display
 
 ## Notes
 
-<!-- Any extra notes -->
+- Reference the screenshot at `@context/screenshots/dashboard-ui-main.png`
+- Layout and design are already in place; just swap mock data for real DB data
 
 ## History
 
+- 2026-05-25: Dashboard Items — Replace dummy item data with real data from the database [Completed]
 - 2026-05-25: Dashboard Collections — Replace mock data with real data from the database [Completed]
 - 2026-05-25: Seed Script — Populate database with sample data for development and demos [Completed]
 - 2026-05-25: Seed script — initial data population for development and demos

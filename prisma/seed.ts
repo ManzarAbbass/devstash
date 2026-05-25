@@ -185,13 +185,14 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
     },
   ];
 
-  for (const s of snippets) {
+  for (const [i, s] of snippets.entries()) {
     const item = await prisma.item.create({
       data: {
         title: s.title,
         contentType: "text",
         content: s.content,
         language: "typescript",
+        isPinned: i === 0,
         userId: user.id,
         itemTypeId: typeMap.get("snippet")!,
         collections: { create: { collectionId: reactColl.id } },
@@ -431,12 +432,13 @@ npm audit`,
     },
   ];
 
-  for (const c of commands) {
+  for (const [i, c] of commands.entries()) {
     const item = await prisma.item.create({
       data: {
         title: c.title,
         contentType: "text",
         content: c.content,
+        isPinned: i === 0,
         userId: user.id,
         itemTypeId: typeMap.get("command")!,
         collections: { create: { collectionId: terminalColl.id } },

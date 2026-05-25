@@ -10,15 +10,13 @@ import {
   Star,
   Pin,
   Layers,
-  Bookmark,
   Heart,
   Archive,
-  MoreHorizontal,
 } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { getCollections, getDemoUserId, type CollectionWithStats } from "@/lib/db/collections"
-import { items, itemTypes, itemCollections, tags as tagData } from "@/lib/mock-data"
+import { getPinnedItems, getRecentItems, getItemStats, type ItemWithDetails } from "@/lib/db/items"
 
 const iconMap: Record<string, typeof Code2> = {
   Code: Code2,
@@ -30,22 +28,6 @@ const iconMap: Record<string, typeof Code2> = {
   Link: Link2,
 }
 
-const typeLookup: Record<string, (typeof itemTypes)[0]> = {}
-for (const t of itemTypes) {
-  typeLookup[t.id] = t
-}
-
-const tagLookup: Record<string, string> = {}
-for (const t of tagData) {
-  tagLookup[t.id] = t.name
-}
-
-const pinnedItems = items.filter((i) => i.isPinned)
-
-const recentItems = [...items]
-  .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-  .slice(0, 10)
-
 function formatDate(date: Date) {
   return date.toLocaleDateString("en-US", {
     month: "short",
@@ -55,20 +37,20 @@ function formatDate(date: Date) {
 
 export async function MainContent() {
   const userId = await getDemoUserId()
-  const collections = await getCollections(userId)
-
-  const totalItems = items.length
-  const totalCollections = collections.length
-  const favoriteItems = items.filter((i) => i.isFavorite).length
-  const favoriteCollections = collections.filter((c) => c.isFavorite).length
+  const [collections, pinnedItems, recentItems, { totalItems, favoriteItems }] = await Promise.all([
+    getCollections(userId),
+    getPinnedItems(userId),
+    getRecentItems(userId),
+    getItemStats(userId),
+  ])
 
   return (
     <div className="flex flex-col gap-8">
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatCard icon={Layers} label="Total Items" value={totalItems} />
-        <StatCard icon={Archive} label="Collections" value={totalCollections} />
+        <StatCard icon={Archive} label="Collections" value={collections.length} />
         <StatCard icon={Heart} label="Favorite Items" value={favoriteItems} />
-        <StatCard icon={Star} label="Favorite Collections" value={favoriteCollections} />
+        <StatCard icon={Star} label="Favorite Collections" value={collections.filter((c) => c.isFavorite).length} />
       </div>
 
       <section>
@@ -92,39 +74,9 @@ export async function MainContent() {
             <h2 className="text-lg font-semibold">Pinned Items</h2>
           </div>
           <div className="flex flex-col">
-            {pinnedItems.map((item) => {
-              const type = typeLookup[item.itemTypeId]
-              const Icon = type ? iconMap[type.icon] || Code2 : Code2
-              const itemTags = item.tagIds.map((tid) => tagLookup[tid]).filter(Boolean)
-              return (
-                <Link
-                  key={item.id}
-                  href={`/items/${type?.name ?? "unknown"}/${item.id}`}
-                  className="group flex items-center gap-3 border-l-4 border-l-transparent border-b border-border px-4 py-3 transition-colors hover:bg-muted/50"
-                >
-                  <Icon className="size-4 shrink-0" style={{ color: type?.color }} />
-                  <div className="flex min-w-0 flex-1 items-center gap-2">
-                    <span className="truncate text-sm font-medium">{item.title}</span>
-                    {item.isFavorite && <Star className="size-3 shrink-0 fill-yellow-500 text-yellow-500" />}
-                  </div>
-                  {item.description && (
-                    <span className="hidden max-w-xs truncate text-sm text-muted-foreground md:block">
-                      {item.description}
-                    </span>
-                  )}
-                  <div className="hidden items-center gap-1 lg:flex">
-                    {itemTags.map((tag) => (
-                      <Badge key={tag} variant="secondary" className="text-[10px]">
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                  <span className="shrink-0 text-xs text-muted-foreground">
-                    {formatDate(item.createdAt)}
-                  </span>
-                </Link>
-              )
-            })}
+            {pinnedItems.map((item) => (
+              <ItemRow key={item.id} item={item} />
+            ))}
           </div>
         </section>
       )}
@@ -132,54 +84,16 @@ export async function MainContent() {
       <section>
         <h2 className="mb-4 text-lg font-semibold">Recent Items</h2>
         <div className="flex flex-col">
-          {recentItems.map((item) => {
-            const type = typeLookup[item.itemTypeId]
-            const Icon = type ? iconMap[type.icon] || Code2 : Code2
-            const itemTags = item.tagIds.map((tid) => tagLookup[tid]).filter(Boolean)
-            return (
-              <Link
-                key={item.id}
-                href={`/items/${type?.name ?? "unknown"}/${item.id}`}
-                className="group flex items-center gap-3 border-l-4 border-l-transparent border-b border-border px-4 py-3 transition-colors hover:bg-muted/50"
-              >
-                <Icon className="size-4 shrink-0" style={{ color: type?.color }} />
-                <div className="flex min-w-0 flex-1 items-center gap-2">
-                  <span className="truncate text-sm font-medium">{item.title}</span>
-                  {item.isFavorite && <Star className="size-3 shrink-0 fill-yellow-500 text-yellow-500" />}
-                </div>
-                {item.description && (
-                  <span className="hidden max-w-xs truncate text-sm text-muted-foreground md:block">
-                    {item.description}
-                  </span>
-                )}
-                <div className="hidden items-center gap-1 lg:flex">
-                  {itemTags.map((tag) => (
-                    <Badge key={tag} variant="secondary" className="text-[10px]">
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-                <span className="shrink-0 text-xs text-muted-foreground">
-                  {formatDate(item.createdAt)}
-                </span>
-              </Link>
-            )
-          })}
+          {recentItems.map((item) => (
+            <ItemRow key={item.id} item={item} />
+          ))}
         </div>
       </section>
     </div>
   )
 }
 
-function StatCard({
-  icon: Icon,
-  label,
-  value,
-}: {
-  icon: typeof Layers
-  label: string
-  value: number
-}) {
+function StatCard({ icon: Icon, label, value }: { icon: typeof Layers; label: string; value: number }) {
   return (
     <div className="flex items-center gap-3 rounded-xl border border-border bg-card p-4">
       <div className="flex size-10 items-center justify-center rounded-lg bg-muted">
@@ -198,7 +112,6 @@ function CollectionCard({ collection }: { collection: CollectionWithStats }) {
 
   return (
     <Link
-      key={collection.id}
       href={`/collections/${collection.id}`}
       className="group flex flex-col gap-2 rounded-xl border border-border bg-card p-4 transition-colors hover:bg-muted/50"
       style={{ borderLeftWidth: "4px", borderLeftColor: borderColor }}
@@ -211,9 +124,7 @@ function CollectionCard({ collection }: { collection: CollectionWithStats }) {
         {collection.itemCount} {collection.itemCount === 1 ? "item" : "items"}
       </span>
       {collection.description && (
-        <span className="text-sm text-muted-foreground line-clamp-2">
-          {collection.description}
-        </span>
+        <span className="text-sm text-muted-foreground line-clamp-2">{collection.description}</span>
       )}
       {collection.typeIcons.length > 0 && (
         <div className="mt-1 flex items-center gap-1.5">
@@ -221,15 +132,42 @@ function CollectionCard({ collection }: { collection: CollectionWithStats }) {
             const TypeIcon = iconMap[type.icon] || Code2
             return (
               <span key={type.name} title={type.name}>
-                <TypeIcon
-                  className="size-3.5"
-                  style={{ color: type.color }}
-                />
+                <TypeIcon className="size-3.5" style={{ color: type.color }} />
               </span>
             )
           })}
         </div>
       )}
+    </Link>
+  )
+}
+
+function ItemRow({ item }: { item: ItemWithDetails }) {
+  const Icon = iconMap[item.itemType.icon] || Code2
+
+  return (
+    <Link
+      href={`/items/${item.itemType.name}/${item.id}`}
+      className="group flex items-center gap-3 border-l-4 border-l-transparent border-b border-border px-4 py-3 transition-colors hover:bg-muted/50"
+    >
+      <Icon className="size-4 shrink-0" style={{ color: item.itemType.color }} />
+      <div className="flex min-w-0 flex-1 items-center gap-2">
+        <span className="truncate text-sm font-medium">{item.title}</span>
+        {item.isFavorite && <Star className="size-3 shrink-0 fill-yellow-500 text-yellow-500" />}
+      </div>
+      {item.description && (
+        <span className="hidden max-w-xs truncate text-sm text-muted-foreground md:block">
+          {item.description}
+        </span>
+      )}
+      <div className="hidden items-center gap-1 lg:flex">
+        {item.tags.map((tag) => (
+          <Badge key={tag.id} variant="secondary" className="text-[10px]">
+            {tag.name}
+          </Badge>
+        ))}
+      </div>
+      <span className="shrink-0 text-xs text-muted-foreground">{formatDate(item.createdAt)}</span>
     </Link>
   )
 }

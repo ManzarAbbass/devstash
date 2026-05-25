@@ -2,29 +2,55 @@ import "dotenv/config";
 import { prisma } from "../src/lib/prisma";
 
 async function main() {
-  console.log("Testing database connection...\n");
+  console.log("=== DevStash Database Test ===\n");
 
-  // Test 1: Basic connection
+  // Basic connection
   const result = await prisma.$queryRaw`SELECT 1 as connected`;
-  console.log("✅ Connection OK:", result);
+  console.log("✅ Connection OK:", result, "\n");
 
-  // Test 2: List tables
-  const tables: { table_name: string }[] = await prisma.$queryRaw`
-    SELECT table_name
-    FROM information_schema.tables
-    WHERE table_schema = 'public'
-    ORDER BY table_name
-  `;
-  console.log("\n📋 Tables:");
-  for (const t of tables) {
-    console.log(`   - ${t.table_name}`);
+  // User
+  const user = await prisma.user.findFirst({
+    where: { email: "john@example.com" },
+  });
+  console.log("👤 User:", user?.name, `<${user?.email}>`, "| isPro:", user?.isPro, "\n");
+
+  // Item Types
+  const itemTypes = await prisma.itemType.findMany({ orderBy: { name: "asc" } });
+  console.log(`📦 Item Types (${itemTypes.length}):`);
+  for (const t of itemTypes) {
+    console.log(`   ${t.name.padEnd(10)} icon=${t.icon.padEnd(14)} color=${t.color}  system=${t.isSystem}`);
+  }
+  console.log();
+
+  // Collections with items
+  const collections = await prisma.collection.findMany({
+    where: { userId: user!.id },
+    include: {
+      items: {
+        include: {
+          item: true,
+        },
+      },
+    },
+    orderBy: { name: "asc" },
+  });
+
+  console.log(`📁 Collections (${collections.length}):`);
+  for (const c of collections) {
+    console.log(`\n   ${c.name}`);
+    console.log(`   ${"".padEnd(c.name.length, "─")}`);
+    console.log(`   Description: ${c.description}`);
+
+    for (const ic of c.items) {
+      const item = ic.item;
+      const type = itemTypes.find((t) => t.id === item.itemTypeId);
+      console.log(
+        `   • [${type?.name?.padEnd(8)}] ${item.title.padEnd(32)} ${item.language ? `(${item.language})` : ""} ${item.url ? `→ ${item.url}` : ""}`,
+      );
+    }
   }
 
-  // Test 3: Count system item types
-  const typeCount = await prisma.itemType.count();
-  console.log(`\n📊 ItemType count: ${typeCount}`);
-
-  console.log("\n✅ Database test complete.");
+  console.log("\n✅ All verifications passed.");
 }
 
 main()
@@ -32,7 +58,7 @@ main()
     await prisma.$disconnect();
   })
   .catch(async (e) => {
-    console.error("❌ Database test failed:", e);
+    console.error("❌ Test failed:", e);
     await prisma.$disconnect();
     process.exit(1);
   });

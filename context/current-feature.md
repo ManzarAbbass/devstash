@@ -1,26 +1,23 @@
 # Current Feature
 
-Seed Script — Populate database with sample data for development and demos
+<!-- Feature name and short description -->
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Completed -->
 
 ## Goals
 
-- Create `prisma/seed.ts` with bcryptjs password hashing (12 rounds)
-- Seed demo user (john@example.com / 12345678)
-- Seed 7 system item types with Lucide icon names
-- Seed 5 collections with items across snippets, prompts, commands, and links
-- Use real URLs for link-type items (DevOps + Design Resources)
+<!-- Goals and requirements -->
 
 ## Notes
 
-- Run with: `npx tsx prisma/seed.ts`
-- Use bcryptjs (not bcrypt) to avoid native compilation issues
+<!-- Any extra notes -->
 
 ## History
 
+- 2026-05-25: Dashboard Collections — Replace mock data with real data from the database [Completed]
+- 2026-05-25: Seed Script — Populate database with sample data for development and demos [Completed]
 - 2026-05-25: Seed script — initial data population for development and demos
 - 2026-05-25: Prisma + Neon PostgreSQL Setup — Initial setup and schema generation
 - 2026-05-23: Dashboard UI Phase 1 — ShadCN init, layout, dark mode, top bar, placeholders

@@ -17,7 +17,8 @@ import {
 } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
-import { collections, items, itemTypes, itemCollections, tags as tagData } from "@/lib/mock-data"
+import { getCollections, getDemoUserId, type CollectionWithStats } from "@/lib/db/collections"
+import { items, itemTypes, itemCollections, tags as tagData } from "@/lib/mock-data"
 
 const iconMap: Record<string, typeof Code2> = {
   Code: Code2,
@@ -39,31 +40,11 @@ for (const t of tagData) {
   tagLookup[t.id] = t.name
 }
 
-const collectionItemCounts: Record<string, number> = {}
-for (const ic of itemCollections) {
-  collectionItemCounts[ic.collectionId] = (collectionItemCounts[ic.collectionId] || 0) + 1
-}
-
-const sortedCollections = [...collections].sort(
-  (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
-)
-
 const pinnedItems = items.filter((i) => i.isPinned)
 
-const recentItems = [...items].sort(
-  (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
-).slice(0, 10)
-
-const borderColors = [
-  "border-l-blue-500",
-  "border-l-yellow-500",
-  "border-l-orange-500",
-  "border-l-purple-500",
-  "border-l-emerald-500",
-  "border-l-pink-500",
-  "border-l-cyan-500",
-  "border-l-red-500",
-]
+const recentItems = [...items]
+  .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+  .slice(0, 10)
 
 function formatDate(date: Date) {
   return date.toLocaleDateString("en-US", {
@@ -72,7 +53,10 @@ function formatDate(date: Date) {
   })
 }
 
-export function MainContent() {
+export async function MainContent() {
+  const userId = await getDemoUserId()
+  const collections = await getCollections(userId)
+
   const totalItems = items.length
   const totalCollections = collections.length
   const favoriteItems = items.filter((i) => i.isFavorite).length
@@ -95,29 +79,9 @@ export function MainContent() {
           </Link>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {sortedCollections.map((col, i) => {
-            const count = collectionItemCounts[col.id] || 0
-            return (
-              <Link
-                key={col.id}
-                href={`/collections/${col.id}`}
-                className={`group flex flex-col gap-2 rounded-xl border border-border bg-card p-4 border-l-4 ${borderColors[i % borderColors.length]} transition-colors hover:bg-muted/50`}
-              >
-                <div className="flex items-center justify-between">
-                  <span className="font-medium">{col.name}</span>
-                  {col.isFavorite && <Star className="size-4 fill-yellow-500 text-yellow-500" />}
-                </div>
-                <span className="text-sm text-muted-foreground">
-                  {count} {count === 1 ? "item" : "items"}
-                </span>
-                {col.description && (
-                  <span className="text-sm text-muted-foreground line-clamp-2">
-                    {col.description}
-                  </span>
-                )}
-              </Link>
-            )
-          })}
+          {collections.map((col) => (
+            <CollectionCard key={col.id} collection={col} />
+          ))}
         </div>
       </section>
 
@@ -226,5 +190,46 @@ function StatCard({
         <p className="text-xs text-muted-foreground">{label}</p>
       </div>
     </div>
+  )
+}
+
+function CollectionCard({ collection }: { collection: CollectionWithStats }) {
+  const borderColor = collection.dominantType?.color ?? "var(--border)"
+
+  return (
+    <Link
+      key={collection.id}
+      href={`/collections/${collection.id}`}
+      className="group flex flex-col gap-2 rounded-xl border border-border bg-card p-4 transition-colors hover:bg-muted/50"
+      style={{ borderLeftWidth: "4px", borderLeftColor: borderColor }}
+    >
+      <div className="flex items-center justify-between">
+        <span className="font-medium">{collection.name}</span>
+        {collection.isFavorite && <Star className="size-4 fill-yellow-500 text-yellow-500" />}
+      </div>
+      <span className="text-sm text-muted-foreground">
+        {collection.itemCount} {collection.itemCount === 1 ? "item" : "items"}
+      </span>
+      {collection.description && (
+        <span className="text-sm text-muted-foreground line-clamp-2">
+          {collection.description}
+        </span>
+      )}
+      {collection.typeIcons.length > 0 && (
+        <div className="mt-1 flex items-center gap-1.5">
+          {collection.typeIcons.map((type) => {
+            const TypeIcon = iconMap[type.icon] || Code2
+            return (
+              <span key={type.name} title={type.name}>
+                <TypeIcon
+                  className="size-3.5"
+                  style={{ color: type.color }}
+                />
+              </span>
+            )
+          })}
+        </div>
+      )}
+    </Link>
   )
 }

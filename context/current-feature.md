@@ -2,19 +2,13 @@
 
 <!-- Feature name and short description -->
 
-Stats & Sidebar — Display real database stats in the main area and show system item types with actual collection data in the sidebar.
-
 ## Status
 
-Completed
+<!-- Not Started | In Progress | Completed -->
 
 ## Goals
 
-- Display stats from database data, keeping the current design/layout
-- Display item types in sidebar with their icons, linking to /items/[typename]
-- Add "View all collections" link under the collections list that goes to /collections
-- Keep star icons for favorite collections; for recents, show a colored circle based on the most-used item type in that collection
-- Create `@src/lib/db/items.ts` with database functions
+<!-- Goals and requirements -->
 
 ## Notes
 

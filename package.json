@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "next dev",
     "db:studio": "prisma studio",
-    "build": "prisma generate && prisma migrate deploy && tsx prisma/seed.ts && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint"
   },

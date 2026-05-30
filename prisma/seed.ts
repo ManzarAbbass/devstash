@@ -28,15 +28,15 @@ async function main() {
   const hashedPassword = await bcrypt.hash("12345678", 12);
   const user = await prisma.user.create({
     data: {
-      email: "john@example.com",
-      name: "John Doe",
+      email: "demo@example.com",
+      name: "Demo User",
       emailVerified: new Date(),
       isPro: false,
       accounts: {
         create: {
           type: "email",
           provider: "email",
-          providerAccountId: "john@example.com",
+          providerAccountId: "demo@example.com",
         },
       },
     },

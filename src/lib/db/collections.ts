@@ -74,7 +74,7 @@ export async function getCollections(userId: string): Promise<CollectionWithStat
 
 export async function getDemoUserId(): Promise<string> {
   const user = await prisma.user.findUnique({
-    where: { email: "john@example.com" },
+    where: { email: "demo@example.com" },
     select: { id: true },
   })
   if (!user) throw new Error("Demo user not found. Run `npx tsx prisma/seed.ts` first.")

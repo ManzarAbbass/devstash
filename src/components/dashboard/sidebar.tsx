@@ -19,6 +19,7 @@ import {
 
 import { Separator } from "@/components/ui/separator"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
 import type { SidebarData } from "@/lib/db/items"
 
 const iconMap: Record<string, typeof Code2> = {
@@ -115,6 +116,9 @@ export function SidebarContent({
               >
                 <Icon className="size-4 shrink-0" style={{ color: type.color }} />
                 <span className="flex-1 capitalize">{type.name}s</span>
+                {(type.name === "file" || type.name === "image") && (
+                  <Badge variant="outline" className="text-[10px] leading-none px-1 py-0 h-4">PRO</Badge>
+                )}
                 <span className="text-xs text-muted-foreground">{type.count}</span>
               </Link>
             )

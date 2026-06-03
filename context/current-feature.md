@@ -1,18 +1,18 @@
-# Current Feature: Add Pro Badge to Sidebar
+# Current Feature
+
+<!-- Feature name and short description -->
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Completed -->
 
 ## Goals
 
-- Use ShadCN UI Badge component
-- Make badge clean and subtle
-- Make PRO all uppercase
+<!-- Goals and requirements -->
 
 ## Notes
 
-Add a pro badge to the files and the images type in the sidebar
+<!-- Any extra notes -->
 
 ## History
 
@@ -26,3 +26,4 @@ Add a pro badge to the files and the images type in the sidebar
 - 2026-05-23: Dashboard UI Phase 3 — Main content with stats cards, collections grid, pinned + recent items
 - 2026-05-23: Dashboard UI Phase 2 — Collapsible sidebar with icon collapse, toggle in sidebar, centered search
 - 2026-05-23: Dashboard UI Phase 2 (redo) — Sidebar redesign: collapsible to icons, toggle inside, Nav heading, centered search
+- 2026-06-03: Add Pro Badge to Sidebar — Added PRO badge to Files and Images item types in the sidebar using ShadCN UI Badge [Completed]

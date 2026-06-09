@@ -1,20 +1,21 @@
 # Current Feature
 
-<!-- Feature name and short description -->
+Seed favorite collections and items so UI favorites render
 
 ## Status
 
-<!-- Not Started | In Progress | Completed -->
-
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Goals and requirements -->
+- Mark "React Patterns" and "Terminal Commands" collections as `isFavorite: true` in the seed script so they appear in the sidebar "Favorites" section and count toward the "Favorite Collections" stat card
+- Mark "Custom Hooks" (first snippet) and "Git Operations" (first command) items as `isFavorite: true` so they show a filled star icon and count toward the "Favorite Items" stat card
+- Re-run seed and verify favorites render in sidebar and dashboard
 
 ## Notes
 
-<!-- Any extra notes -->
+- The `dashboard-phase-2-spec.md` requires "Favorite collections" as a feature, and the `dashboard-phase-3-spec.md` has favorited items in mock data, but the seed script was never updated to set `isFavorite: true` on any records
+- UI code for displaying favorites (sidebar Favorites section, star icons, stat counts) is already implemented via `getSidebarCollections()` and `getCollections()` — only seed data is missing
 
 ## History
 

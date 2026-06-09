@@ -68,6 +68,7 @@ async function main() {
     data: {
       name: "React Patterns",
       description: "Reusable React patterns and hooks",
+      isFavorite: true,
       userId: user.id,
     },
   });
@@ -193,6 +194,7 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
         content: s.content,
         language: "typescript",
         isPinned: i === 0,
+        isFavorite: i === 0,
         userId: user.id,
         itemTypeId: typeMap.get("snippet")!,
         collections: { create: { collectionId: reactColl.id } },
@@ -350,6 +352,7 @@ EOF`,
     data: {
       name: "Terminal Commands",
       description: "Useful shell commands for everyday development",
+      isFavorite: true,
       userId: user.id,
     },
   });
@@ -439,6 +442,7 @@ npm audit`,
         contentType: "text",
         content: c.content,
         isPinned: i === 0,
+        isFavorite: i === 0,
         userId: user.id,
         itemTypeId: typeMap.get("command")!,
         collections: { create: { collectionId: terminalColl.id } },

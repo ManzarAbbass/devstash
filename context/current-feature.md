@@ -1,20 +1,24 @@
 # Current Feature
 
-<!-- Feature name and short description -->
+Fix N+1 queries in collection stats and sidebar
 
 ## Status
 
-<!-- Not Started | In Progress | Completed -->
-
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Goals and requirements -->
+- Replace eager-loading N+1 pattern in `getCollections()` with aggregation queries to avoid loading all items per collection just to compute type stats
+- Replace eager-loading N+1 pattern in `getSidebarCollections()` with aggregation to compute dominant type color without loading all items
+- Return types (`CollectionWithStats`, sidebar collection shape) must remain identical — no UI changes needed
+- Verify dashboard renders correctly with no regressions
 
 ## Notes
 
-<!-- Any extra notes -->
+- N+1 issue identified in scan: `src/lib/db/collections.ts:15-73` loads ALL items with full itemType for every collection just to compute `dominantType` and `typeIcons`
+- Same pattern in `src/lib/db/items.ts:130-168` loads ALL items per collection just to determine dominant color for the sidebar
+- Fix is low-risk — only touches the query layer, return types stay the same, no UI changes
+- Can use Prisma `groupBy` or `_count` with filtering instead of eager-loading all related rows
 
 ## History
 
@@ -28,5 +32,3 @@ Not Started
 - 2026-05-25: Dashboard Items — Replace dummy item data with real data from the database [Completed]
 - 2026-05-25: Stats & Sidebar — Replace mock data with real database stats and populate sidebar with item types + collections [Completed]
 - 2026-06-03: Add Pro Badge to Sidebar — Added PRO badge to Files and Images item types in the sidebar using ShadCN UI Badge [Completed]
-- 2026-06-09: Fix N+1 queries in collection stats and sidebar — Replaced eager-loading N+1 patterns in `getCollections()` and `getSidebarCollections()` with single GROUP BY aggregation queries; added `@@index([collectionId])` on ItemCollection [Completed]
-- 2026-06-09: Seed favorite collections and items — Marked "React Patterns" and "Terminal Commands" as favorite collections; marked "Custom Hooks" and "Git Operations" as favorite items [Completed]

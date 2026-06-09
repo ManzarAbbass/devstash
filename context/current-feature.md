@@ -1,18 +1,24 @@
 # Current Feature
 
-<!-- Feature name and short description -->
+Fix N+1 queries in collection stats and sidebar
 
 ## Status
 
-<!-- Not Started | In Progress | Completed -->
+In Progress
 
 ## Goals
 
-<!-- Goals and requirements -->
+- Replace eager-loading N+1 pattern in `getCollections()` with aggregation queries to avoid loading all items per collection just to compute type stats
+- Replace eager-loading N+1 pattern in `getSidebarCollections()` with aggregation to compute dominant type color without loading all items
+- Return types (`CollectionWithStats`, sidebar collection shape) must remain identical — no UI changes needed
+- Verify dashboard renders correctly with no regressions
 
 ## Notes
 
-<!-- Any extra notes -->
+- N+1 issue identified in scan: `src/lib/db/collections.ts:15-73` loads ALL items with full itemType for every collection just to compute `dominantType` and `typeIcons`
+- Same pattern in `src/lib/db/items.ts:130-168` loads ALL items per collection just to determine dominant color for the sidebar
+- Fix is low-risk — only touches the query layer, return types stay the same, no UI changes
+- Can use Prisma `groupBy` or `_count` with filtering instead of eager-loading all related rows
 
 ## History
 

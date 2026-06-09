@@ -128,34 +128,50 @@ export interface SidebarData {
 }
 
 async function getSidebarCollections(userId: string) {
-  const collections = await prisma.collection.findMany({
-    where: { userId },
-    include: {
-      items: {
-        include: {
-          item: {
-            select: {
-              itemType: { select: { color: true } },
-            },
-          },
-        },
-      },
-    },
-    orderBy: { createdAt: "desc" },
-  })
+  const [collections, aggregation, itemTypes] = await Promise.all([
+    prisma.collection.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.$queryRaw<
+      { collection_id: string; item_type_id: string; count: number }[]
+    >`
+      SELECT
+        ic."collectionId" AS collection_id,
+        i."itemTypeId" AS item_type_id,
+        COUNT(*)::int AS count
+      FROM "ItemCollection" ic
+      JOIN "Item" i ON i."id" = ic."itemId"
+      JOIN "Collection" c ON c."id" = ic."collectionId"
+      WHERE c."userId" = ${userId}
+      GROUP BY ic."collectionId", i."itemTypeId"
+    `,
+    prisma.itemType.findMany({ select: { id: true, color: true } }),
+  ])
+
+  const typeColorMap = new Map(itemTypes.map((t) => [t.id, t.color]))
+
+  const aggByCollection = new Map<string, Map<string, number>>()
+  for (const row of aggregation) {
+    let typeCounts = aggByCollection.get(row.collection_id)
+    if (!typeCounts) {
+      typeCounts = new Map()
+      aggByCollection.set(row.collection_id, typeCounts)
+    }
+    typeCounts.set(row.item_type_id, row.count)
+  }
 
   return collections.map((col) => {
-    const colorCounts = new Map<string, number>()
-    for (const ic of col.items) {
-      const color = ic.item.itemType.color
-      colorCounts.set(color, (colorCounts.get(color) || 0) + 1)
-    }
+    const typeCounts = aggByCollection.get(col.id)
     let dominantTypeColor: string | null = null
     let maxCount = 0
-    for (const [color, count] of colorCounts) {
-      if (count > maxCount) {
-        maxCount = count
-        dominantTypeColor = color
+    if (typeCounts) {
+      for (const [typeId, count] of typeCounts) {
+        const color = typeColorMap.get(typeId)
+        if (color && count > maxCount) {
+          maxCount = count
+          dominantTypeColor = color
+        }
       }
     }
     return {

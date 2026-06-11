@@ -1,29 +1,16 @@
-# Current Feature: Auth UI - Sign In, Register & Sign Out
+# Current Feature
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Completed -->
 
 ## Goals
 
-- Custom sign-in page (`/sign-in`) with email/password fields, GitHub button, link to register
-- Custom register page (`/register`) with name, email, password, confirm password + validation
-- Registration API route (`POST /api/auth/register`)
-- Bottom of sidebar: user avatar (GitHub image or initials fallback), name, dropdown with "Sign out"
-- Avatar click navigates to `/profile`
-- Reusable avatar component handling image + initials fallback
+<!-- Goals and requirements -->
 
 ## Notes
 
-### Avatar Logic
-
-- If user has `image` (from GitHub): use that
-- Otherwise: generate initials from name (e.g., "Brad Traversy" → "BT")
-
-### Pages
-
-- `/sign-in` — Custom sign-in replacing NextAuth default
-- `/register` — Registration form, posts to `/api/auth/register`, redirects to sign-in on success
+<!-- Any extra notes -->
 
 ## History
 
@@ -40,3 +27,4 @@ In Progress
 - 2026-06-10: Fix N+1 queries in collection stats and sidebar — Replaced eager-loading N+1 with aggregation queries in `getCollections()` and `getSidebarCollections()`, added `@@index([collectionId])` on ItemCollection [Completed]
 - 2026-06-11: Auth Phase 1 — NextAuth v5 with GitHub OAuth, split config pattern, dashboard proxy protection, JWT session [Completed]
 - 2026-06-11: Auth Phase 2 — Email/password Credentials provider with bcrypt validation, registration API route, dashboard user auth fix [Completed]
+- 2026-06-12: Auth UI Phase 3 — Custom /sign-in and /register pages, sidebar avatar dropdown with Profile + Sign out, sonner toasts, autofill attributes, DropdownMenu component [Completed]

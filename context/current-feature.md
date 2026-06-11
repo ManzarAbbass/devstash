@@ -1,23 +1,16 @@
-# Current Feature: Auth Phase 2 — Email/Password Provider
+# Current Feature
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Completed -->
 
 ## Goals
 
-- Add `password` field to User model via migration
-- Update `auth.config.ts` with Credentials provider placeholder
-- Update `auth.ts` with bcrypt validation override
-- Create registration API route at `POST /api/auth/register`
-- Validate input, hash password, create user, return response
+<!-- Goals and requirements -->
 
 ## Notes
 
-- bcryptjs already installed
-- Credentials in split pattern: placeholder in `auth.config.ts`, real logic in `auth.ts`
-- Registration route accepts: name, email, password, confirmPassword
-- Test via curl first, then browser sign-in
+<!-- Any extra notes -->
 
 ## History
 
@@ -33,3 +26,4 @@ In Progress
 - 2026-06-03: Add Pro Badge to Sidebar — Added PRO badge to Files and Images item types in the sidebar using ShadCN UI Badge [Completed]
 - 2026-06-10: Fix N+1 queries in collection stats and sidebar — Replaced eager-loading N+1 with aggregation queries in `getCollections()` and `getSidebarCollections()`, added `@@index([collectionId])` on ItemCollection [Completed]
 - 2026-06-11: Auth Phase 1 — NextAuth v5 with GitHub OAuth, split config pattern, dashboard proxy protection, JWT session [Completed]
+- 2026-06-11: Auth Phase 2 — Email/password Credentials provider with bcrypt validation, registration API route, dashboard user auth fix [Completed]

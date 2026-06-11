@@ -12,6 +12,22 @@ Read the following to get the full context of the project:
 - @context/current-feature.md
 
 
+<!-- BEGIN:neon-rules -->
+# Neon Database — Default to Development
+
+When working with Neon (via CLI, API, MCP, or direct queries), ALWAYS default to the **devstash** project and **development** branch. Never touch **production** unless explicitly told.
+
+- **Project:** `bold-frog-42061604` (name: `devstash`)
+- **Production branch:** `br-hidden-mud-aph4hawt` (name: `production`, primary)
+- **Development branch:** `br-misty-glade-apvt2xz2` (name: `development`)
+- **API key:** `napi_u0crb2b5jzevxyw0pc1r0zz94vx1127wvxtp34r6uj0exwpcqg4sylqiz9mkv91i` (project-scoped)
+- **Connection string (dev branch):** `postgresql://neondb_owner:npg_xufngiPS5KC6@ep-royal-mouse-apb2wrio-pooler.c-7.us-east-1.aws.neon.tech/neondb?channel_binding=require&sslmode=require`
+
+Usage rule:
+- Any Neon query/operation → use **development** branch
+- Any reference to "production" or explicit user request → use **production** branch
+<!-- END:neon-rules -->
+
 <!-- BEGIN:nextjs-agent-rules -->
 # This is NOT the Next.js you know
 

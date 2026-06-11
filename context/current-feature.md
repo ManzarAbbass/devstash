@@ -1,16 +1,23 @@
-# Current Feature
+# Current Feature: Auth Phase 2 — Email/Password Provider
 
 ## Status
 
-<!-- Not Started | In Progress | Completed -->
+In Progress
 
 ## Goals
 
-<!-- Goals and requirements -->
+- Add `password` field to User model via migration
+- Update `auth.config.ts` with Credentials provider placeholder
+- Update `auth.ts` with bcrypt validation override
+- Create registration API route at `POST /api/auth/register`
+- Validate input, hash password, create user, return response
 
 ## Notes
 
-<!-- Any extra notes -->
+- bcryptjs already installed
+- Credentials in split pattern: placeholder in `auth.config.ts`, real logic in `auth.ts`
+- Registration route accepts: name, email, password, confirmPassword
+- Test via curl first, then browser sign-in
 
 ## History
 

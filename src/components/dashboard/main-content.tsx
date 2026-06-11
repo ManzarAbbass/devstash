@@ -15,7 +15,7 @@ import {
 } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
-import { getCollections, getDemoUserId, type CollectionWithStats } from "@/lib/db/collections"
+import { getCollections, type CollectionWithStats } from "@/lib/db/collections"
 import { getPinnedItems, getRecentItems, getItemStats, type ItemWithDetails } from "@/lib/db/items"
 
 const iconMap: Record<string, typeof Code2> = {
@@ -35,8 +35,7 @@ function formatDate(date: Date) {
   })
 }
 
-export async function MainContent() {
-  const userId = await getDemoUserId()
+export async function MainContent({ userId }: { userId: string }) {
   const [collections, pinnedItems, recentItems, { totalItems, favoriteItems }] = await Promise.all([
     getCollections(userId),
     getPinnedItems(userId),

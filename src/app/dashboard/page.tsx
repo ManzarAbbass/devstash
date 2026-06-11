@@ -1,17 +1,20 @@
+import { redirect } from "next/navigation"
+import { auth } from "@/auth"
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
 import { MainContent } from "@/components/dashboard/main-content"
-import { getDemoUserId } from "@/lib/db/collections"
 import { getSidebarData } from "@/lib/db/items"
 
 export const dynamic = "force-dynamic"
 
 export default async function DashboardPage() {
-  const userId = await getDemoUserId()
+  const session = await auth()
+  if (!session?.user?.id) redirect("/api/auth/signin")
+  const userId = session.user.id
   const sidebarData = await getSidebarData(userId)
 
   return (
     <DashboardLayout sidebarData={sidebarData}>
-      <MainContent />
+      <MainContent userId={userId} />
     </DashboardLayout>
   )
 }

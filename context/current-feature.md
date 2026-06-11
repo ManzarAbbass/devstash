@@ -1,26 +1,16 @@
-# Current Feature: Auth Phase 1 — NextAuth + GitHub Provider
+# Current Feature
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Completed -->
 
 ## Goals
 
-- Install `next-auth@beta` and `@auth/prisma-adapter`
-- Set up split auth config pattern (edge-compatible config + full config with adapter)
-- Add GitHub OAuth provider
-- Protect `/dashboard/*` routes using Next.js 16 proxy
-- Redirect unauthenticated users to sign-in
-- Extend Session type with `user.id`
+<!-- Goals and requirements -->
 
 ## Notes
 
-- Use `next-auth@beta` (not `@latest` which installs v4)
-- Proxy file at `src/proxy.ts` with named export `export const proxy = auth(...)`
-- Use `session: { strategy: 'jwt' }` with split config pattern
-- Don't set custom `pages.signIn` — use NextAuth's default page
-- Files to create: `src/auth.config.ts`, `src/auth.ts`, `src/app/api/auth/[...nextauth]/route.ts`, `src/proxy.ts`, `src/types/next-auth.d.ts`
-- Env vars needed: `AUTH_SECRET`, `AUTH_GITHUB_ID`, `AUTH_GITHUB_SECRET`
+<!-- Any extra notes -->
 
 ## History
 
@@ -35,3 +25,4 @@ In Progress
 - 2026-05-25: Stats & Sidebar — Replace mock data with real database stats and populate sidebar with item types + collections [Completed]
 - 2026-06-03: Add Pro Badge to Sidebar — Added PRO badge to Files and Images item types in the sidebar using ShadCN UI Badge [Completed]
 - 2026-06-10: Fix N+1 queries in collection stats and sidebar — Replaced eager-loading N+1 with aggregation queries in `getCollections()` and `getSidebarCollections()`, added `@@index([collectionId])` on ItemCollection [Completed]
+- 2026-06-11: Auth Phase 1 — NextAuth v5 with GitHub OAuth, split config pattern, dashboard proxy protection, JWT session [Completed]

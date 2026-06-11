@@ -2,6 +2,8 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { signOut } from "next-auth/react"
 import {
   Code2,
   Sparkles,
@@ -15,11 +17,22 @@ import {
   Settings,
   FolderIcon,
   PanelLeft,
+  LogOut,
+  User,
 } from "lucide-react"
 
 import { Separator } from "@/components/ui/separator"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuPortal,
+  DropdownMenuPositioner,
+  DropdownMenuPopup,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu"
 import type { SidebarData } from "@/lib/db/items"
 
 const iconMap: Record<string, typeof Code2> = {
@@ -54,6 +67,7 @@ export function SidebarContent({
   onToggle?: () => void
 }) {
   const [collectionsOpen, setCollectionsOpen] = useState(true)
+  const router = useRouter()
   const { user, itemTypes, favoriteCollections, recentCollections } = data
 
   const initials = user.name
@@ -220,32 +234,46 @@ export function SidebarContent({
 
       <Separator />
 
-      {collapsed ? (
-        <div className="flex justify-center px-2 py-3">
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          render={collapsed ? (
+            <div className="flex justify-center px-2 py-3" />
+          ) : (
+            <div className="flex items-center gap-3 px-3 py-3" />
+          )}
+        >
           <Avatar size="sm">
             <AvatarImage src={user.image ?? undefined} alt={user.name} />
-            <AvatarFallback className="text-[10px]">{initials}</AvatarFallback>
+            <AvatarFallback className={collapsed ? "text-[10px]" : undefined}>
+              {initials}
+            </AvatarFallback>
           </Avatar>
-        </div>
-      ) : (
-        <div className="flex items-center gap-3 px-3 py-3">
-          <Avatar size="sm">
-            <AvatarImage src={user.image ?? undefined} alt={user.name} />
-            <AvatarFallback>{initials}</AvatarFallback>
-          </Avatar>
-          <div className="flex min-w-0 flex-1 flex-col">
-            <span className="truncate text-sm font-medium">{user.name}</span>
-            <span className="truncate text-xs text-muted-foreground">{user.email}</span>
-          </div>
-          <button
-            type="button"
-            aria-label="Settings"
-            className="shrink-0 text-muted-foreground hover:text-foreground"
-          >
-            <Settings className="size-4" />
-          </button>
-        </div>
-      )}
+          {!collapsed && (
+            <div className="flex min-w-0 flex-1 flex-col">
+              <span className="truncate text-sm font-medium">{user.name}</span>
+              <span className="truncate text-xs text-muted-foreground">{user.email}</span>
+            </div>
+          )}
+          {!collapsed && (
+            <Settings className="size-4 shrink-0 text-muted-foreground" />
+          )}
+        </DropdownMenuTrigger>
+        <DropdownMenuPortal>
+          <DropdownMenuPositioner side="top" align="end" sideOffset={4}>
+            <DropdownMenuPopup>
+            <DropdownMenuItem onClick={() => router.push("/profile")}>
+              <User className="size-4" />
+              Profile
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/sign-in" })}>
+              <LogOut className="size-4" />
+              Sign out
+            </DropdownMenuItem>
+            </DropdownMenuPopup>
+          </DropdownMenuPositioner>
+        </DropdownMenuPortal>
+      </DropdownMenu>
     </div>
   )
 }

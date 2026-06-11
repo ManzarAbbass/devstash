@@ -30,6 +30,7 @@ async function main() {
     data: {
       email: "john@example.com",
       name: "John Doe",
+      password: hashedPassword,
       emailVerified: new Date(),
       isPro: false,
       accounts: {

@@ -4,10 +4,12 @@ import { useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { signIn } from "next-auth/react"
+import { Mail, Lock } from "lucide-react"
 
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
 
 function GitHubIcon({ className }: { className?: string }) {
   return (
@@ -39,8 +41,16 @@ export function SignInForm() {
     })
 
     if (result?.error) {
-      setError("Invalid email or password")
-      toast.error("Invalid email or password")
+      const check = await fetch(`/api/auth/check-email?email=${encodeURIComponent(email)}`).then((r) => r.json())
+
+      if (check.exists && !check.verified) {
+        setError("Please verify your email before signing in. Check your inbox for the verification link.")
+        toast.error("Email not verified")
+      } else {
+        setError("Invalid email or password")
+        toast.error("Invalid email or password")
+      }
+
       setLoading(false)
       return
     }
@@ -55,85 +65,101 @@ export function SignInForm() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="w-full max-w-sm space-y-6 px-4">
-        <div className="space-y-1 text-center">
+    <div className="relative flex min-h-screen items-center justify-center bg-background p-4">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.06),transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,hsl(var(--muted-foreground)/0.04),transparent_50%)]" />
+
+      <Card className="relative w-full max-w-sm">
+        <CardHeader className="text-center">
           <div className="mx-auto flex size-10 items-center justify-center rounded-lg bg-purple-600 text-sm font-bold text-white">
             D
           </div>
-          <h1 className="text-xl font-semibold">Sign in to DevStash</h1>
-          <p className="text-sm text-muted-foreground">
+          <CardTitle className="text-xl">Sign in to DevStash</CardTitle>
+          <CardDescription>
             Enter your credentials or sign in with GitHub
-          </p>
-        </div>
+          </CardDescription>
+        </CardHeader>
 
-        <form onSubmit={handleEmailSignIn} className="space-y-4">
-          <div className="space-y-2">
-            <label htmlFor="email" className="text-sm font-medium">
-              Email
-            </label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              placeholder="you@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+        <CardContent>
+          <form onSubmit={handleEmailSignIn} className="space-y-4">
+            <div className="space-y-2">
+              <label htmlFor="email" className="text-sm font-medium">
+                Email
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="pl-8"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="password" className="text-sm font-medium">
+                Password
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="current-password"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="pl-8"
+                  required
+                />
+              </div>
+            </div>
+
+            {error && (
+              <p className="text-sm text-destructive">{error}</p>
+            )}
+
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "Signing in..." : "Sign in"}
+            </Button>
+          </form>
+
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
+            </div>
           </div>
-          <div className="space-y-2">
-            <label htmlFor="password" className="text-sm font-medium">
-              Password
-            </label>
-            <Input
-              id="password"
-              name="password"
-              type="password"
-              autoComplete="current-password"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
 
-          {error && (
-            <p className="text-sm text-destructive">{error}</p>
-          )}
-
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Signing in..." : "Sign in"}
+          <Button
+            variant="outline"
+            className="w-full gap-2"
+            onClick={handleGitHubSignIn}
+            disabled={loading}
+          >
+            <GitHubIcon className="size-4" />
+            GitHub
           </Button>
-        </form>
+        </CardContent>
 
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
-          </div>
-        </div>
-
-        <Button
-          variant="outline"
-          className="w-full gap-2"
-          onClick={handleGitHubSignIn}
-          disabled={loading}
-        >
-          <GitHubIcon className="size-4" />
-          GitHub
-        </Button>
-
-        <p className="text-center text-sm text-muted-foreground">
-          Don&apos;t have an account?{" "}
-          <Link href="/register" className="font-medium text-foreground hover:underline">
-            Register
-          </Link>
-        </p>
-      </div>
+        <CardFooter className="justify-center">
+          <p className="text-sm text-muted-foreground">
+            Don&apos;t have an account?{" "}
+            <Link href="/register" className="font-medium text-foreground hover:underline">
+              Register
+            </Link>
+          </p>
+        </CardFooter>
+      </Card>
     </div>
   )
 }

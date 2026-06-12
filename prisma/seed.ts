@@ -25,19 +25,19 @@ async function main() {
   console.log("🧹 Cleaned existing data\n");
 
   // ── User ──
-  const hashedPassword = await bcrypt.hash("12345678", 12);
+  const hashedPassword = await bcrypt.hash("demo1234", 12);
   const user = await prisma.user.create({
     data: {
-      email: "john@example.com",
-      name: "John Doe",
+      email: "demo@devstash.io",
+      name: "Demo User",
       password: hashedPassword,
       emailVerified: new Date(),
-      isPro: false,
+      isPro: true,
       accounts: {
         create: {
           type: "email",
           provider: "email",
-          providerAccountId: "john@example.com",
+          providerAccountId: "demo@devstash.io",
         },
       },
     },

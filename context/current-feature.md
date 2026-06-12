@@ -1,16 +1,23 @@
-# Current Feature
+# Current Feature: Email Verification on Registration
 
 ## Status
 
-<!-- Not Started | In Progress | Completed -->
+In Progress
 
 ## Goals
 
-<!-- Goals and requirements -->
+- [x] Users must verify their email after registration before they can sign in
+- [x] Send verification email via Resend with a unique link
+- [x] Verification link expires after 24 hours
+- [x] Unverified users get a clear error message when trying to sign in
+- [x] Verification success/error pages with proper UX
+- [x] Build passes with no errors
 
 ## Notes
 
-<!-- Any extra notes -->
+- Uses the existing `VerificationToken` model from Prisma schema (convention used by NextAuth)
+- RESEND_API_KEY is already in .env files
+- GitHub OAuth users bypass email verification (trusted provider)
 
 ## History
 

@@ -1,23 +1,16 @@
-# Current Feature: Email Verification Toggle
+# Current Feature
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Completed -->
 
 ## Goals
 
-- [x] Add a toggle (env variable) to enable/disable email verification
-- [x] When disabled, users can register and sign in directly without email verification
-- [x] When disabled, no verification email is sent on registration
-- [x] Frontend adapts accordingly (no "check your email" screen when disabled)
-- [x] Env var defaults to `true` (verification on) so existing behavior is preserved
+<!-- Goals and requirements -->
 
 ## Notes
 
-- Suggested approach: `EMAIL_VERIFICATION=true` (default) / `EMAIL_VERIFICATION=false`
-- When disabled: register sets `emailVerified` immediately, skips Resend call
-- When disabled: auth skips `emailVerified` check, always allows sign-in
-- Only affects credentials provider — GitHub OAuth is unaffected
+<!-- Any extra notes -->
 
 ## History
 
@@ -36,3 +29,4 @@ In Progress
 - 2026-06-11: Auth Phase 2 — Email/password Credentials provider with bcrypt validation, registration API route, dashboard user auth fix [Completed]
 - 2026-06-12: Auth UI Phase 3 — Custom /sign-in and /register pages, sidebar avatar dropdown with Profile + Sign out, sonner toasts, autofill attributes, DropdownMenu component [Completed]
 - 2026-06-13: Email Verification — Register sends verification email via Resend, 24h token, blocks unverified sign-in, improved auth UI [Completed]
+- 2026-06-13: Email Verification Toggle — EMAIL_VERIFICATION env var to enable/disable verification, frontend adapts accordingly [Completed]

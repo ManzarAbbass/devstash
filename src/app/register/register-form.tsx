@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Mail, Lock, User, MailCheck } from "lucide-react"
+import { Mail, Lock, User, MailCheck, CheckCircle } from "lucide-react"
 
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
@@ -17,6 +17,7 @@ export function RegisterForm() {
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
   const [registered, setRegistered] = useState(false)
+  const [verified, setVerified] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -54,11 +55,40 @@ export function RegisterForm() {
       return
     }
 
+    setVerified(data.verified)
     setRegistered(true)
-    toast.success("Verification email sent!")
+    toast.success(data.verified ? "Account created!" : "Verification email sent!")
   }
 
   if (registered) {
+    if (verified) {
+      return (
+        <div className="relative flex min-h-screen items-center justify-center bg-background p-4">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.06),transparent_50%)]" />
+
+          <Card className="relative w-full max-w-sm">
+            <CardHeader className="text-center">
+              <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-400">
+                <CheckCircle className="size-6" />
+              </div>
+              <CardTitle className="text-xl">Account created!</CardTitle>
+              <CardDescription>
+                You can now sign in to your account.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="text-center">
+              <Link
+                href="/sign-in"
+                className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-primary px-2.5 text-sm font-medium text-primary-foreground hover:opacity-90"
+              >
+                Sign in
+              </Link>
+            </CardContent>
+          </Card>
+        </div>
+      )
+    }
+
     return (
       <div className="relative flex min-h-screen items-center justify-center bg-background p-4">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.06),transparent_50%)]" />

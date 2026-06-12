@@ -48,3 +48,6 @@ next-env.d.ts
 /generated
 
 /generated/prisma
+
+# playwright test artifacts
+.playwright-mcp/

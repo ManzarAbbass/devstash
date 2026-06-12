@@ -30,7 +30,8 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
         const isValid = await bcrypt.compare(password, user.password)
         if (!isValid) return null
 
-        if (!user.emailVerified) return null
+        const emailVerificationEnabled = process.env.EMAIL_VERIFICATION !== "false"
+        if (emailVerificationEnabled && !user.emailVerified) return null
 
         return {
           id: user.id,

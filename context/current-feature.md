@@ -1,28 +1,20 @@
-# Current Feature: Forgot / Reset Password
+# Current Feature
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Completed -->
 
 ## Goals
 
-- Add "Forgot password?" link on sign-in page
-- Forgot password page — enter email, send reset link
-- Reset password page — enter new password via token URL
-- API routes for forgot-password and reset-password
-- Send password reset email via Resend
-- Use existing VerificationToken model for 1-hour reset tokens
-- Follow existing auth UI patterns (Card, form style)
+<!-- Goals and requirements -->
 
 ## Notes
 
-- Password reset tokens expire in 1 hour (shorter than 24h verification tokens)
-- Reset link format: /reset-password?token={uuid}
-- Uses same VerificationToken table as email verification
-- EMAIL_VERIFICATION toggle does not affect password reset (reset always works)
+<!-- Any extra notes -->
 
 ## History
 
+- 2026-06-13: Forgot / Reset Password — "Forgot password?" link on sign-in, forgot-password page sends reset email via Resend, reset-password page with token-based new password entry, API routes for both, uses VerificationToken model with 1-hour expiry, follows existing auth UI patterns [Completed]
 - 2026-05-23: Dashboard UI Phase 1 — ShadCN init, layout, dark mode, top bar, placeholders [Completed]
 - 2026-05-23: Dashboard UI Phase 2 — Collapsible sidebar with icon collapse, toggle in sidebar, centered search [Completed]
 - 2026-05-23: Dashboard UI Phase 2 (redo) — Sidebar redesign: collapsible to icons, toggle inside, Nav heading, centered search [Completed]

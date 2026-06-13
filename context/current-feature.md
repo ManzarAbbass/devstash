@@ -1,16 +1,25 @@
-# Current Feature
+# Current Feature: Forgot / Reset Password
 
 ## Status
 
-<!-- Not Started | In Progress | Completed -->
+In Progress
 
 ## Goals
 
-<!-- Goals and requirements -->
+- Add "Forgot password?" link on sign-in page
+- Forgot password page — enter email, send reset link
+- Reset password page — enter new password via token URL
+- API routes for forgot-password and reset-password
+- Send password reset email via Resend
+- Use existing VerificationToken model for 1-hour reset tokens
+- Follow existing auth UI patterns (Card, form style)
 
 ## Notes
 
-<!-- Any extra notes -->
+- Password reset tokens expire in 1 hour (shorter than 24h verification tokens)
+- Reset link format: /reset-password?token={uuid}
+- Uses same VerificationToken table as email verification
+- EMAIL_VERIFICATION toggle does not affect password reset (reset always works)
 
 ## History
 

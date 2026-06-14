@@ -20,7 +20,7 @@ When working with Neon (via CLI, API, MCP, or direct queries), ALWAYS default to
 - **Project:** `bold-frog-42061604` (name: `devstash`)
 - **Production branch:** `br-hidden-mud-aph4hawt` (name: `production`, primary)
 - **Development branch:** `br-misty-glade-apvt2xz2` (name: `development`)
-- **API key:** `napi_u0crb2b5jzevxyw0pc1r0zz94vx1127wvxtp34r6uj0exwpcqg4sylqiz9mkv91i` (project-scoped)
+- **API key:** `{env:NEON_API_KEY}` (set in `.env` — never commit raw keys)
 - **Connection string (dev branch):** `postgresql://neondb_owner:npg_xufngiPS5KC6@ep-royal-mouse-apb2wrio-pooler.c-7.us-east-1.aws.neon.tech/neondb?channel_binding=require&sslmode=require`
 
 Usage rule:

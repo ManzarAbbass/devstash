@@ -1,26 +1,16 @@
-# Current Feature: Rate Limiting for Auth
+# Current Feature
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Completed -->
 
 ## Goals
 
-- Add rate limiting to auth-related API routes using Upstash Redis and `@upstash/ratelimit`
-- Create reusable `src/lib/rate-limit.ts` utility with sliding window algorithm
-- Return 429 Too Many Requests with `Retry-After` header and user-friendly error messages
-- Protect login (5/15min per IP+email), register (3/1h per IP), forgot-password (3/1h per IP), reset-password (5/15min per IP), resend-verification (3/15min per IP+email)
-- Display rate limit errors via toast notifications on the frontend
-- Fail open (allow request) if Upstash is unavailable
+<!-- Goals and requirements -->
 
 ## Notes
 
-- Upstash free tier: 10k requests/day (sufficient for auth limiting)
-- Login limiting may need a custom NextAuth sign-in handler
-- Extract IP from `x-forwarded-for` header (Vercel) or `req.socket.remoteAddress`
-- Rate limiting should fail open — never block users due to Redis outage
-- Consider adding rate limiting middleware for cleaner implementation later
-- Requires `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` env vars
+<!-- Any extra notes -->
 
 ## History
 
@@ -42,3 +32,4 @@ In Progress
 - 2026-06-13: Email Verification Toggle — EMAIL_VERIFICATION env var to enable/disable verification, frontend adapts accordingly [Completed]
 - 2026-06-13: Forgot / Reset Password — "Forgot password?" link on sign-in, forgot-password page sends reset email via Resend, reset-password page with token-based new password entry, API routes for both, uses VerificationToken model with 1-hour expiry, follows existing auth UI patterns [Completed]
 - 2026-06-13: Profile Page — Profile page at /profile with user info (avatar, email, join date), usage stats (total items, collections, per-type breakdown), change password (email users only), delete account with confirmation dialog [Completed]
+- 2026-06-14: Rate Limiting for Auth — Upstash Redis rate limiting on login (5/15min IP+email), register (3/1h IP), forgot-password (3/1h IP), reset-password (5/15min IP), reusable src/lib/rate-limit.ts utility, 429 + Retry-After headers, fail-open, frontend toast/error messages [Completed]

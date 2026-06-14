@@ -41,6 +41,13 @@ export function SignInForm() {
     })
 
     if (result?.error) {
+      if (result?.code === "rate_limit") {
+        setError("Too many sign-in attempts. Please try again in 15 minutes.")
+        toast.error("Too many sign-in attempts")
+        setLoading(false)
+        return
+      }
+
       const check = await fetch(`/api/auth/check-email?email=${encodeURIComponent(email)}`).then((r) => r.json())
 
       if (check.exists && !check.verified) {

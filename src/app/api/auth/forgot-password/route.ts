@@ -2,9 +2,20 @@ import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { createPasswordResetToken } from "@/lib/verification-token"
 import { sendPasswordResetEmail } from "@/lib/email"
+import { rateLimiters, getIP, checkRateLimit } from "@/lib/rate-limit"
 
 export async function POST(request: Request) {
   try {
+    const ip = getIP(request)
+    const { success, reset } = await checkRateLimit(rateLimiters.forgotPassword, ip)
+    if (!success) {
+      const retryAfter = Math.ceil((reset - Date.now()) / 1000)
+      return NextResponse.json(
+        { error: "Too many password reset requests. Please try again later." },
+        { status: 429, headers: { "Retry-After": String(retryAfter) } },
+      )
+    }
+
     const { email } = await request.json()
 
     if (!email) {

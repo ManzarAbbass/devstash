@@ -184,6 +184,33 @@ async function getSidebarCollections(userId: string) {
   })
 }
 
+export async function getItemsByType(userId: string, typeName: string): Promise<ItemWithDetails[]> {
+  const items = await prisma.item.findMany({
+    where: { userId, itemType: { name: typeName } },
+    include: {
+      itemType: { select: { name: true, icon: true, color: true } },
+      tags: { include: { tag: { select: { id: true, name: true } } } },
+    },
+    orderBy: { createdAt: "desc" },
+  })
+
+  return items.map((item) => ({
+    id: item.id,
+    title: item.title,
+    contentType: item.contentType,
+    content: item.content,
+    description: item.description,
+    isFavorite: item.isFavorite,
+    isPinned: item.isPinned,
+    language: item.language,
+    url: item.url,
+    createdAt: item.createdAt,
+    itemTypeId: item.itemTypeId,
+    itemType: item.itemType,
+    tags: item.tags.map((t) => t.tag),
+  }))
+}
+
 export async function getSidebarData(userId: string): Promise<SidebarData> {
   const [user, itemTypes, collections] = await Promise.all([
     prisma.user.findUnique({

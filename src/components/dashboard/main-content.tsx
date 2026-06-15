@@ -72,9 +72,9 @@ export async function MainContent({ userId }: { userId: string }) {
             <Pin className="size-4 text-muted-foreground" />
             <h2 className="text-lg font-semibold">Pinned Items</h2>
           </div>
-          <div className="flex flex-col">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {pinnedItems.map((item) => (
-              <ItemRow key={item.id} item={item} />
+              <ItemCard key={item.id} item={item} />
             ))}
           </div>
         </section>
@@ -82,9 +82,9 @@ export async function MainContent({ userId }: { userId: string }) {
 
       <section>
         <h2 className="mb-4 text-lg font-semibold">Recent Items</h2>
-        <div className="flex flex-col">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {recentItems.map((item) => (
-            <ItemRow key={item.id} item={item} />
+            <ItemCard key={item.id} item={item} />
           ))}
         </div>
       </section>
@@ -141,32 +141,37 @@ function CollectionCard({ collection }: { collection: CollectionWithStats }) {
   )
 }
 
-function ItemRow({ item }: { item: ItemWithDetails }) {
+function ItemCard({ item }: { item: ItemWithDetails }) {
   const Icon = iconMap[item.itemType.icon] || Code2
 
   return (
     <Link
       href={`/items/${item.itemType.name}/${item.id}`}
-      className="group flex items-center gap-3 border-l-4 border-l-transparent border-b border-border px-4 py-3 transition-colors hover:bg-muted/50"
+      className="group flex flex-col gap-2 rounded-xl border border-border bg-card p-4 transition-colors hover:bg-muted/50"
+      style={{ borderLeftWidth: "4px", borderLeftColor: item.itemType.color }}
     >
-      <Icon className="size-4 shrink-0" style={{ color: item.itemType.color }} />
-      <div className="flex min-w-0 flex-1 items-center gap-2">
-        <span className="truncate text-sm font-medium">{item.title}</span>
-        {item.isFavorite && <Star className="size-3 shrink-0 fill-yellow-500 text-yellow-500" />}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2 min-w-0">
+          <Icon className="size-4 shrink-0" style={{ color: item.itemType.color }} />
+          <span className="truncate text-sm font-medium">{item.title}</span>
+        </div>
+        <div className="flex items-center gap-1 shrink-0">
+          {item.isFavorite && <Star className="size-3.5 fill-yellow-500 text-yellow-500" />}
+          <span className="text-xs text-muted-foreground">{formatDate(item.createdAt)}</span>
+        </div>
       </div>
       {item.description && (
-        <span className="hidden max-w-xs truncate text-sm text-muted-foreground md:block">
-          {item.description}
-        </span>
+        <span className="text-sm text-muted-foreground line-clamp-2">{item.description}</span>
       )}
-      <div className="hidden items-center gap-1 lg:flex">
-        {item.tags.map((tag) => (
-          <Badge key={tag.id} variant="secondary" className="text-[10px]">
-            {tag.name}
-          </Badge>
-        ))}
-      </div>
-      <span className="shrink-0 text-xs text-muted-foreground">{formatDate(item.createdAt)}</span>
+      {item.tags.length > 0 && (
+        <div className="flex flex-wrap items-center gap-1">
+          {item.tags.map((tag) => (
+            <Badge key={tag.id} variant="secondary" className="text-[10px]">
+              {tag.name}
+            </Badge>
+          ))}
+        </div>
+      )}
     </Link>
   )
 }

@@ -16,7 +16,7 @@ import {
 
 import { getCollections, type CollectionWithStats } from "@/lib/db/collections"
 import { getPinnedItems, getRecentItems, getItemStats } from "@/lib/db/items"
-import { ItemCard } from "@/components/items/item-card"
+import { ItemCardWithDrawer } from "@/components/items/item-card-with-drawer"
 
 const iconMap: Record<string, typeof Code2> = {
   Code: Code2,
@@ -38,6 +38,7 @@ export async function MainContent({ userId }: { userId: string }) {
 
   return (
     <div className="flex flex-col gap-8">
+      <h1 className="text-2xl font-bold">Dashboard</h1>
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatCard icon={Layers} label="Total Items" value={totalItems} />
         <StatCard icon={Archive} label="Collections" value={collections.length} />
@@ -67,7 +68,7 @@ export async function MainContent({ userId }: { userId: string }) {
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {pinnedItems.map((item) => (
-              <ItemCard key={item.id} item={item} />
+              <ItemCardWithDrawer key={item.id} item={item} />
             ))}
           </div>
         </section>
@@ -77,7 +78,7 @@ export async function MainContent({ userId }: { userId: string }) {
         <h2 className="mb-4 text-lg font-semibold">Recent Items</h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {recentItems.map((item) => (
-            <ItemCard key={item.id} item={item} />
+            <ItemCardWithDrawer key={item.id} item={item} />
           ))}
         </div>
       </section>

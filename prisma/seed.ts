@@ -77,6 +77,7 @@ async function main() {
   const snippets = [
     {
       title: "Custom Hooks",
+      description: "Reusable debounce and localStorage hooks",
       content: `// useDebounce
 import { useState, useEffect } from 'react';
 
@@ -113,6 +114,7 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
     },
     {
       title: "Component Patterns",
+      description: "Compound component pattern with tabs example",
       content: `// Compound Component Pattern
 import { createContext, useContext, useState } from 'react';
 
@@ -152,6 +154,7 @@ export default Tabs;`,
     },
     {
       title: "Utility Functions",
+      description: "Type-safe helpers for common tasks",
       content: `// Type-safe utility functions
 export function cn(...classes: (string | false | null | undefined)[]): string {
   return classes.filter(Boolean).join(' ');
@@ -196,6 +199,7 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
         language: "typescript",
         isPinned: i === 0,
         isFavorite: i === 0,
+        description: s.description,
         userId: user.id,
         itemTypeId: typeMap.get("snippet")!,
         collections: { create: { collectionId: reactColl.id } },
@@ -216,6 +220,7 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
   const prompts = [
     {
       title: "Code Review Prompt",
+      description: "Get AI to review your code for correctness and best practices",
       content: `You are a senior code reviewer. Review the following code for:
 1. Correctness
 2. Performance
@@ -227,6 +232,7 @@ Provide specific, actionable feedback for each issue found. Be thorough but conc
     },
     {
       title: "Documentation Generator",
+      description: "Generate thorough docs from any codebase",
       content: `Generate comprehensive documentation for the following code. Include:
 - Brief description of what it does
 - Parameters and return values
@@ -238,6 +244,7 @@ Format the output as Markdown.`,
     },
     {
       title: "Refactoring Assistant",
+      description: "Prompt to identify refactoring opportunities in your code",
       content: `Analyze this code and suggest refactoring improvements. Consider:
 1. Extracting functions/classes
 2. Reducing complexity
@@ -255,6 +262,7 @@ Show both the "before" and "after" code for each suggestion.`,
         title: p.title,
         contentType: "text",
         content: p.content,
+        description: p.description,
         userId: user.id,
         itemTypeId: typeMap.get("prompt")!,
         collections: { create: { collectionId: aiColl.id } },
@@ -275,6 +283,7 @@ Show both the "before" and "after" code for each suggestion.`,
   const devopsItems = [
     {
       title: "Docker Compose Setup",
+      description: "Multi-service Docker setup with Postgres and Redis",
       type: "snippet",
       language: "yaml",
       content: `version: '3.8'
@@ -302,6 +311,7 @@ volumes:
     },
     {
       title: "Deploy to Production",
+      description: "Build, push and deploy Docker images to production",
       type: "command",
       content: `# Build and tag
 docker build -t devstash:latest .
@@ -319,11 +329,13 @@ EOF`,
     },
     {
       title: "Docker Documentation",
+      description: "Official Docker docs for containers and orchestration",
       type: "link",
       url: "https://docs.docker.com/",
     },
     {
       title: "GitHub Actions Docs",
+      description: "Automate workflows with GitHub Actions",
       type: "link",
       url: "https://docs.github.com/en/actions",
     },
@@ -337,6 +349,7 @@ EOF`,
       itemTypeId: typeMap.get(d.type)!,
       collections: { create: { collectionId: devopsColl.id } },
     };
+    if ("description" in d && d.description) itemData.description = d.description;
     if (d.type === "link") {
       itemData.url = d.url;
       itemData.content = d.url;
@@ -361,6 +374,7 @@ EOF`,
   const commands = [
     {
       title: "Git Operations",
+      description: "Essential Git commands for daily workflows",
       content: `# Interactive rebase last N commits
 git rebase -i HEAD~N
 
@@ -378,6 +392,7 @@ git show <commit-hash> --stat`,
     },
     {
       title: "Docker Commands",
+      description: "Container management and cleanup commands",
       content: `# Clean up everything (containers, images, volumes)
 docker system prune -a --volumes
 
@@ -395,6 +410,7 @@ docker stats <container-id>`,
     },
     {
       title: "Process Management",
+      description: "Find, monitor and kill processes",
       content: `# Find process listening on a port
 lsof -i :3000
 netstat -ano | findstr :3000
@@ -416,6 +432,7 @@ disown`,
     },
     {
       title: "Package Manager Utilities",
+      description: "npm audit, update, and cleanup commands",
       content: `# Check for outdated packages
 npm outdated
 
@@ -442,6 +459,7 @@ npm audit`,
         title: c.title,
         contentType: "text",
         content: c.content,
+        description: c.description,
         isPinned: i === 0,
         isFavorite: i === 0,
         userId: user.id,
@@ -464,18 +482,22 @@ npm audit`,
   const links = [
     {
       title: "Tailwind CSS Docs",
+      description: "Official Tailwind CSS documentation and reference",
       url: "https://tailwindcss.com/docs",
     },
     {
       title: "ShadCN UI",
+      description: "Beautifully designed components built with Radix UI",
       url: "https://ui.shadcn.com/",
     },
     {
       title: "Radix UI Primitives",
+      description: "Headless UI components for React",
       url: "https://www.radix-ui.com/primitives",
     },
     {
       title: "Lucide Icons",
+      description: "Open-source icon library for React and others",
       url: "https://lucide.dev/icons/",
     },
   ];
@@ -487,6 +509,7 @@ npm audit`,
         contentType: "text",
         content: l.url,
         url: l.url,
+        description: l.description,
         userId: user.id,
         itemTypeId: typeMap.get("link")!,
         collections: { create: { collectionId: designColl.id } },

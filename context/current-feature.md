@@ -1,13 +1,12 @@
-# Current Feature: Responsive Items Grid
+# Current Feature
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Completed -->
 
 ## Goals
 
-- Set up Vitest for unit testing server actions and utilities
-- Make items list view grid responsive: 2 columns on tablet, 3 on full screen
+<!-- Goals and requirements -->
 
 ## Notes
 
@@ -34,5 +33,6 @@ In Progress
 - 2026-06-13: Forgot / Reset Password — "Forgot password?" link on sign-in, forgot-password page sends reset email via Resend, reset-password page with token-based new password entry, API routes for both, uses VerificationToken model with 1-hour expiry, follows existing auth UI patterns [Completed]
 - 2026-06-13: Profile Page — Profile page at /profile with user info (avatar, email, join date), usage stats (total items, collections, per-type breakdown), change password (email users only), delete account with confirmation dialog [Completed]
 - 2026-06-14: Rate Limiting for Auth — Upstash Redis rate limiting on login (5/15min IP+email), register (3/1h IP), forgot-password (3/1h IP), reset-password (5/15min IP), reusable src/lib/rate-limit.ts utility, 429 + Retry-After headers, fail-open, frontend toast/error messages [Completed]
-- 2026-06-15: Items List View — Dynamic route /items/[type], type-filtered queries, shared ItemCard component, responsive 2‑column grid, type‑colored borders, empty state with icon [Completed]
+- 2026-06-15: Items List View — Dynamic route /items/[type], type-filtered queries, shared ItemCard component, responsive 2-column grid, type-colored borders, empty state with icon [Completed]
 - 2026-06-17: Responsive Items Grid — Changed grid from fixed `sm:grid-cols-2` to `sm:grid-cols-2 xl:grid-cols-3` for responsive 2‑col tablet / 3‑col full‑screen layout [Completed]
+- 2026-06-17: Vitest Setup — Installed Vitest, created config with @ alias + V8 coverage + Node env, global Prisma mock, sample tests for utils and verification-token, updated test scripts in package.json, documented testing conventions in coding-standards.md, updated workflow in ai-interaction.md [Completed]

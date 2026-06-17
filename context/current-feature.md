@@ -1,26 +1,16 @@
-# Current Feature: Item Drawer
+# Current Feature
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Completed -->
 
 ## Goals
 
-- Use shadcn Sheet component, opens from the right
-- Clicking an ItemCard opens the drawer with that item's full data
-- Works on both dashboard and items list pages
-- Action bar with Favorite (star icon, yellow when active), Pin, Copy, Edit (pencil icon), and Delete (trash icon, right-aligned)
-- Client wrapper component to manage drawer state since pages are server components
-- Should feel snappy — fetch on click, no page navigation
-- Full item detail fetched on click via API route `/api/items/[id]`
-- Query function in `lib/db/items.ts`, API route calls it with auth check
-- Drawer shows a skeleton/loading state while fetching
+<!-- Goals and requirements -->
 
 ## Notes
 
-- The extras like the code editor and item-specific stuff will come later. For now, just work on the drawer details display.
-- Card data (title, description, tags, etc.) is fetched by the server component as before
-- See `context/screenshots/dashboard-ui-drawer.png` for the visual design
+<!-- Any extra notes -->
 
 ## History
 
@@ -46,3 +36,4 @@ In Progress
 - 2026-06-15: Items List View — Dynamic route /items/[type], type-filtered queries, shared ItemCard component, responsive 2-column grid, type-colored borders, empty state with icon [Completed]
 - 2026-06-17: Responsive Items Grid — Changed grid from fixed `sm:grid-cols-2` to `sm:grid-cols-2 xl:grid-cols-3` for responsive 2‑col tablet / 3‑col full‑screen layout [Completed]
 - 2026-06-17: Vitest Setup — Installed Vitest, created config with @ alias + V8 coverage + Node env, global Prisma mock, sample tests for utils and verification-token, updated test scripts in package.json, documented testing conventions in coding-standards.md, updated workflow in ai-interaction.md [Completed]
+- 2026-06-18: Item Drawer — Right-side Sheet drawer on card click, action bar with favorite/pin/copy/edit/delete, data fetched via /api/items/[id], query function getItemById, skeleton loading state, fixed missing CSS vars (popover/card), added item descriptions to seed, unit tests for getItemById [Completed]

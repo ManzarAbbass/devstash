@@ -1,4 +1,3 @@
-import Link from "next/link"
 import {
   Code2,
   Sparkles,
@@ -34,9 +33,8 @@ export function ItemCard({ item }: { item: ItemWithDetails }) {
   const Icon = iconMap[item.itemType.icon] || Code2
 
   return (
-    <Link
-      href={`/items/${item.itemType.name}/${item.id}`}
-      className="group flex flex-col gap-2 rounded-xl border border-border bg-card p-4 shadow-sm transition-all hover:bg-muted/50 hover:shadow-md"
+    <div
+      className="group flex cursor-pointer flex-col gap-2 rounded-xl border border-border bg-card p-4 shadow-sm transition-all hover:bg-muted/50 hover:shadow-md"
       style={{ borderLeftWidth: "4px", borderLeftColor: item.itemType.color }}
     >
       <div className="flex items-center justify-between">
@@ -61,6 +59,6 @@ export function ItemCard({ item }: { item: ItemWithDetails }) {
           ))}
         </div>
       )}
-    </Link>
+    </div>
   )
 }

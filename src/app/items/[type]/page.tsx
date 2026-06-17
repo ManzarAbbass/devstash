@@ -12,7 +12,7 @@ import {
 import { auth } from "@/auth"
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
 import { getSidebarData, getItemsByType } from "@/lib/db/items"
-import { ItemCard } from "@/components/items/item-card"
+import { ItemCardWithDrawer } from "@/components/items/item-card-with-drawer"
 
 export const dynamic = "force-dynamic"
 
@@ -63,7 +63,7 @@ export default async function ItemsListPage({
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {items.map((item) => (
-              <ItemCard key={item.id} item={item} />
+              <ItemCardWithDrawer key={item.id} item={item} />
             ))}
           </div>
         )}

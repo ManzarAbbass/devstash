@@ -90,6 +90,16 @@ Example v4 configuration:
 - Return `{ success, data, error }` pattern from actions
 - Display user-friendly error messages via toast
 
+## Testing
+
+- Unit tests are for server actions (`src/actions/`) and utilities (`src/lib/`) only
+- Do NOT write tests for components (UI covered by manual browser testing)
+- Use Vitest with Node environment
+- Mock Prisma, Redis, Resend, and other external services in tests
+- Run `npm test` before committing
+- Run `npm run test:coverage` to check coverage
+- Test file naming: `src/lib/__tests__/*.test.ts` or co-located `src/lib/*.test.ts`
+
 ## Code Quality
 
 - No commented-out code unless specified

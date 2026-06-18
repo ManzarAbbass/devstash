@@ -2,7 +2,11 @@
 
 import { z } from "zod"
 import { auth } from "@/auth"
-import { updateItem as updateItemQuery, deleteItem as deleteItemQuery } from "@/lib/db/items"
+import {
+  createItem as createItemQuery,
+  updateItem as updateItemQuery,
+  deleteItem as deleteItemQuery,
+} from "@/lib/db/items"
 
 const updateItemSchema = z.object({
   title: z.string().trim().min(1, "Title is required"),
@@ -59,6 +63,65 @@ export async function updateItem(
 export type DeleteItemResult =
   | { success: true }
   | { success: false; error: string }
+
+const createItemSchema = z.object({
+  title: z.string().trim().min(1, "Title is required"),
+  contentType: z.string().min(1, "Type is required"),
+  itemTypeId: z.string().min(1, "Type is required"),
+  description: z.string().nullable().optional(),
+  content: z.string().nullable().optional(),
+  url: z.union([z.string().url("Invalid URL"), z.null()]).optional(),
+  language: z.string().nullable().optional(),
+  tags: z.array(z.string().trim().min(1)),
+})
+
+export type CreateItemData = z.infer<typeof createItemSchema>
+
+export type CreateItemResult =
+  | { success: true; data: import("@/lib/db/items").ItemWithDetails }
+  | { success: false; error: Record<string, string[]> | string }
+
+export async function createItem(
+  data: CreateItemData
+): Promise<CreateItemResult> {
+  const session = await auth()
+  if (!session?.user?.id) {
+    return { success: false, error: "Unauthorized" }
+  }
+
+  const parsed = createItemSchema.safeParse(data)
+  if (!parsed.success) {
+    const fieldErrors: Record<string, string[]> = {}
+    for (const issue of parsed.error.issues) {
+      const key = issue.path.join(".")
+      if (!fieldErrors[key]) fieldErrors[key] = []
+      fieldErrors[key].push(issue.message)
+    }
+    return { success: false, error: fieldErrors }
+  }
+
+  const { title, contentType, itemTypeId, tags, description, content, url, language } = parsed.data
+
+  if (contentType === "link" && !url) {
+    return { success: false, error: { url: ["URL is required for link type"] } }
+  }
+
+  try {
+    const created = await createItemQuery(session.user.id, {
+      title,
+      contentType,
+      itemTypeId,
+      tags,
+      description: description ?? null,
+      content: content ?? null,
+      url: url ?? null,
+      language: language ?? null,
+    })
+    return { success: true, data: created }
+  } catch {
+    return { success: false, error: "Failed to create item" }
+  }
+}
 
 export async function deleteItem(
   itemId: string

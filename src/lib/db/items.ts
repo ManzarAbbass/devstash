@@ -1,5 +1,16 @@
 import { prisma } from "@/lib/prisma"
 
+export interface CreateItemData {
+  title: string
+  contentType: string
+  itemTypeId: string
+  description: string | null
+  content: string | null
+  url: string | null
+  language: string | null
+  tags: string[]
+}
+
 export interface ItemWithDetails {
   id: string
   title: string
@@ -206,6 +217,54 @@ export async function updateItem(
       language: data.language,
       tags: {
         deleteMany: {},
+        create: data.tags.map((name) => ({
+          tag: {
+            connectOrCreate: {
+              where: { name },
+              create: { name },
+            },
+          },
+        })),
+      },
+    },
+    include: {
+      itemType: { select: { name: true, icon: true, color: true } },
+      tags: { include: { tag: { select: { id: true, name: true } } } },
+    },
+  })
+
+  return {
+    id: item.id,
+    title: item.title,
+    contentType: item.contentType,
+    content: item.content,
+    description: item.description,
+    isFavorite: item.isFavorite,
+    isPinned: item.isPinned,
+    language: item.language,
+    url: item.url,
+    createdAt: item.createdAt,
+    itemTypeId: item.itemTypeId,
+    itemType: item.itemType,
+    tags: item.tags.map((t) => t.tag),
+  }
+}
+
+export async function createItem(
+  userId: string,
+  data: CreateItemData
+): Promise<ItemWithDetails> {
+  const item = await prisma.item.create({
+    data: {
+      title: data.title,
+      contentType: data.contentType,
+      itemTypeId: data.itemTypeId,
+      description: data.description,
+      content: data.content,
+      url: data.url,
+      language: data.language,
+      userId,
+      tags: {
         create: data.tags.map((name) => ({
           tag: {
             connectOrCreate: {

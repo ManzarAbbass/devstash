@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { prisma } from "@/lib/prisma"
-import { getItemById, updateItem, deleteItem } from "@/lib/db/items"
+import { getItemById, createItem, updateItem, deleteItem } from "@/lib/db/items"
 
 beforeEach(() => {
   vi.clearAllMocks()
@@ -202,6 +202,152 @@ describe("updateItem", () => {
         tags: [],
       }),
     ).rejects.toThrow("Record not found")
+  })
+})
+
+describe("createItem", () => {
+  const mockCreatedItem = {
+    id: "item-new",
+    title: "New Snippet",
+    contentType: "snippet",
+    content: "console.log('hello')",
+    description: "A test snippet",
+    isFavorite: false,
+    isPinned: false,
+    language: "javascript",
+    url: null,
+    createdAt: new Date(),
+    itemTypeId: "type_snippet",
+    userId: "user-1",
+    fileUrl: null,
+    fileName: null,
+    fileSize: null,
+    updatedAt: new Date(),
+    itemType: { name: "snippet", icon: "Code", color: "#3b82f6" },
+    tags: [
+      { tag: { id: "tag-1", name: "javascript" } },
+    ],
+  }
+
+  it("creates an item with tags and returns mapped result", async () => {
+    vi.mocked(prisma.item.create).mockResolvedValue(mockCreatedItem)
+
+    const result = await createItem("user-1", {
+      title: "New Snippet",
+      contentType: "snippet",
+      itemTypeId: "type_snippet",
+      description: "A test snippet",
+      content: "console.log('hello')",
+      url: null,
+      language: "javascript",
+      tags: ["javascript"],
+    })
+
+    expect(result.id).toBe("item-new")
+    expect(result.title).toBe("New Snippet")
+    expect(result.tags).toEqual([{ id: "tag-1", name: "javascript" }])
+    expect(prisma.item.create).toHaveBeenCalledWith({
+      data: {
+        title: "New Snippet",
+        contentType: "snippet",
+        itemTypeId: "type_snippet",
+        description: "A test snippet",
+        content: "console.log('hello')",
+        url: null,
+        language: "javascript",
+        userId: "user-1",
+        tags: {
+          create: [
+            {
+              tag: {
+                connectOrCreate: {
+                  where: { name: "javascript" },
+                  create: { name: "javascript" },
+                },
+              },
+            },
+          ],
+        },
+      },
+      include: {
+        itemType: { select: { name: true, icon: true, color: true } },
+        tags: { include: { tag: { select: { id: true, name: true } } } },
+      },
+    })
+  })
+
+  it("creates an item with null optionals", async () => {
+    vi.mocked(prisma.item.create).mockResolvedValue({
+      ...mockCreatedItem,
+      title: "Minimal Item",
+      content: null,
+      description: null,
+      language: null,
+      url: null,
+      tags: [],
+    })
+
+    const result = await createItem("user-1", {
+      title: "Minimal Item",
+      contentType: "note",
+      itemTypeId: "type_note",
+      description: null,
+      content: null,
+      url: null,
+      language: null,
+      tags: [],
+    })
+
+    expect(result.title).toBe("Minimal Item")
+    expect(result.tags).toEqual([])
+  })
+
+  it("creates a link item with url", async () => {
+    vi.mocked(prisma.item.create).mockResolvedValue({
+      ...mockCreatedItem,
+      title: "Example Link",
+      contentType: "link",
+      content: null,
+      language: null,
+      url: "https://example.com",
+      itemTypeId: "type_link",
+      itemType: { name: "link", icon: "Link", color: "#10b981" },
+    })
+
+    const result = await createItem("user-1", {
+      title: "Example Link",
+      contentType: "link",
+      itemTypeId: "type_link",
+      description: null,
+      content: null,
+      url: "https://example.com",
+      language: null,
+      tags: [],
+    })
+
+    expect(result.url).toBe("https://example.com")
+    expect(prisma.item.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({ url: "https://example.com" }),
+      }),
+    )
+  })
+
+  it("propagates prisma errors", async () => {
+    vi.mocked(prisma.item.create).mockRejectedValue(new Error("Database error"))
+
+    await expect(
+      createItem("user-1", {
+        title: "Fail",
+        contentType: "snippet",
+        itemTypeId: "type_snippet",
+        description: null,
+        content: null,
+        url: null,
+        language: null,
+        tags: [],
+      }),
+    ).rejects.toThrow("Database error")
   })
 })
 

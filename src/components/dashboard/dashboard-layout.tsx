@@ -7,10 +7,12 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Sidebar, SidebarContent } from "@/components/dashboard/sidebar"
+import { CreateItemDialog } from "@/components/items/create-item-dialog"
 import type { SidebarData } from "@/lib/db/items"
 
 export function DashboardLayout({ children, sidebarData }: { children: ReactNode; sidebarData: SidebarData }) {
   const [isMobile, setIsMobile] = useState(false)
+  const [createDialogOpen, setCreateDialogOpen] = useState(false)
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768)
@@ -36,10 +38,15 @@ export function DashboardLayout({ children, sidebarData }: { children: ReactNode
           <Button variant="outline" size="sm">
             New Collection
           </Button>
-          <Button size="sm">
+          <Button size="sm" onClick={() => setCreateDialogOpen(true)}>
             <Plus className="size-4" />
             New Item
           </Button>
+          <CreateItemDialog
+            open={createDialogOpen}
+            onOpenChange={setCreateDialogOpen}
+            itemTypes={sidebarData.itemTypes}
+          />
           {isMobile && (
             <Sheet>
               <SheetTrigger

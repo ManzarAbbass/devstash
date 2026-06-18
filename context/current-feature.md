@@ -1,16 +1,25 @@
-# Current Feature
+# Current Feature: Item Create
 
 ## Status
 
-<!-- Not Started | In Progress | Completed -->
+In Progress
 
 ## Goals
 
-<!-- Goals and requirements -->
+- [ ] Use shadcn Dialog component for modal
+- [ ] Type selector (snippet, prompt, command, note, link)
+- [ ] Dynamic fields based on selected type:
+  - All types: title (required), description, tags
+  - snippet/command: content, language
+  - prompt/note: content
+  - link: URL (required)
+- [ ] Server action `createItem` with Zod validation
+- [ ] Query function `createItem` in `lib/db/items.ts`
+- [ ] Toast on success, close modal, refresh data
 
 ## Notes
 
-<!-- Any extra notes -->
+Feature spec loaded from `context/features/item-create-spec.md`. "New Item" button lives in the top bar.
 
 ## History
 

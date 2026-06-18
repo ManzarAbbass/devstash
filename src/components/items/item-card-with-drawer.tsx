@@ -14,7 +14,7 @@ export function ItemCardWithDrawer({ item }: { item: ItemWithDetails }) {
       <div onClick={() => setOpen(true)} className="contents">
         <ItemCard item={item} />
       </div>
-      <SheetContent side="right" className="w-3/4 sm:max-w-lg">
+      <SheetContent side="right" className="w-3/4 sm:max-w-6xl">
         <ItemDrawer itemId={item.id} />
       </SheetContent>
     </Sheet>

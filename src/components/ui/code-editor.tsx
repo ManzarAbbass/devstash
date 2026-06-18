@@ -67,7 +67,7 @@ interface CodeEditorProps {
 export function CodeEditor({ value, onChange, language, readOnly = false }: CodeEditorProps) {
   const [copied, setCopied] = useState(false)
   const lineCount = (value.match(/\n/g) || []).length + 1
-  const initialHeight = Math.min(Math.max(lineCount * 20 + 16, 80), 400)
+  const initialHeight = Math.min(Math.max(lineCount * 20 + 16, 80), 250)
   const [editorHeight, setEditorHeight] = useState(initialHeight)
   const editorRef = useRef<Parameters<OnMount>[0] | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -94,9 +94,9 @@ export function CodeEditor({ value, onChange, language, readOnly = false }: Code
         "editorWidget.border": "#262626",
         "editorBracketMatch.background": "#0d0d0d",
         "editorBracketMatch.border": "#6b7280",
-        "scrollbarSlider.background": "#6b728066",
-        "scrollbarSlider.hoverBackground": "#6b7280b3",
-        "scrollbarSlider.activeBackground": "#6b7280",
+        "scrollbarSlider.background": "#52525280",
+        "scrollbarSlider.hoverBackground": "#525252cc",
+        "scrollbarSlider.activeBackground": "#737373",
         "editorOverviewRuler.background": "#171717",
       },
     })
@@ -105,10 +105,10 @@ export function CodeEditor({ value, onChange, language, readOnly = false }: Code
   const handleEditorDidMount: OnMount = useCallback((editor) => {
     editorRef.current = editor
     editor.onDidContentSizeChange(() => {
-      const contentHeight = Math.min(editor.getContentHeight(), 400)
+      const contentHeight = Math.min(editor.getContentHeight(), 250)
       setEditorHeight(contentHeight)
     })
-    const contentHeight = Math.min(editor.getContentHeight(), 400)
+    const contentHeight = Math.min(editor.getContentHeight(), 250)
     setEditorHeight(contentHeight)
     editor.layout()
   }, [])

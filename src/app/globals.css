@@ -61,3 +61,10 @@ body {
 .code-editor-wrapper .monaco-editor .decorationsOverviewRuler {
   display: none;
 }
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  scrollbar-width: none;
+}

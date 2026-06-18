@@ -1,22 +1,16 @@
-# Current Feature: Item Delete Functionality
+# Current Feature
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Completed -->
 
 ## Goals
 
-- [x] Add `deleteItem` DB query in `src/lib/db/items.ts`
-- [x] Add `deleteItem` server action in `src/actions/items.ts`
-- [x] Create ShadCN AlertDialog component for confirmation
-- [x] Wire delete button in item drawer with confirmation dialog and toast notification
+<!-- Goals and requirements -->
 
 ## Notes
 
-- Delete button already exists in item-drawer.tsx but has no onClick handler
-- No AlertDialog component exists yet in the project
-- Use @base-ui/react/dialog (same primitive as Sheet) for the AlertDialog
-- Following existing patterns: server action with auth check, sonner toasts, router.refresh()
+<!-- Any extra notes -->
 
 ## History
 
@@ -44,3 +38,4 @@ In Progress
 - 2026-06-17: Vitest Setup — Installed Vitest, created config with @ alias + V8 coverage + Node env, global Prisma mock, sample tests for utils and verification-token, updated test scripts in package.json, documented testing conventions in coding-standards.md, updated workflow in ai-interaction.md [Completed]
 - 2026-06-18: Item Drawer — Right-side Sheet drawer on card click, action bar with favorite/pin/copy/edit/delete, data fetched via /api/items/[id], query function getItemById, skeleton loading state, fixed missing CSS vars (popover/card), added item descriptions to seed, unit tests for getItemById [Completed]
 - 2026-06-18: Item Drawer — Edit Mode — Edit button toggles inline edit mode (Save/Cancel), editable title/description/tags + type-specific fields (content, language, URL), Zod validation, server action updateItem, query function with tag disconnect+connect-or-create, toast notifications, router.refresh(), unit tests [Completed]
+- 2026-06-18: Item Delete — DB query, server action, ShadCN AlertDialog component, delete button wired with confirmation dialog and toast notification, unit tests [Completed]

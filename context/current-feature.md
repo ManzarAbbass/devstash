@@ -1,29 +1,16 @@
-# Current Feature: Item Drawer — Edit Mode
+# Current Feature
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Completed -->
 
 ## Goals
 
-- [ ] Implement edit/view mode toggle in the item drawer action bar (pencil icon switches to edit mode, shows Save/Cancel)
-- [ ] Make title, description, and tags editable as controlled inputs (text, textarea, comma-separated)
-- [ ] Show type-specific fields: Content (snippet/prompt/command/note), Language (snippet/command), URL (link)
-- [ ] Non-editable fields: item type, collections, dates (display only)
-- [ ] Zod validation schema for update payload with proper field constraints
-- [ ] Server action `updateItem(itemId, data)` in `src/actions/items.ts` with auth + ownership check
-- [ ] Query function `updateItem` in `lib/db/items.ts` with tag disconnect+connect-or-create
-- [ ] Save persists changes, returns to view mode, refreshes drawer data, shows toast
-- [ ] Cancel discards changes and returns to view mode
-- [ ] Client-side: disable Save when title is empty
-- [ ] Server-side: Zod validates all fields in server action
-- [ ] Call `router.refresh()` after save so card list reflects changes
+<!-- Goals and requirements -->
 
 ## Notes
 
-- No form library — use controlled inputs with local state
-- Content textarea is plain text, not a code editor (future enhancement)
-- After save, drawer refreshes via returned `ItemDetail` from server action — no second fetch
+<!-- Any extra notes -->
 
 ## History
 
@@ -50,3 +37,4 @@ In Progress
 - 2026-06-17: Responsive Items Grid — Changed grid from fixed `sm:grid-cols-2` to `sm:grid-cols-2 xl:grid-cols-3` for responsive 2‑col tablet / 3‑col full‑screen layout [Completed]
 - 2026-06-17: Vitest Setup — Installed Vitest, created config with @ alias + V8 coverage + Node env, global Prisma mock, sample tests for utils and verification-token, updated test scripts in package.json, documented testing conventions in coding-standards.md, updated workflow in ai-interaction.md [Completed]
 - 2026-06-18: Item Drawer — Right-side Sheet drawer on card click, action bar with favorite/pin/copy/edit/delete, data fetched via /api/items/[id], query function getItemById, skeleton loading state, fixed missing CSS vars (popover/card), added item descriptions to seed, unit tests for getItemById [Completed]
+- 2026-06-18: Item Drawer — Edit Mode — Edit button toggles inline edit mode (Save/Cancel), editable title/description/tags + type-specific fields (content, language, URL), Zod validation, server action updateItem, query function with tag disconnect+connect-or-create, toast notifications, router.refresh(), unit tests [Completed]

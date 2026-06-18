@@ -1,16 +1,22 @@
-# Current Feature
+# Current Feature: Item Delete Functionality
 
 ## Status
 
-<!-- Not Started | In Progress | Completed -->
+In Progress
 
 ## Goals
 
-<!-- Goals and requirements -->
+- [x] Add `deleteItem` DB query in `src/lib/db/items.ts`
+- [x] Add `deleteItem` server action in `src/actions/items.ts`
+- [x] Create ShadCN AlertDialog component for confirmation
+- [x] Wire delete button in item drawer with confirmation dialog and toast notification
 
 ## Notes
 
-<!-- Any extra notes -->
+- Delete button already exists in item-drawer.tsx but has no onClick handler
+- No AlertDialog component exists yet in the project
+- Use @base-ui/react/dialog (same primitive as Sheet) for the AlertDialog
+- Following existing patterns: server action with auth check, sonner toasts, router.refresh()
 
 ## History
 

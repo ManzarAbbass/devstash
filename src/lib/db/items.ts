@@ -297,6 +297,12 @@ export async function getItemsByType(userId: string, typeName: string): Promise<
   }))
 }
 
+export async function deleteItem(userId: string, itemId: string): Promise<void> {
+  await prisma.item.delete({
+    where: { id: itemId, userId },
+  })
+}
+
 export async function getSidebarData(userId: string): Promise<SidebarData> {
   const [user, itemTypes, collections] = await Promise.all([
     prisma.user.findUnique({

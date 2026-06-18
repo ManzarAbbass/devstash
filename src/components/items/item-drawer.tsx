@@ -26,8 +26,19 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from "@/components/ui/alert-dialog"
 import type { ItemWithDetails } from "@/lib/db/items"
-import { updateItem } from "@/actions/items"
+import { updateItem, deleteItem } from "@/actions/items"
 import type { UpdateItemData } from "@/actions/items"
 
 const iconMap: Record<string, typeof Code2> = {
@@ -71,6 +82,7 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
   const [error, setError] = useState<string | null>(null)
   const [isEditing, setIsEditing] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [deleting, setDeleting] = useState(false)
 
   const [formTitle, setFormTitle] = useState("")
   const [formDescription, setFormDescription] = useState("")
@@ -136,6 +148,22 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
   function handleCancelEdit() {
     setIsEditing(false)
     setFormErrors(null)
+  }
+
+  async function handleDelete() {
+    if (!item) return
+    setDeleting(true)
+
+    const result = await deleteItem(item.id)
+
+    if (!result.success) {
+      toast.error(result.error)
+      setDeleting(false)
+      return
+    }
+
+    toast.success("Item deleted")
+    router.refresh()
   }
 
   async function handleSave() {
@@ -235,9 +263,35 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
             <Pencil className="size-4" />
           </Button>
           <div className="ml-auto">
-            <Button variant="ghost" size="icon-sm" aria-label="Delete" className="text-destructive">
-              <Trash2 className="size-4" />
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger
+                render={
+                  <Button variant="ghost" size="icon-sm" aria-label="Delete" className="text-destructive">
+                    <Trash2 className="size-4" />
+                  </Button>
+                }
+              />
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete item</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure you want to delete "{item.title}"? This action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel
+                    render={<Button variant="outline">Cancel</Button>}
+                  />
+                  <AlertDialogAction
+                    render={
+                      <Button variant="destructive" onClick={handleDelete} disabled={deleting}>
+                        {deleting ? "Deleting..." : "Delete"}
+                      </Button>
+                    }
+                  />
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </div>
       )}

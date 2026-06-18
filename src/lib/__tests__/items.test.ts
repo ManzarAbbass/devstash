@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { prisma } from "@/lib/prisma"
-import { getItemById, updateItem } from "@/lib/db/items"
+import { getItemById, updateItem, deleteItem } from "@/lib/db/items"
 
 beforeEach(() => {
   vi.clearAllMocks()
@@ -202,5 +202,35 @@ describe("updateItem", () => {
         tags: [],
       }),
     ).rejects.toThrow("Record not found")
+  })
+})
+
+describe("deleteItem", () => {
+  it("deletes an item successfully", async () => {
+    vi.mocked(prisma.item.delete).mockResolvedValue(mockItem as any)
+
+    await deleteItem("user-1", "item-1")
+
+    expect(prisma.item.delete).toHaveBeenCalledWith({
+      where: { id: "item-1", userId: "user-1" },
+    })
+  })
+
+  it("throws when item does not exist", async () => {
+    vi.mocked(prisma.item.delete).mockRejectedValue(new Error("Record not found"))
+
+    await expect(deleteItem("user-1", "nonexistent")).rejects.toThrow("Record not found")
+  })
+
+  it("throws when item belongs to another user", async () => {
+    vi.mocked(prisma.item.delete).mockRejectedValue(new Error("Record not found"))
+
+    await expect(deleteItem("user-2", "item-1")).rejects.toThrow("Record not found")
+
+    expect(prisma.item.delete).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({ userId: "user-2" }),
+      }),
+    )
   })
 })

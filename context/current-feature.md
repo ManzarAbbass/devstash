@@ -1,23 +1,16 @@
-# Current Feature: Code Editor
+# Current Feature
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Completed -->
 
 ## Goals
 
-- Create CodeEditor component using Monaco Editor with dark theme
-- Replace Textarea with CodeEditor for snippets and commands only
-- Keep Textarea for notes, prompts, and other non-code types
-- Add macOS-style window dots (red/yellow/green) at top of editor
-- Add quick copy button in editor header
-- Add the language in editor header next to copy
-- Support both display (readonly) and edit modes
-- Make the height of the editor fluid but a max height of 400px and add a nice looking scrollbar
+<!-- Goals and requirements -->
 
 ## Notes
 
-Spec loaded from `context/features/code-editor-spec.md`
+<!-- Any extra notes -->
 
 ## History
 
@@ -47,3 +40,4 @@ Spec loaded from `context/features/code-editor-spec.md`
 - 2026-06-18: Item Drawer — Edit Mode — Edit button toggles inline edit mode (Save/Cancel), editable title/description/tags + type-specific fields (content, language, URL), Zod validation, server action updateItem, query function with tag disconnect+connect-or-create, toast notifications, router.refresh(), unit tests [Completed]
 - 2026-06-18: Item Delete — DB query, server action, ShadCN AlertDialog component, delete button wired with confirmation dialog and toast notification, unit tests [Completed]
 - 2026-06-18: Item Create — Modal dialog with Base UI Dialog, type selector cards (snippet, prompt, command, note, link), dynamic type-aware form fields, Zod validation, server action createItem, DB query with tag connect-or-create, toast notifications, router.refresh(), unit tests for query + server action [Completed]
+- 2026-06-19: Code Editor — Monaco Editor component with dark custom theme, macOS window dots, copy button, language label, fluid height (max 400px), syntax highlighting for 50+ languages, replaces Textarea for snippets/commands in drawer and create dialog, keeps Textarea for prompts/notes, type-specific add buttons on each type page, item count display, custom appDark Monaco theme [Completed]

@@ -1,25 +1,16 @@
-# Current Feature: Item Create
+# Current Feature
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Completed -->
 
 ## Goals
 
-- [ ] Use shadcn Dialog component for modal
-- [ ] Type selector (snippet, prompt, command, note, link)
-- [ ] Dynamic fields based on selected type:
-  - All types: title (required), description, tags
-  - snippet/command: content, language
-  - prompt/note: content
-  - link: URL (required)
-- [ ] Server action `createItem` with Zod validation
-- [ ] Query function `createItem` in `lib/db/items.ts`
-- [ ] Toast on success, close modal, refresh data
+<!-- Goals and requirements -->
 
 ## Notes
 
-Feature spec loaded from `context/features/item-create-spec.md`. "New Item" button lives in the top bar.
+<!-- Any extra notes -->
 
 ## History
 
@@ -48,3 +39,4 @@ Feature spec loaded from `context/features/item-create-spec.md`. "New Item" butt
 - 2026-06-18: Item Drawer — Right-side Sheet drawer on card click, action bar with favorite/pin/copy/edit/delete, data fetched via /api/items/[id], query function getItemById, skeleton loading state, fixed missing CSS vars (popover/card), added item descriptions to seed, unit tests for getItemById [Completed]
 - 2026-06-18: Item Drawer — Edit Mode — Edit button toggles inline edit mode (Save/Cancel), editable title/description/tags + type-specific fields (content, language, URL), Zod validation, server action updateItem, query function with tag disconnect+connect-or-create, toast notifications, router.refresh(), unit tests [Completed]
 - 2026-06-18: Item Delete — DB query, server action, ShadCN AlertDialog component, delete button wired with confirmation dialog and toast notification, unit tests [Completed]
+- 2026-06-18: Item Create — Modal dialog with Base UI Dialog, type selector cards (snippet, prompt, command, note, link), dynamic type-aware form fields, Zod validation, server action createItem, DB query with tag connect-or-create, toast notifications, router.refresh(), unit tests for query + server action [Completed]

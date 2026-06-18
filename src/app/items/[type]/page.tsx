@@ -13,6 +13,7 @@ import { auth } from "@/auth"
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
 import { getSidebarData, getItemsByType } from "@/lib/db/items"
 import { ItemCardWithDrawer } from "@/components/items/item-card-with-drawer"
+import { AddItemButton } from "@/components/items/add-item-button"
 
 export const dynamic = "force-dynamic"
 
@@ -49,7 +50,13 @@ export default async function ItemsListPage({
   return (
     <DashboardLayout sidebarData={sidebarData}>
       <div className="flex flex-col gap-6">
-        <h1 className="text-2xl font-bold">{displayName}s</h1>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold">{displayName}s</h1>
+            <p className="text-xs text-muted-foreground">Items: {items.length}</p>
+          </div>
+          <AddItemButton type={typeName} />
+        </div>
         {items.length === 0 ? (
           <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border py-16 text-center">
             <div className="mb-4 flex size-16 items-center justify-center rounded-full bg-muted">

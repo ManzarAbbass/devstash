@@ -1,16 +1,23 @@
-# Current Feature
+# Current Feature: Code Editor
 
 ## Status
 
-<!-- Not Started | In Progress | Completed -->
+In Progress
 
 ## Goals
 
-<!-- Goals and requirements -->
+- Create CodeEditor component using Monaco Editor with dark theme
+- Replace Textarea with CodeEditor for snippets and commands only
+- Keep Textarea for notes, prompts, and other non-code types
+- Add macOS-style window dots (red/yellow/green) at top of editor
+- Add quick copy button in editor header
+- Add the language in editor header next to copy
+- Support both display (readonly) and edit modes
+- Make the height of the editor fluid but a max height of 400px and add a nice looking scrollbar
 
 ## Notes
 
-<!-- Any extra notes -->
+Spec loaded from `context/features/code-editor-spec.md`
 
 ## History
 

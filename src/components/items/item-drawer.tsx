@@ -26,6 +26,7 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { CodeEditor } from "@/components/ui/code-editor"
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -327,19 +328,35 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
             </h3>
             {isEditing ? (
               <div>
-                <Textarea
-                  value={formContent}
-                  onChange={(e) => setFormContent(e.target.value)}
-                  placeholder="Content (optional)"
-                  rows={6}
-                />
+                {contentTypesWithLanguage.includes(typeName) ? (
+                  <CodeEditor
+                    value={formContent}
+                    onChange={(v) => setFormContent(v ?? "")}
+                    language={formLanguage || "plaintext"}
+                  />
+                ) : (
+                  <Textarea
+                    value={formContent}
+                    onChange={(e) => setFormContent(e.target.value)}
+                    placeholder="Content (optional)"
+                    rows={6}
+                  />
+                )}
                 <FieldError field="content" errors={formErrors} />
               </div>
             ) : (
               item.content && (
-                <pre className="overflow-x-auto whitespace-pre-wrap rounded-lg bg-muted p-3 text-xs leading-relaxed">
-                  {item.content}
-                </pre>
+                contentTypesWithLanguage.includes(typeName) ? (
+                  <CodeEditor
+                    value={item.content}
+                    language={item.language}
+                    readOnly
+                  />
+                ) : (
+                  <pre className="overflow-x-auto whitespace-pre-wrap rounded-lg bg-muted p-3 text-xs leading-relaxed">
+                    {item.content}
+                  </pre>
+                )
               )
             )}
           </div>

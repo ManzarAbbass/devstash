@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { Code2, Sparkles, Terminal, StickyNote, Link2 } from "lucide-react"
@@ -8,6 +8,7 @@ import { Code2, Sparkles, Terminal, StickyNote, Link2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { CodeEditor } from "@/components/ui/code-editor"
 import {
   Dialog,
   DialogContent,
@@ -22,6 +23,7 @@ interface CreateItemDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   itemTypes: ItemTypeWithCount[]
+  initialType?: string
 }
 
 const creationTypes = ["snippet", "prompt", "command", "note", "link"] as const
@@ -39,9 +41,9 @@ function FieldError({ field, errors }: { field: string; errors: Record<string, s
   return <p className="mt-1 text-xs text-destructive">{errors[field][0]}</p>
 }
 
-export function CreateItemDialog({ open, onOpenChange, itemTypes }: CreateItemDialogProps) {
+export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }: CreateItemDialogProps) {
   const router = useRouter()
-  const [selectedType, setSelectedType] = useState("snippet")
+  const [selectedType, setSelectedType] = useState(initialType && creationTypes.includes(initialType as typeof creationTypes[number]) ? initialType : "snippet")
   const [saving, setSaving] = useState(false)
   const [formErrors, setFormErrors] = useState<Record<string, string[]> | null>(null)
 
@@ -51,6 +53,12 @@ export function CreateItemDialog({ open, onOpenChange, itemTypes }: CreateItemDi
   const [language, setLanguage] = useState("")
   const [url, setUrl] = useState("")
   const [tags, setTags] = useState("")
+
+  useEffect(() => {
+    if (open && initialType && creationTypes.includes(initialType as typeof creationTypes[number])) {
+      setSelectedType(initialType)
+    }
+  }, [open, initialType])
 
   const showContent = ["snippet", "prompt", "command", "note"].includes(selectedType)
   const showLanguage = ["snippet", "command"].includes(selectedType)
@@ -66,7 +74,7 @@ export function CreateItemDialog({ open, onOpenChange, itemTypes }: CreateItemDi
     setUrl("")
     setTags("")
     setFormErrors(null)
-    setSelectedType("snippet")
+    setSelectedType(initialType && creationTypes.includes(initialType as typeof creationTypes[number]) ? initialType : "snippet")
   }
 
   function handleOpenChange(newOpen: boolean) {
@@ -192,12 +200,20 @@ export function CreateItemDialog({ open, onOpenChange, itemTypes }: CreateItemDi
                 <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   Content
                 </h3>
-                <Textarea
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  placeholder="Content (optional)"
-                  rows={5}
-                />
+                {showLanguage ? (
+                  <CodeEditor
+                    value={content}
+                    onChange={(v) => setContent(v ?? "")}
+                    language={language || "plaintext"}
+                  />
+                ) : (
+                  <Textarea
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                    placeholder="Content (optional)"
+                    rows={5}
+                  />
+                )}
                 <FieldError field="content" errors={formErrors} />
               </div>
             )}

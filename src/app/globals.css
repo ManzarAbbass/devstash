@@ -54,3 +54,10 @@ body {
   background-color: var(--background);
   color: var(--foreground);
 }
+
+.code-editor-wrapper .monaco-editor .overflow-guard {
+  border-radius: 0 0 0.5rem 0.5rem;
+}
+.code-editor-wrapper .monaco-editor .decorationsOverviewRuler {
+  display: none;
+}

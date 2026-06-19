@@ -7,6 +7,7 @@ import {
   updateItem as updateItemQuery,
   deleteItem as deleteItemQuery,
 } from "@/lib/db/items"
+import { supabaseAdmin, STORAGE_BUCKET } from "@/lib/supabase"
 
 const updateItemSchema = z.object({
   title: z.string().trim().min(1, "Title is required"),
@@ -73,6 +74,9 @@ const createItemSchema = z.object({
   url: z.union([z.string().url("Invalid URL"), z.null()]).optional(),
   language: z.string().nullable().optional(),
   tags: z.array(z.string().trim().min(1)),
+  fileUrl: z.string().nullable().optional(),
+  fileName: z.string().nullable().optional(),
+  fileSize: z.number().nullable().optional(),
 })
 
 export type CreateItemData = z.infer<typeof createItemSchema>
@@ -100,7 +104,7 @@ export async function createItem(
     return { success: false, error: fieldErrors }
   }
 
-  const { title, contentType, itemTypeId, tags, description, content, url, language } = parsed.data
+  const { title, contentType, itemTypeId, tags, description, content, url, language, fileUrl, fileName, fileSize } = parsed.data
 
   if (contentType === "link" && !url) {
     return { success: false, error: { url: ["URL is required for link type"] } }
@@ -116,6 +120,9 @@ export async function createItem(
       content: content ?? null,
       url: url ?? null,
       language: language ?? null,
+      fileUrl: fileUrl ?? null,
+      fileName: fileName ?? null,
+      fileSize: fileSize ?? null,
     })
     return { success: true, data: created }
   } catch {
@@ -132,9 +139,28 @@ export async function deleteItem(
   }
 
   try {
-    await deleteItemQuery(session.user.id, itemId)
+    const { fileUrl } = await deleteItemQuery(session.user.id, itemId)
+
+    if (fileUrl) {
+      const key = extractStorageKey(fileUrl)
+      if (key) {
+        await supabaseAdmin.storage.from(STORAGE_BUCKET).remove([key])
+      }
+    }
+
     return { success: true }
   } catch {
     return { success: false, error: "Failed to delete item" }
+  }
+}
+
+function extractStorageKey(publicUrl: string): string | null {
+  try {
+    const url = new URL(publicUrl)
+    const bucketIndex = url.pathname.indexOf(`/${STORAGE_BUCKET}/`)
+    if (bucketIndex === -1) return null
+    return url.pathname.slice(bucketIndex + `/${STORAGE_BUCKET}/`.length)
+  } catch {
+    return null
   }
 }

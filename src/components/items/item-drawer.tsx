@@ -16,6 +16,7 @@ import {
   File,
   Image,
   Link2,
+  Download,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -55,6 +56,20 @@ const iconMap: Record<string, typeof Code2> = {
 const contentTypesWithContent = ["snippet", "prompt", "command", "note"]
 const contentTypesWithLanguage = ["snippet", "command"]
 const contentTypesWithUrl = ["link"]
+const contentTypesWithFile = ["file", "image"]
+
+function extractFileKey(publicUrl: string): string {
+  const url = new URL(publicUrl)
+  const segments = url.pathname.split("/")
+  const storageIndex = segments.indexOf("devstash")
+  return segments.slice(storageIndex + 1).join("/")
+}
+
+function formatFileSize(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+}
 
 function DrawerSkeleton() {
   return (
@@ -149,6 +164,17 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
   function handleCancelEdit() {
     setIsEditing(false)
     setFormErrors(null)
+  }
+
+  function handleDownload() {
+    if (!item?.fileUrl) return
+    const url = `/api/download/${extractFileKey(item.fileUrl)}`
+    const a = document.createElement("a")
+    a.href = url
+    a.download = item.fileName || "download"
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
   }
 
   async function handleDelete() {
@@ -257,6 +283,11 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
               className={`size-4 ${item.isPinned ? "fill-sky-500 text-sky-500" : ""}`}
             />
           </Button>
+          {contentTypesWithFile.includes(typeName) && (
+            <Button variant="ghost" size="icon-sm" aria-label="Download" onClick={handleDownload}>
+              <Download className="size-4" />
+            </Button>
+          )}
           <Button variant="ghost" size="icon-sm" aria-label="Copy">
             <Copy className="size-4" />
           </Button>
@@ -319,6 +350,42 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
             item.description && <p className="text-sm leading-relaxed">{item.description}</p>
           )}
         </div>
+
+        {/* File / Image */}
+        {contentTypesWithFile.includes(typeName) && item.fileUrl && (
+          <div>
+            <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              {typeName === "image" ? "Image" : "File"}
+            </h3>
+            <div className="rounded-lg border border-border p-3">
+              {typeName === "image" ? (
+                <div className="overflow-hidden rounded">
+                  <img
+                    src={item.fileUrl}
+                    alt={item.fileName ?? "Image"}
+                    className="w-full rounded object-cover"
+                  />
+                </div>
+              ) : (
+                <div className="flex items-center gap-3">
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded bg-muted">
+                    <File className="size-5 text-muted-foreground" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium">{item.fileName}</p>
+                    {item.fileSize != null && (
+                      <p className="text-xs text-muted-foreground">{formatFileSize(item.fileSize)}</p>
+                    )}
+                  </div>
+                  <Button variant="outline" size="sm" onClick={handleDownload}>
+                    <Download className="mr-1.5 size-3.5" />
+                    Download
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Content */}
         {contentTypesWithContent.includes(typeName) && (

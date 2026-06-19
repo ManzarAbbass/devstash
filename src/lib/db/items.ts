@@ -9,6 +9,9 @@ export interface CreateItemData {
   url: string | null
   language: string | null
   tags: string[]
+  fileUrl?: string | null
+  fileName?: string | null
+  fileSize?: number | null
 }
 
 export interface ItemWithDetails {
@@ -21,6 +24,9 @@ export interface ItemWithDetails {
   isPinned: boolean
   language: string | null
   url: string | null
+  fileUrl: string | null
+  fileName: string | null
+  fileSize: number | null
   createdAt: Date
   itemTypeId: string
   itemType: {
@@ -51,6 +57,9 @@ export async function getPinnedItems(userId: string): Promise<ItemWithDetails[]>
     isPinned: item.isPinned,
     language: item.language,
     url: item.url,
+    fileUrl: item.fileUrl,
+    fileName: item.fileName,
+    fileSize: item.fileSize,
     createdAt: item.createdAt,
     itemTypeId: item.itemTypeId,
     itemType: item.itemType,
@@ -79,6 +88,9 @@ export async function getRecentItems(userId: string): Promise<ItemWithDetails[]>
     isPinned: item.isPinned,
     language: item.language,
     url: item.url,
+    fileUrl: item.fileUrl,
+    fileName: item.fileName,
+    fileSize: item.fileSize,
     createdAt: item.createdAt,
     itemTypeId: item.itemTypeId,
     itemType: item.itemType,
@@ -243,6 +255,9 @@ export async function updateItem(
     isPinned: item.isPinned,
     language: item.language,
     url: item.url,
+    fileUrl: item.fileUrl,
+    fileName: item.fileName,
+    fileSize: item.fileSize,
     createdAt: item.createdAt,
     itemTypeId: item.itemTypeId,
     itemType: item.itemType,
@@ -263,6 +278,9 @@ export async function createItem(
       content: data.content,
       url: data.url,
       language: data.language,
+      fileUrl: data.fileUrl ?? null,
+      fileName: data.fileName ?? null,
+      fileSize: data.fileSize ?? null,
       userId,
       tags: {
         create: data.tags.map((name) => ({
@@ -291,6 +309,9 @@ export async function createItem(
     isPinned: item.isPinned,
     language: item.language,
     url: item.url,
+    fileUrl: item.fileUrl,
+    fileName: item.fileName,
+    fileSize: item.fileSize,
     createdAt: item.createdAt,
     itemTypeId: item.itemTypeId,
     itemType: item.itemType,
@@ -322,6 +343,9 @@ export async function getItemById(
     isPinned: item.isPinned,
     language: item.language,
     url: item.url,
+    fileUrl: item.fileUrl,
+    fileName: item.fileName,
+    fileSize: item.fileSize,
     createdAt: item.createdAt,
     itemTypeId: item.itemTypeId,
     itemType: item.itemType,
@@ -349,6 +373,9 @@ export async function getItemsByType(userId: string, typeName: string): Promise<
     isPinned: item.isPinned,
     language: item.language,
     url: item.url,
+    fileUrl: item.fileUrl,
+    fileName: item.fileName,
+    fileSize: item.fileSize,
     createdAt: item.createdAt,
     itemTypeId: item.itemTypeId,
     itemType: item.itemType,
@@ -356,10 +383,13 @@ export async function getItemsByType(userId: string, typeName: string): Promise<
   }))
 }
 
-export async function deleteItem(userId: string, itemId: string): Promise<void> {
-  await prisma.item.delete({
+export async function deleteItem(userId: string, itemId: string): Promise<{ fileUrl: string | null }> {
+  const item = await prisma.item.delete({
     where: { id: itemId, userId },
+    select: { fileUrl: true },
   })
+
+  return { fileUrl: item.fileUrl }
 }
 
 export async function getSidebarData(userId: string): Promise<SidebarData> {

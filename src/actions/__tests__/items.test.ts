@@ -15,6 +15,9 @@ const mockCreatedItem = {
   isPinned: false,
   language: "javascript",
   url: null,
+  fileUrl: null,
+  fileName: null,
+  fileSize: null,
   createdAt: new Date(),
   itemTypeId: "type_snippet",
   itemType: { name: "snippet", icon: "Code", color: "#3b82f6" },
@@ -68,6 +71,9 @@ describe("createItem action", () => {
       content: "console.log('hello')",
       url: null,
       language: "javascript",
+      fileUrl: null,
+      fileName: null,
+      fileSize: null,
       tags: ["javascript"],
     })
   })

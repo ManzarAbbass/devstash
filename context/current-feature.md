@@ -1,16 +1,24 @@
-# Current Feature
+# Current Feature: File Upload with Supabase
 
 ## Status
 
-<!-- Not Started | In Progress | Completed -->
+In Progress
 
 ## Goals
 
-<!-- Goals and requirements -->
+- Create upload API route for Supabase
+- Stick to lib/db/items.ts for prisma/db functions
+- Create FileUpload component with drag-and-drop
+- Update create item modal to use FileUpload for file/image types
+- Delete files from Supabase when items are deleted
+- Create download proxy API route (avoids CORS issues)
+- Add download button in ItemDrawer for file types
+- Show upload progress indicator
+- Display image preview for images, file info for files
 
 ## Notes
 
-<!-- Any extra notes -->
+**File Constraints:** Images: 5 MB max (.png, .jpg, .jpeg, .gif, .webp, .svg). Files: 10 MB max (.pdf, .txt, .md, .json, .yaml, .yml, .xml, .csv, .toml, .ini).
 
 ## History
 

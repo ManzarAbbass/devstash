@@ -3,12 +3,13 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
-import { Code2, Sparkles, Terminal, StickyNote, Link2 } from "lucide-react"
+import { Code2, Sparkles, Terminal, StickyNote, Link2, File, Image } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { CodeEditor } from "@/components/ui/code-editor"
+import { FileUpload } from "@/components/items/file-upload"
 import {
   Dialog,
   DialogContent,
@@ -26,13 +27,15 @@ interface CreateItemDialogProps {
   initialType?: string
 }
 
-const creationTypes = ["snippet", "prompt", "command", "note", "link"] as const
+const creationTypes = ["snippet", "prompt", "command", "note", "file", "image", "link"] as const
 
 const typeMeta: Record<string, { icon: typeof Code2; label: string; color: string }> = {
   snippet: { icon: Code2, label: "Snippet", color: "#3b82f6" },
   prompt: { icon: Sparkles, label: "Prompt", color: "#8b5cf6" },
   command: { icon: Terminal, label: "Command", color: "#f97316" },
   note: { icon: StickyNote, label: "Note", color: "#fde047" },
+  file: { icon: File, label: "File", color: "#14b8a6" },
+  image: { icon: Image, label: "Image", color: "#ec4899" },
   link: { icon: Link2, label: "Link", color: "#10b981" },
 }
 
@@ -53,6 +56,7 @@ export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }:
   const [language, setLanguage] = useState("")
   const [url, setUrl] = useState("")
   const [tags, setTags] = useState("")
+  const [fileData, setFileData] = useState<{ fileUrl: string; fileName: string; fileSize: number } | null>(null)
 
   useEffect(() => {
     if (open && initialType && creationTypes.includes(initialType as typeof creationTypes[number])) {
@@ -63,6 +67,7 @@ export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }:
   const showContent = ["snippet", "prompt", "command", "note"].includes(selectedType)
   const showLanguage = ["snippet", "command"].includes(selectedType)
   const showUrl = selectedType === "link"
+  const isFileType = ["file", "image"].includes(selectedType)
 
   const currentMeta = typeMeta[selectedType]
 
@@ -73,6 +78,7 @@ export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }:
     setLanguage("")
     setUrl("")
     setTags("")
+    setFileData(null)
     setFormErrors(null)
     setSelectedType(initialType && creationTypes.includes(initialType as typeof creationTypes[number]) ? initialType : "snippet")
   }
@@ -98,6 +104,12 @@ export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }:
       .map((t) => t.trim())
       .filter(Boolean)
 
+    if (isFileType && !fileData) {
+      toast.error("Please upload a file")
+      setSaving(false)
+      return
+    }
+
     const result = await createItem({
       title: title.trim(),
       contentType: selectedType,
@@ -107,6 +119,9 @@ export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }:
       language: showLanguage ? (language || null) : null,
       url: showUrl ? (url || null) : null,
       tags: tagList,
+      fileUrl: fileData?.fileUrl ?? null,
+      fileName: fileData?.fileName ?? null,
+      fileSize: fileData?.fileSize ?? null,
     })
 
     if (!result.success) {
@@ -127,7 +142,7 @@ export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }:
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-xl">
         <DialogHeader>
           <DialogTitle>New Item</DialogTitle>
           <DialogDescription>Choose a type and fill in the details below.</DialogDescription>
@@ -140,7 +155,7 @@ export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }:
               <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Type
               </h3>
-              <div className="grid grid-cols-5 gap-2">
+              <div className="grid grid-cols-7 gap-2">
                 {creationTypes.map((type) => {
                   const meta = typeMeta[type]
                   const Icon = meta.icon
@@ -247,6 +262,26 @@ export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }:
                   className="h-8"
                 />
                 <FieldError field="url" errors={formErrors} />
+              </div>
+            )}
+
+            {/* File / Image upload */}
+            {isFileType && (
+              <div>
+                <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  {selectedType === "image" ? "Image" : "File"}
+                </h3>
+                <FileUpload
+                  accept={
+                    selectedType === "image"
+                      ? "image/png,image/jpeg,image/gif,image/webp,image/svg+xml"
+                      : "application/pdf,text/plain,text/markdown,application/json,application/x-yaml,text/yaml,application/xml,text/xml,text/csv,application/toml"
+                  }
+                  maxSize={selectedType === "image" ? 5 * 1024 * 1024 : 10 * 1024 * 1024}
+                  onUploadComplete={(data) => setFileData(data)}
+                  onRemove={() => setFileData(null)}
+                />
+                <FieldError field="fileUrl" errors={formErrors} />
               </div>
             )}
 

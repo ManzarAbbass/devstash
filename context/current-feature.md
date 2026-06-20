@@ -1,16 +1,16 @@
-# Quick Wins Cleanup
+# Current Feature
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Completed -->
 
 ## Goals
 
-- Fix 7 low-risk issues from codebase audit — no business logic changes
+<!-- Goals and requirements -->
 
 ## Notes
 
-Quick wins from codebase scan. Refactors and guard clauses only — constants, env guards, AbortController, extract shared utilities, Suspense fallbacks.
+<!-- Any extra notes -->
 
 ## History
 
@@ -42,3 +42,4 @@ Quick wins from codebase scan. Refactors and guard clauses only — constants, e
 - 2026-06-18: Item Create — Modal dialog with Base UI Dialog, type selector cards (snippet, prompt, command, note, link), dynamic type-aware form fields, Zod validation, server action createItem, DB query with tag connect-or-create, toast notifications, router.refresh(), unit tests for query + server action [Completed]
 - 2026-06-19: Code Editor — Monaco Editor component with dark custom theme, macOS window dots, copy button, language label, fluid height (max 400px), syntax highlighting for 50+ languages, replaces Textarea for snippets/commands in drawer and create dialog, keeps Textarea for prompts/notes, type-specific add buttons on each type page, item count display, custom appDark Monaco theme [Completed]
 - 2026-06-20: File Upload with Supabase — Supabase Storage upload/download API routes, FileUpload component with drag-and-drop/progress/preview, file/image type support in create dialog and ItemDrawer, auto-delete from storage on item delete, bucket auto-creation [Completed]
+- 2026-06-21: Quick Wins Cleanup — H3: Password minimum 6→8 (3 server + 3 client files); L3: Suspense fallbacks on 5 auth pages; M2: env guard in resend.ts; M3: env guard in rate-limit.ts; M5: AbortController in ItemDrawer; L1: Extract shared iconMap to src/lib/icons.ts; L2: Extract formatFileSize/extractFileKey to src/lib/utils.ts [Completed]

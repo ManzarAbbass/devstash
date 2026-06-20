@@ -44,7 +44,7 @@ DevStash consolidates all of this into one searchable, organized workspace.
 | Database | Neon PostgreSQL |
 | ORM | Prisma 7 |
 | Caching | Redis *(TBD)* |
-| File Storage | Cloudflare R2 |
+| File Storage | Supabase Storage |
 | Auth | NextAuth v5 (Email/password + GitHub OAuth) |
 | AI | OpenAI `gpt-4o-mini` |
 | CSS | Tailwind v4 + ShadCN UI |

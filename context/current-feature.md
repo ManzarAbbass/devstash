@@ -1,16 +1,19 @@
-# Current Feature
+# Internal Refactor — Large File Splits (Batch 2)
 
 ## Status
 
-<!-- Not Started | In Progress | Completed -->
+In Progress
 
 ## Goals
 
-<!-- Goals and requirements -->
+- Extract components from item-drawer.tsx (Header, Actions, FileDisplay)
+- Extract components from profile-content.tsx (UsageStats, ChangePasswordForm, DeleteConfirmation, utils)
+- Extract components from create-item-dialog.tsx (ItemTypeSelector, FieldError)
+- Extract components from register-form.tsx and reset-password-form.tsx (success/error status screens)
 
 ## Notes
 
-<!-- Any extra notes -->
+All 5 files together — except sidebar.
 
 ## History
 

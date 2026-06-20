@@ -3,13 +3,14 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
-import { Code2, Sparkles, Terminal, StickyNote, Link2, File, Image } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { CodeEditor } from "@/components/ui/code-editor"
 import { FileUpload } from "@/components/items/file-upload"
+import { FieldError } from "@/components/ui/field-error"
+import { ItemTypeSelector } from "@/components/items/item-type-selector"
 import {
   Dialog,
   DialogContent,
@@ -28,21 +29,6 @@ interface CreateItemDialogProps {
 }
 
 const creationTypes = ["snippet", "prompt", "command", "note", "file", "image", "link"] as const
-
-const typeMeta: Record<string, { icon: typeof Code2; label: string; color: string }> = {
-  snippet: { icon: Code2, label: "Snippet", color: "#3b82f6" },
-  prompt: { icon: Sparkles, label: "Prompt", color: "#8b5cf6" },
-  command: { icon: Terminal, label: "Command", color: "#f97316" },
-  note: { icon: StickyNote, label: "Note", color: "#fde047" },
-  file: { icon: File, label: "File", color: "#14b8a6" },
-  image: { icon: Image, label: "Image", color: "#ec4899" },
-  link: { icon: Link2, label: "Link", color: "#10b981" },
-}
-
-function FieldError({ field, errors }: { field: string; errors: Record<string, string[]> | null }) {
-  if (!errors?.[field]) return null
-  return <p className="mt-1 text-xs text-destructive">{errors[field][0]}</p>
-}
 
 export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }: CreateItemDialogProps) {
   const router = useRouter()
@@ -68,8 +54,6 @@ export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }:
   const showLanguage = ["snippet", "command"].includes(selectedType)
   const showUrl = selectedType === "link"
   const isFileType = ["file", "image"].includes(selectedType)
-
-  const currentMeta = typeMeta[selectedType]
 
   function resetForm() {
     setTitle("")
@@ -151,33 +135,7 @@ export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }:
         <div className="flex-1 overflow-y-auto -mx-6 px-6">
           <div className="flex flex-col gap-5">
             {/* Type selector */}
-            <div>
-              <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Type
-              </h3>
-              <div className="grid grid-cols-7 gap-2">
-                {creationTypes.map((type) => {
-                  const meta = typeMeta[type]
-                  const Icon = meta.icon
-                  const isSelected = selectedType === type
-                  return (
-                    <button
-                      key={type}
-                      type="button"
-                      onClick={() => setSelectedType(type)}
-                      className={`flex flex-col items-center gap-1.5 rounded-lg border p-3 text-xs capitalize transition-colors ${
-                        isSelected
-                          ? "border-ring bg-muted text-foreground"
-                          : "border-border text-muted-foreground hover:border-muted-foreground/30 hover:text-foreground"
-                      }`}
-                    >
-                      <Icon className="size-5" style={{ color: meta.color }} />
-                      <span>{meta.label}</span>
-                    </button>
-                  )
-                })}
-              </div>
-            </div>
+            <ItemTypeSelector selectedType={selectedType} onSelect={setSelectedType} />
 
             <hr className="border-border" />
 

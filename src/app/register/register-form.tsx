@@ -2,12 +2,13 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Mail, Lock, User, MailCheck, CheckCircle } from "lucide-react"
+import { Mail, Lock, User } from "lucide-react"
 
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
+import { RegisterVerified, RegisterEmailSent } from "./register-success"
 
 export function RegisterForm() {
   const [name, setName] = useState("")
@@ -61,67 +62,8 @@ export function RegisterForm() {
   }
 
   if (registered) {
-    if (verified) {
-      return (
-        <div className="relative flex min-h-screen items-center justify-center bg-background p-4">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.06),transparent_50%)]" />
-
-          <Card className="relative w-full max-w-sm">
-            <CardHeader className="text-center">
-              <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-400">
-                <CheckCircle className="size-6" />
-              </div>
-              <CardTitle className="text-xl">Account created!</CardTitle>
-              <CardDescription>
-                You can now sign in to your account.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="text-center">
-              <Link
-                href="/sign-in"
-                className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-primary px-2.5 text-sm font-medium text-primary-foreground hover:opacity-90"
-              >
-                Sign in
-              </Link>
-            </CardContent>
-          </Card>
-        </div>
-      )
-    }
-
-    return (
-      <div className="relative flex min-h-screen items-center justify-center bg-background p-4">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.06),transparent_50%)]" />
-
-        <Card className="relative w-full max-w-sm">
-          <CardHeader className="text-center">
-            <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-purple-600/10 text-purple-400">
-              <MailCheck className="size-6" />
-            </div>
-            <CardTitle className="text-xl">Check your email</CardTitle>
-            <CardDescription>
-              We&apos;ve sent a verification link to{" "}
-              <span className="font-medium text-foreground">{email}</span>
-            </CardDescription>
-          </CardHeader>
-
-          <CardContent className="text-center">
-            <div className="rounded-lg border border-border bg-muted/50 p-4 text-sm text-muted-foreground">
-              Click the link in the email to activate your account. If you don&apos;t see it, check your spam folder.
-            </div>
-          </CardContent>
-
-          <CardFooter className="justify-center">
-            <p className="text-sm text-muted-foreground">
-              Already verified?{" "}
-              <Link href="/sign-in" className="font-medium text-foreground hover:underline">
-                Sign in
-              </Link>
-            </p>
-          </CardFooter>
-        </Card>
-      </div>
-    )
+    if (verified) return <RegisterVerified />
+    return <RegisterEmailSent email={email} />
   }
 
   return (

@@ -19,6 +19,27 @@ export function extractFileKey(publicUrl: string): string {
   return segments.slice(storageIndex + 1).join("/")
 }
 
+export function getInitials(name: string | null, email: string | null): string {
+  if (name) {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2)
+  }
+  if (email) return email[0].toUpperCase()
+  return "U"
+}
+
+export function formatDate(date: Date, style: "long" | "short" = "long") {
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: style === "long" ? "long" : "short",
+    day: "numeric",
+  })
+}
+
 export function extractStorageKey(publicUrl: string): string | null {
   const url = new URL(publicUrl)
   const segments = url.pathname.split("/")

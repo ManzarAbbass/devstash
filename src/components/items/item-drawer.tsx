@@ -4,41 +4,25 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import {
-  Star,
-  Pin,
-  Copy,
-  Pencil,
-  Trash2,
   Code2,
-  Download,
-  File,
 } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import {
   SheetHeader,
-  SheetTitle,
 } from "@/components/ui/sheet"
 import { Separator } from "@/components/ui/separator"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { CodeEditor } from "@/components/ui/code-editor"
-import {
-  AlertDialog,
-  AlertDialogTrigger,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogFooter,
-  AlertDialogTitle,
-  AlertDialogDescription,
-  AlertDialogAction,
-  AlertDialogCancel,
-} from "@/components/ui/alert-dialog"
 import type { ItemWithDetails } from "@/lib/db/items"
 import { updateItem, deleteItem } from "@/actions/items"
 import type { UpdateItemData } from "@/actions/items"
 import { iconMap } from "@/lib/icons"
-import { extractFileKey, formatFileSize } from "@/lib/utils"
+import { extractFileKey } from "@/lib/utils"
+import { FieldError } from "@/components/ui/field-error"
+import { ItemDrawerHeader } from "./item-drawer-header"
+import { ItemDrawerActions } from "./item-drawer-actions"
+import { FileDisplay } from "./file-display"
 
 const contentTypesWithContent = ["snippet", "prompt", "command", "note"]
 const contentTypesWithLanguage = ["snippet", "command"]
@@ -55,13 +39,6 @@ function DrawerSkeleton() {
       <div className="h-4 w-full rounded bg-muted" />
       <div className="h-4 w-3/4 rounded bg-muted" />
     </div>
-  )
-}
-
-function FieldError({ field, errors }: { field: string; errors: Record<string, string[]> | null }) {
-  if (!errors?.[field]) return null
-  return (
-    <p className="mt-1 text-xs text-destructive">{errors[field][0]}</p>
   )
 }
 
@@ -212,95 +189,31 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
 
   return (
     <>
-      <SheetHeader>
-        <div className="flex items-center gap-2">
-          <Icon className="size-5 shrink-0" style={{ color: item.itemType.color }} />
-          {isEditing ? (
-            <div className="flex-1">
-              <Input
-                value={formTitle}
-                onChange={(e) => setFormTitle(e.target.value)}
-                placeholder="Title"
-                className="h-8 text-base font-semibold"
-              />
-              <FieldError field="title" errors={formErrors} />
-            </div>
-          ) : (
-            <SheetTitle className="truncate">{item.title}</SheetTitle>
-          )}
-        </div>
-        <div className="flex flex-wrap gap-1.5">
-          <Badge variant="secondary" className="text-[10px]">
-            {item.itemType.name}
-          </Badge>
-          {!isEditing && item.language && (
-            <Badge variant="outline" className="text-[10px]">
-              {item.language}
-            </Badge>
-          )}
-        </div>
-      </SheetHeader>
+      <ItemDrawerHeader
+        Icon={Icon}
+        color={item.itemType.color}
+        title={item.title}
+        itemTypeName={item.itemType.name}
+        language={item.language}
+        isEditing={isEditing}
+        formTitle={formTitle}
+        formErrors={formErrors}
+        onFormTitleChange={setFormTitle}
+      />
 
-      {isEditing ? (
-        <div className="flex items-center gap-2 px-4">
-          <Button size="sm" onClick={handleSave} disabled={saving || !formTitle.trim()}>
-            {saving ? "Saving..." : "Save"}
-          </Button>
-          <Button variant="outline" size="sm" onClick={handleCancelEdit} disabled={saving}>
-            Cancel
-          </Button>
-        </div>
-      ) : (
-        <div className="flex items-center gap-0.5 px-4">
-          <Button variant="ghost" size="icon-sm" aria-label="Favorite">
-            <Star
-              className={`size-4 ${item.isFavorite ? "fill-yellow-500 text-yellow-500" : ""}`}
-            />
-          </Button>
-          <Button variant="ghost" size="icon-sm" aria-label="Pin">
-            <Pin
-              className={`size-4 ${item.isPinned ? "fill-sky-500 text-sky-500" : ""}`}
-            />
-          </Button>
-          <Button variant="ghost" size="icon-sm" aria-label="Copy">
-            <Copy className="size-4" />
-          </Button>
-          <Button variant="ghost" size="icon-sm" aria-label="Edit" onClick={handleEnterEdit}>
-            <Pencil className="size-4" />
-          </Button>
-          <div className="ml-auto">
-            <AlertDialog>
-              <AlertDialogTrigger
-                render={
-                  <Button variant="ghost" size="icon-sm" aria-label="Delete" className="text-destructive">
-                    <Trash2 className="size-4" />
-                  </Button>
-                }
-              />
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Delete item</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Are you sure you want to delete "{item.title}"? This action cannot be undone.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel
-                    render={<Button variant="outline">Cancel</Button>}
-                  />
-                  <AlertDialogAction
-                    render={
-                      <Button variant="destructive" onClick={handleDelete} disabled={deleting}>
-                        {deleting ? "Deleting..." : "Delete"}
-                      </Button>
-                    }
-                  />
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          </div>
-        </div>
-      )}
+      <ItemDrawerActions
+        isEditing={isEditing}
+        isFavorite={item.isFavorite}
+        isPinned={item.isPinned}
+        itemTitle={item.title}
+        saving={saving}
+        deleting={deleting}
+        formTitle={formTitle}
+        onSave={handleSave}
+        onCancelEdit={handleCancelEdit}
+        onEnterEdit={handleEnterEdit}
+        onDelete={handleDelete}
+      />
 
       <Separator />
 
@@ -327,46 +240,13 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
 
         {/* File / Image */}
         {contentTypesWithFile.includes(typeName) && item.fileUrl && (
-          <div>
-            <div className="mb-1.5 flex items-center justify-between">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                {typeName === "image" ? "Image" : "File"}
-              </h3>
-              {typeName === "image" && (
-                <Button variant="outline" size="sm" onClick={handleDownload}>
-                  <Download className="mr-1.5 size-3.5" />
-                  Download
-                </Button>
-              )}
-            </div>
-            <div className="rounded-lg border border-border p-3">
-              {typeName === "image" ? (
-                <div className="overflow-hidden rounded">
-                  <img
-                    src={item.fileUrl}
-                    alt={item.fileName ?? "Image"}
-                    className="w-full rounded object-cover"
-                  />
-                </div>
-              ) : (
-                <div className="flex items-center gap-3">
-                  <div className="flex size-10 shrink-0 items-center justify-center rounded bg-muted">
-                    <File className="size-5 text-muted-foreground" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium">{item.fileName}</p>
-                    {item.fileSize != null && (
-                      <p className="text-xs text-muted-foreground">{formatFileSize(item.fileSize)}</p>
-                    )}
-                  </div>
-                  <Button variant="outline" size="sm" onClick={handleDownload}>
-                    <Download className="mr-1.5 size-3.5" />
-                    Download
-                  </Button>
-                </div>
-              )}
-            </div>
-          </div>
+          <FileDisplay
+            fileUrl={item.fileUrl}
+            fileName={item.fileName}
+            fileSize={item.fileSize}
+            typeName={typeName}
+            onDownload={handleDownload}
+          />
         )}
 
         {/* Content */}

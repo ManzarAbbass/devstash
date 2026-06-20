@@ -3,12 +3,13 @@
 import { useState } from "react"
 import { useSearchParams } from "next/navigation"
 import Link from "next/link"
-import { Lock, CheckCircle, XCircle } from "lucide-react"
+import { Lock } from "lucide-react"
 
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
+import { ResetPasswordNoToken, ResetPasswordSuccess, ResetPasswordFailed } from "./reset-password-status"
 
 export function ResetPasswordForm() {
   const searchParams = useSearchParams()
@@ -23,32 +24,7 @@ export function ResetPasswordForm() {
   const [failReason, setFailReason] = useState("")
 
   if (!token) {
-    return (
-      <div className="relative flex min-h-screen items-center justify-center bg-background p-4">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.06),transparent_50%)]" />
-
-        <Card className="relative w-full max-w-sm">
-          <CardHeader className="text-center">
-            <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-destructive/10 text-destructive">
-              <XCircle className="size-6" />
-            </div>
-            <CardTitle className="text-xl">Invalid reset link</CardTitle>
-            <CardDescription>
-              This password reset link is missing or invalid.
-            </CardDescription>
-          </CardHeader>
-
-          <CardContent className="text-center">
-            <Link
-              href="/forgot-password"
-              className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-primary px-2.5 text-sm font-medium text-primary-foreground hover:opacity-90"
-            >
-              Request new link
-            </Link>
-          </CardContent>
-        </Card>
-      </div>
-    )
+    return <ResetPasswordNoToken />
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -97,58 +73,11 @@ export function ResetPasswordForm() {
   }
 
   if (success) {
-    return (
-      <div className="relative flex min-h-screen items-center justify-center bg-background p-4">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.06),transparent_50%)]" />
-
-        <Card className="relative w-full max-w-sm">
-          <CardHeader className="text-center">
-            <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-400">
-              <CheckCircle className="size-6" />
-            </div>
-            <CardTitle className="text-xl">Password reset!</CardTitle>
-            <CardDescription>
-              Your password has been updated successfully.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="text-center">
-            <Link
-              href="/sign-in"
-              className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-primary px-2.5 text-sm font-medium text-primary-foreground hover:opacity-90"
-            >
-              Sign in
-            </Link>
-          </CardContent>
-        </Card>
-      </div>
-    )
+    return <ResetPasswordSuccess />
   }
 
   if (failed) {
-    return (
-      <div className="relative flex min-h-screen items-center justify-center bg-background p-4">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.06),transparent_50%)]" />
-
-        <Card className="relative w-full max-w-sm">
-          <CardHeader className="text-center">
-            <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-destructive/10 text-destructive">
-              <XCircle className="size-6" />
-            </div>
-            <CardTitle className="text-xl">Reset link invalid</CardTitle>
-            <CardDescription>{failReason}</CardDescription>
-          </CardHeader>
-
-          <CardContent className="text-center">
-            <Link
-              href="/forgot-password"
-              className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-primary px-2.5 text-sm font-medium text-primary-foreground hover:opacity-90"
-            >
-              Request new link
-            </Link>
-          </CardContent>
-        </Card>
-      </div>
-    )
+    return <ResetPasswordFailed failReason={failReason} />
   }
 
   return (

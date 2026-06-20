@@ -1,19 +1,16 @@
-# Internal Refactor — Large File Splits (Batch 2)
+# Current Feature
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Completed -->
 
 ## Goals
 
-- Extract components from item-drawer.tsx (Header, Actions, FileDisplay)
-- Extract components from profile-content.tsx (UsageStats, ChangePasswordForm, DeleteConfirmation, utils)
-- Extract components from create-item-dialog.tsx (ItemTypeSelector, FieldError)
-- Extract components from register-form.tsx and reset-password-form.tsx (success/error status screens)
+<!-- Goals and requirements -->
 
 ## Notes
 
-All 5 files together — except sidebar.
+<!-- Any extra notes -->
 
 ## History
 
@@ -47,3 +44,4 @@ All 5 files together — except sidebar.
 - 2026-06-20: File Upload with Supabase — Supabase Storage upload/download API routes, FileUpload component with drag-and-drop/progress/preview, file/image type support in create dialog and ItemDrawer, auto-delete from storage on item delete, bucket auto-creation [Completed]
 - 2026-06-21: Quick Wins Cleanup — H3: Password minimum 6→8 (3 server + 3 client files); L3: Suspense fallbacks on 5 auth pages; M2: env guard in resend.ts; M3: env guard in rate-limit.ts; M5: AbortController in ItemDrawer; L1: Extract shared iconMap to src/lib/icons.ts; L2: Extract formatFileSize/extractFileKey to src/lib/utils.ts [Completed]
 - 2026-06-21: Internal Refactor — Large File Splits: Extract `formatItem()` utility in `src/lib/db/items.ts`, eliminate 6x duplicated 18-line mapper (−64 lines) [Completed]
+- 2026-06-21: Internal Refactor — Large File Splits (Batch 2): Extract 11 components from item-drawer, create-item-dialog, profile-content, register-form, reset-password-form; shared FieldError, StatusCard, utils (−470 lines across 5 files) [Completed]

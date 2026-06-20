@@ -1,16 +1,16 @@
-# Current Feature
+# Internal Refactor — Large File Splits
 
 ## Status
 
-<!-- Not Started | In Progress | Completed -->
+In Progress
 
 ## Goals
 
-<!-- Goals and requirements -->
+- Extract `formatItem()` utility in `src/lib/db/items.ts` to eliminate 6x duplicated mapper block
 
 ## Notes
 
-<!-- Any extra notes -->
+One file at a time. Starting with `src/lib/db/items.ts` — extract `formatItem()`.
 
 ## History
 

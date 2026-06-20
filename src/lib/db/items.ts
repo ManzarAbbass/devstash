@@ -37,17 +37,25 @@ export interface ItemWithDetails {
   tags: { id: string; name: string }[]
 }
 
-export async function getPinnedItems(userId: string): Promise<ItemWithDetails[]> {
-  const items = await prisma.item.findMany({
-    where: { userId, isPinned: true },
-    include: {
-      itemType: { select: { name: true, icon: true, color: true } },
-      tags: { include: { tag: { select: { id: true, name: true } } } },
-    },
-    orderBy: { createdAt: "desc" },
-  })
-
-  return items.map((item) => ({
+function formatItem(item: {
+  id: string
+  title: string
+  contentType: string
+  content: string | null
+  description: string | null
+  isFavorite: boolean
+  isPinned: boolean
+  language: string | null
+  url: string | null
+  fileUrl: string | null
+  fileName: string | null
+  fileSize: number | null
+  createdAt: Date
+  itemTypeId: string
+  itemType: { name: string; icon: string; color: string }
+  tags: { tag: { id: string; name: string } }[]
+}): ItemWithDetails {
+  return {
     id: item.id,
     title: item.title,
     contentType: item.contentType,
@@ -64,7 +72,20 @@ export async function getPinnedItems(userId: string): Promise<ItemWithDetails[]>
     itemTypeId: item.itemTypeId,
     itemType: item.itemType,
     tags: item.tags.map((t) => t.tag),
-  }))
+  }
+}
+
+export async function getPinnedItems(userId: string): Promise<ItemWithDetails[]> {
+  const items = await prisma.item.findMany({
+    where: { userId, isPinned: true },
+    include: {
+      itemType: { select: { name: true, icon: true, color: true } },
+      tags: { include: { tag: { select: { id: true, name: true } } } },
+    },
+    orderBy: { createdAt: "desc" },
+  })
+
+  return items.map(formatItem)
 }
 
 export async function getRecentItems(userId: string): Promise<ItemWithDetails[]> {
@@ -78,24 +99,7 @@ export async function getRecentItems(userId: string): Promise<ItemWithDetails[]>
     take: 10,
   })
 
-  return items.map((item) => ({
-    id: item.id,
-    title: item.title,
-    contentType: item.contentType,
-    content: item.content,
-    description: item.description,
-    isFavorite: item.isFavorite,
-    isPinned: item.isPinned,
-    language: item.language,
-    url: item.url,
-    fileUrl: item.fileUrl,
-    fileName: item.fileName,
-    fileSize: item.fileSize,
-    createdAt: item.createdAt,
-    itemTypeId: item.itemTypeId,
-    itemType: item.itemType,
-    tags: item.tags.map((t) => t.tag),
-  }))
+  return items.map(formatItem)
 }
 
 export async function getItemStats(userId: string): Promise<{ totalItems: number; favoriteItems: number }> {
@@ -245,24 +249,7 @@ export async function updateItem(
     },
   })
 
-  return {
-    id: item.id,
-    title: item.title,
-    contentType: item.contentType,
-    content: item.content,
-    description: item.description,
-    isFavorite: item.isFavorite,
-    isPinned: item.isPinned,
-    language: item.language,
-    url: item.url,
-    fileUrl: item.fileUrl,
-    fileName: item.fileName,
-    fileSize: item.fileSize,
-    createdAt: item.createdAt,
-    itemTypeId: item.itemTypeId,
-    itemType: item.itemType,
-    tags: item.tags.map((t) => t.tag),
-  }
+  return formatItem(item)
 }
 
 export async function createItem(
@@ -299,24 +286,7 @@ export async function createItem(
     },
   })
 
-  return {
-    id: item.id,
-    title: item.title,
-    contentType: item.contentType,
-    content: item.content,
-    description: item.description,
-    isFavorite: item.isFavorite,
-    isPinned: item.isPinned,
-    language: item.language,
-    url: item.url,
-    fileUrl: item.fileUrl,
-    fileName: item.fileName,
-    fileSize: item.fileSize,
-    createdAt: item.createdAt,
-    itemTypeId: item.itemTypeId,
-    itemType: item.itemType,
-    tags: item.tags.map((t) => t.tag),
-  }
+  return formatItem(item)
 }
 
 export async function getItemById(
@@ -333,24 +303,7 @@ export async function getItemById(
 
   if (!item) return null
 
-  return {
-    id: item.id,
-    title: item.title,
-    contentType: item.contentType,
-    content: item.content,
-    description: item.description,
-    isFavorite: item.isFavorite,
-    isPinned: item.isPinned,
-    language: item.language,
-    url: item.url,
-    fileUrl: item.fileUrl,
-    fileName: item.fileName,
-    fileSize: item.fileSize,
-    createdAt: item.createdAt,
-    itemTypeId: item.itemTypeId,
-    itemType: item.itemType,
-    tags: item.tags.map((t) => t.tag),
-  }
+  return formatItem(item)
 }
 
 export async function getItemsByType(userId: string, typeName: string): Promise<ItemWithDetails[]> {
@@ -363,24 +316,7 @@ export async function getItemsByType(userId: string, typeName: string): Promise<
     orderBy: { createdAt: "desc" },
   })
 
-  return items.map((item) => ({
-    id: item.id,
-    title: item.title,
-    contentType: item.contentType,
-    content: item.content,
-    description: item.description,
-    isFavorite: item.isFavorite,
-    isPinned: item.isPinned,
-    language: item.language,
-    url: item.url,
-    fileUrl: item.fileUrl,
-    fileName: item.fileName,
-    fileSize: item.fileSize,
-    createdAt: item.createdAt,
-    itemTypeId: item.itemTypeId,
-    itemType: item.itemType,
-    tags: item.tags.map((t) => t.tag),
-  }))
+  return items.map(formatItem)
 }
 
 export async function deleteItem(userId: string, itemId: string): Promise<{ fileUrl: string | null }> {

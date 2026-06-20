@@ -283,11 +283,6 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
               className={`size-4 ${item.isPinned ? "fill-sky-500 text-sky-500" : ""}`}
             />
           </Button>
-          {contentTypesWithFile.includes(typeName) && (
-            <Button variant="ghost" size="icon-sm" aria-label="Download" onClick={handleDownload}>
-              <Download className="size-4" />
-            </Button>
-          )}
           <Button variant="ghost" size="icon-sm" aria-label="Copy">
             <Copy className="size-4" />
           </Button>
@@ -354,9 +349,17 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
         {/* File / Image */}
         {contentTypesWithFile.includes(typeName) && item.fileUrl && (
           <div>
-            <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              {typeName === "image" ? "Image" : "File"}
-            </h3>
+            <div className="mb-1.5 flex items-center justify-between">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                {typeName === "image" ? "Image" : "File"}
+              </h3>
+              {typeName === "image" && (
+                <Button variant="outline" size="sm" onClick={handleDownload}>
+                  <Download className="mr-1.5 size-3.5" />
+                  Download
+                </Button>
+              )}
+            </div>
             <div className="rounded-lg border border-border p-3">
               {typeName === "image" ? (
                 <div className="overflow-hidden rounded">

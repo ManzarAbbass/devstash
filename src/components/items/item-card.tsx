@@ -2,6 +2,7 @@
 
 import {
   Code2,
+  Copy,
   Sparkles,
   Terminal,
   StickyNote,
@@ -11,6 +12,8 @@ import {
   Star,
   Download,
 } from "lucide-react"
+
+import { toast } from "sonner"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -57,6 +60,18 @@ function handleDownload(item: ItemWithDetails) {
   document.body.appendChild(a)
   a.click()
   document.body.removeChild(a)
+}
+
+function getCopyContent(item: ItemWithDetails): string {
+  if (item.content) return item.content
+  if (item.itemType.name === "Link" && item.url) return item.url
+  return item.title
+}
+
+function handleQuickCopy(item: ItemWithDetails) {
+  const text = getCopyContent(item)
+  navigator.clipboard.writeText(text)
+  toast.success("Copied!")
 }
 
 export function ItemCard({ item }: { item: ItemWithDetails }) {
@@ -144,6 +159,17 @@ export function ItemCard({ item }: { item: ItemWithDetails }) {
         </div>
         <div className="flex items-center gap-1 shrink-0">
           {item.isFavorite && <Star className="size-3.5 fill-yellow-500 text-yellow-500" />}
+          <button
+            type="button"
+            aria-label="Copy"
+            className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded hover:bg-muted"
+            onClick={(e) => {
+              e.stopPropagation()
+              handleQuickCopy(item)
+            }}
+          >
+            <Copy className="size-3.5 text-muted-foreground" />
+          </button>
           <span className="text-xs text-muted-foreground">{formatDate(item.createdAt)}</span>
         </div>
       </div>

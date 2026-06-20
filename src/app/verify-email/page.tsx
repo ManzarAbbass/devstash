@@ -3,7 +3,7 @@ import { VerifyEmailContent } from "./content"
 
 export default function VerifyEmailPage() {
   return (
-    <Suspense>
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center text-sm text-muted-foreground">Loading...</div>}>
       <VerifyEmailContent />
     </Suspense>
   )

@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback } from "react"
 import { Upload, File, X, ImageIcon } from "lucide-react"
+import { formatFileSize } from "@/lib/utils"
 
 type UploadState =
   | { status: "idle" }
@@ -186,9 +187,4 @@ export function FileUpload({ accept, maxSize, onUploadComplete, onRemove, curren
   )
 }
 
-function formatFileSize(bytes: number): string {
-  if (bytes === 0) return ""
-  if (bytes < 1024) return `${bytes} B`
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
-}
+

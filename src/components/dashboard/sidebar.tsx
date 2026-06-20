@@ -6,12 +6,6 @@ import { useRouter } from "next/navigation"
 import { signOut } from "next-auth/react"
 import {
   Code2,
-  Sparkles,
-  Terminal,
-  StickyNote,
-  File,
-  Image,
-  Link2,
   Star,
   ChevronDown,
   Settings,
@@ -21,6 +15,7 @@ import {
   User,
 } from "lucide-react"
 
+import { iconMap } from "@/lib/icons"
 import { Separator } from "@/components/ui/separator"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
@@ -34,16 +29,6 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
 import type { SidebarData } from "@/lib/db/items"
-
-const iconMap: Record<string, typeof Code2> = {
-  Code: Code2,
-  Sparkles,
-  Terminal,
-  StickyNote,
-  File,
-  Image,
-  Link: Link2,
-}
 
 export function Sidebar({ data }: { data: SidebarData }) {
   const [collapsed, setCollapsed] = useState(false)

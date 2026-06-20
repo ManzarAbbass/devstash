@@ -1,12 +1,6 @@
 import Link from "next/link"
 import {
   Code2,
-  Sparkles,
-  Terminal,
-  StickyNote,
-  File,
-  Image,
-  Link2,
   Star,
   Pin,
   Layers,
@@ -14,19 +8,10 @@ import {
   Archive,
 } from "lucide-react"
 
+import { iconMap } from "@/lib/icons"
 import { getCollections, type CollectionWithStats } from "@/lib/db/collections"
 import { getPinnedItems, getRecentItems, getItemStats } from "@/lib/db/items"
 import { ItemCardWithDrawer } from "@/components/items/item-card-with-drawer"
-
-const iconMap: Record<string, typeof Code2> = {
-  Code: Code2,
-  Sparkles,
-  Terminal,
-  StickyNote,
-  File,
-  Image,
-  Link: Link2,
-}
 
 export async function MainContent({ userId }: { userId: string }) {
   const [collections, pinnedItems, recentItems, { totalItems, favoriteItems }] = await Promise.all([

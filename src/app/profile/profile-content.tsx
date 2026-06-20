@@ -1,26 +1,17 @@
 "use client"
 
 import { useState } from "react"
-import { Mail, Calendar, Key, Trash2, ShieldCheck, Layers, Archive, Code2, Sparkles, Terminal, StickyNote, File, Image, Link2 } from "lucide-react"
+import { Mail, Calendar, Key, Trash2, ShieldCheck, Layers, Archive, Code2 } from "lucide-react"
 import { signOut } from "next-auth/react"
 import { toast } from "sonner"
 
+import { iconMap } from "@/lib/icons"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import type { UserProfile, ProfileStats } from "@/lib/db/users"
-
-const iconMap: Record<string, typeof Code2> = {
-  Code: Code2,
-  Sparkles,
-  Terminal,
-  StickyNote,
-  File,
-  Image,
-  Link: Link2,
-}
 
 function getInitials(name: string | null, email: string | null): string {
   if (name) {
@@ -107,8 +98,8 @@ export function ProfileContent({
       toast.error("Passwords do not match")
       return
     }
-    if (newPassword.length < 6) {
-      toast.error("Password must be at least 6 characters")
+    if (newPassword.length < 8) {
+      toast.error("Password must be at least 8 characters")
       return
     }
     setChangingPassword(true)

@@ -3,31 +3,19 @@
 import {
   Code2,
   Copy,
-  Sparkles,
-  Terminal,
-  StickyNote,
-  File,
-  Image,
-  Link2,
   Star,
   Download,
+  File,
+  Image,
 } from "lucide-react"
 
 import { toast } from "sonner"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { iconMap } from "@/lib/icons"
+import { extractFileKey, formatFileSize } from "@/lib/utils"
 import type { ItemWithDetails } from "@/lib/db/items"
-
-const iconMap: Record<string, typeof Code2> = {
-  Code: Code2,
-  Sparkles,
-  Terminal,
-  StickyNote,
-  File,
-  Image,
-  Link: Link2,
-}
 
 const contentTypesWithFile = ["file", "image"]
 
@@ -36,19 +24,6 @@ function formatDate(date: Date) {
     month: "short",
     day: "numeric",
   })
-}
-
-function extractFileKey(publicUrl: string): string {
-  const url = new URL(publicUrl)
-  const segments = url.pathname.split("/")
-  const storageIndex = segments.indexOf("devstash")
-  return segments.slice(storageIndex + 1).join("/")
-}
-
-function formatFileSize(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
 
 function handleDownload(item: ItemWithDetails) {

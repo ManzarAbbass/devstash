@@ -1,16 +1,16 @@
-# Current Feature
+# Quick Wins Cleanup
 
 ## Status
 
-<!-- Not Started | In Progress | Completed -->
+In Progress
 
 ## Goals
 
-<!-- Goals and requirements -->
+- Fix 7 low-risk issues from codebase audit — no business logic changes
 
 ## Notes
 
-<!-- Any extra notes -->
+Quick wins from codebase scan. Refactors and guard clauses only — constants, env guards, AbortController, extract shared utilities, Suspense fallbacks.
 
 ## History
 

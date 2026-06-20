@@ -3,7 +3,7 @@ import { RegisterForm } from "./register-form"
 
 export default function RegisterPage() {
   return (
-    <Suspense>
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center text-sm text-muted-foreground">Loading...</div>}>
       <RegisterForm />
     </Suspense>
   )

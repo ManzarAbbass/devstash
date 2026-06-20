@@ -10,13 +10,8 @@ import {
   Pencil,
   Trash2,
   Code2,
-  Sparkles,
-  Terminal,
-  StickyNote,
-  File,
-  Image,
-  Link2,
   Download,
+  File,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -42,34 +37,13 @@ import {
 import type { ItemWithDetails } from "@/lib/db/items"
 import { updateItem, deleteItem } from "@/actions/items"
 import type { UpdateItemData } from "@/actions/items"
-
-const iconMap: Record<string, typeof Code2> = {
-  Code: Code2,
-  Sparkles,
-  Terminal,
-  StickyNote,
-  File,
-  Image,
-  Link: Link2,
-}
+import { iconMap } from "@/lib/icons"
+import { extractFileKey, formatFileSize } from "@/lib/utils"
 
 const contentTypesWithContent = ["snippet", "prompt", "command", "note"]
 const contentTypesWithLanguage = ["snippet", "command"]
 const contentTypesWithUrl = ["link"]
 const contentTypesWithFile = ["file", "image"]
-
-function extractFileKey(publicUrl: string): string {
-  const url = new URL(publicUrl)
-  const segments = url.pathname.split("/")
-  const storageIndex = segments.indexOf("devstash")
-  return segments.slice(storageIndex + 1).join("/")
-}
-
-function formatFileSize(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
-}
 
 function DrawerSkeleton() {
   return (
@@ -112,7 +86,9 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
     setLoading(true)
     setError(null)
 
-    fetch(`/api/items/${itemId}`)
+    const controller = new AbortController()
+
+    fetch(`/api/items/${itemId}`, { signal: controller.signal })
       .then((res) => {
         if (!res.ok) throw new Error("Failed to load item")
         return res.json()
@@ -122,9 +98,12 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
         setLoading(false)
       })
       .catch((err) => {
+        if (err.name === "AbortError") return
         setError(err.message)
         setLoading(false)
       })
+
+    return () => controller.abort()
   }, [itemId])
 
   if (loading) {

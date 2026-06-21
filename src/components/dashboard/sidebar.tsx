@@ -132,39 +132,6 @@ export function SidebarContent({
           <Link
             href="/collections"
             className={iconOnlyClass}
-            title="Favorites"
-          >
-            <Star className="size-4 fill-current text-yellow-500" />
-          </Link>
-        ) : (
-          <>
-            <span className="flex items-center gap-1 px-1 py-1 text-xs font-medium text-muted-foreground">
-              <Star className="size-3 fill-current" />
-              Favorites
-            </span>
-            <nav className="flex flex-col gap-0.5">
-              {favoriteCollections.map((col) => (
-                <Link
-                  key={col.id}
-                  href={`/collections/${col.id}`}
-                  className={linkClass}
-                >
-                  <span className="size-2 shrink-0 rounded-full bg-blue-500" />
-                  <span>{col.name}</span>
-                </Link>
-              ))}
-            </nav>
-          </>
-        )}
-      </div>
-
-      <Separator />
-
-      <div className="flex flex-col gap-1 px-2 py-2">
-        {collapsed ? (
-          <Link
-            href="/collections"
-            className={iconOnlyClass}
             title="All Collections"
           >
             <FolderIcon className="size-4" />
@@ -183,6 +150,26 @@ export function SidebarContent({
             </button>
             {collectionsOpen && (
               <div className="flex flex-col gap-1">
+                {favoriteCollections.length > 0 && (
+                  <>
+                    <span className="flex items-center gap-1 px-1 pt-1 text-xs font-medium text-muted-foreground/60">
+                      <Star className="size-3 fill-current" />
+                      Favorites
+                    </span>
+                    <nav className="flex flex-col gap-0.5">
+                      {favoriteCollections.map((col) => (
+                        <Link
+                          key={col.id}
+                          href={`/collections/${col.id}`}
+                          className={linkClass}
+                        >
+                          <span className="size-2 shrink-0 rounded-full" style={{ backgroundColor: col.dominantTypeColor ?? "#6b7280" }} />
+                          <span>{col.name}</span>
+                        </Link>
+                      ))}
+                    </nav>
+                  </>
+                )}
                 <span className="flex items-center gap-1 px-1 pt-1 text-xs font-medium text-muted-foreground/60">
                   Recent
                 </span>

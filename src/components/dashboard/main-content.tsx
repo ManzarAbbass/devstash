@@ -53,7 +53,7 @@ export async function MainContent({ userId }: { userId: string }) {
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {pinnedItems.map((item) => (
-              <ItemCardWithDrawer key={item.id} item={item} />
+              <ItemCardWithDrawer key={item.id} item={item} compact />
             ))}
           </div>
         </section>
@@ -63,7 +63,7 @@ export async function MainContent({ userId }: { userId: string }) {
         <h2 className="mb-4 text-lg font-semibold">Recent Items</h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {recentItems.map((item) => (
-            <ItemCardWithDrawer key={item.id} item={item} />
+            <ItemCardWithDrawer key={item.id} item={item} compact />
           ))}
         </div>
       </section>

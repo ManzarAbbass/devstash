@@ -49,12 +49,12 @@ function handleQuickCopy(item: ItemWithDetails) {
   toast.success("Copied!")
 }
 
-export function ItemCard({ item }: { item: ItemWithDetails }) {
+export function ItemCard({ item, compact }: { item: ItemWithDetails; compact?: boolean }) {
   const Icon = iconMap[item.itemType.icon] || Code2
   const typeName = item.itemType.name.toLowerCase()
 
   if (contentTypesWithFile.includes(typeName)) {
-    if (typeName === "image") {
+    if (typeName === "image" && !compact) {
       return (
         <div className="group cursor-pointer overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-all hover:shadow-md">
           <div className="aspect-square overflow-hidden bg-muted">

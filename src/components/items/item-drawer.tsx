@@ -20,6 +20,8 @@ import type { UpdateItemData } from "@/actions/items"
 import { iconMap } from "@/lib/icons"
 import { extractFileKey } from "@/lib/utils"
 import { FieldError } from "@/components/ui/field-error"
+import { CollectionSelect } from "@/components/items/collection-select"
+import { getUserCollections } from "@/actions/collections"
 import { ItemDrawerHeader } from "./item-drawer-header"
 import { ItemDrawerActions } from "./item-drawer-actions"
 import { FileDisplay } from "./file-display"
@@ -58,6 +60,9 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
   const [formUrl, setFormUrl] = useState("")
   const [formTags, setFormTags] = useState("")
   const [formErrors, setFormErrors] = useState<Record<string, string[]> | null>(null)
+  const [collections, setCollections] = useState<{ id: string; name: string }[]>([])
+  const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>([])
+  const [itemCollectionIds, setItemCollectionIds] = useState<string[]>([])
 
   useEffect(() => {
     setLoading(true)
@@ -79,6 +84,19 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
         setError(err.message)
         setLoading(false)
       })
+
+    getUserCollections().then(setCollections)
+
+    fetch(`/api/items/${itemId}/collections`)
+      .then((res) => {
+        if (!res.ok) return []
+        return res.json()
+      })
+      .then((ids: string[]) => {
+        setItemCollectionIds(ids)
+        setSelectedCollectionIds(ids)
+      })
+      .catch(() => {})
 
     return () => controller.abort()
   }, [itemId])
@@ -104,6 +122,7 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
 
   const Icon = iconMap[item.itemType.icon] || Code2
   const typeName = item.itemType.name.toLowerCase()
+  const itemCollections = collections.filter((c) => itemCollectionIds.includes(c.id))
 
   function handleEnterEdit() {
     if (!item) return
@@ -113,6 +132,7 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
     setFormLanguage(item.language ?? "")
     setFormUrl(item.url ?? "")
     setFormTags(item.tags.map((t) => t.name).join(", "))
+    setSelectedCollectionIds(itemCollectionIds)
     setFormErrors(null)
     setIsEditing(true)
   }
@@ -166,6 +186,7 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
       language: contentTypesWithLanguage.includes(typeName) ? (formLanguage || null) : null,
       url: contentTypesWithUrl.includes(typeName) ? (formUrl || null) : null,
       tags,
+      collectionIds: selectedCollectionIds,
     }
 
     const result = await updateItem(item.id, data)
@@ -369,6 +390,31 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
                 ))}
               </div>
             )
+          )}
+        </div>
+
+        {/* Collections */}
+        <div>
+          <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Collections
+          </h3>
+          {isEditing ? (
+            <CollectionSelect
+              collections={collections}
+              selectedIds={selectedCollectionIds}
+              onChange={setSelectedCollectionIds}
+              disabled={saving}
+            />
+          ) : itemCollections.length > 0 ? (
+            <div className="flex flex-wrap gap-1.5">
+              {itemCollections.map((c) => (
+                <Badge key={c.id} variant="secondary" className="text-[10px]">
+                  {c.name}
+                </Badge>
+              ))}
+            </div>
+          ) : (
+            <p className="text-xs text-muted-foreground">Not in any collection</p>
           )}
         </div>
 

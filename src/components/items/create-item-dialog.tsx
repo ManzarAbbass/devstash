@@ -11,6 +11,7 @@ import { CodeEditor } from "@/components/ui/code-editor"
 import { FileUpload } from "@/components/items/file-upload"
 import { FieldError } from "@/components/ui/field-error"
 import { ItemTypeSelector } from "@/components/items/item-type-selector"
+import { CollectionSelect } from "@/components/items/collection-select"
 import {
   Dialog,
   DialogContent,
@@ -19,6 +20,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog"
 import { createItem } from "@/actions/items"
+import { getUserCollections } from "@/actions/collections"
 import type { ItemTypeWithCount } from "@/lib/db/items"
 
 interface CreateItemDialogProps {
@@ -43,12 +45,13 @@ export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }:
   const [url, setUrl] = useState("")
   const [tags, setTags] = useState("")
   const [fileData, setFileData] = useState<{ fileUrl: string; fileName: string; fileSize: number } | null>(null)
+  const [collections, setCollections] = useState<{ id: string; name: string }[]>([])
+  const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>([])
 
   useEffect(() => {
-    if (open && initialType && creationTypes.includes(initialType as typeof creationTypes[number])) {
-      setSelectedType(initialType)
-    }
-  }, [open, initialType])
+    if (!open) return
+    getUserCollections().then(setCollections)
+  }, [open])
 
   const showContent = ["snippet", "prompt", "command", "note"].includes(selectedType)
   const showLanguage = ["snippet", "command"].includes(selectedType)
@@ -64,6 +67,7 @@ export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }:
     setTags("")
     setFileData(null)
     setFormErrors(null)
+    setSelectedCollectionIds([])
     setSelectedType(initialType && creationTypes.includes(initialType as typeof creationTypes[number]) ? initialType : "snippet")
   }
 
@@ -106,6 +110,7 @@ export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }:
       fileUrl: fileData?.fileUrl ?? null,
       fileName: fileData?.fileName ?? null,
       fileSize: fileData?.fileSize ?? null,
+      collectionIds: selectedCollectionIds,
     })
 
     if (!result.success) {
@@ -255,6 +260,19 @@ export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }:
                 className="h-8"
               />
               <FieldError field="tags" errors={formErrors} />
+            </div>
+
+            {/* Collections */}
+            <div>
+              <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Collections
+              </h3>
+              <CollectionSelect
+                collections={collections}
+                selectedIds={selectedCollectionIds}
+                onChange={setSelectedCollectionIds}
+                disabled={saving}
+              />
             </div>
           </div>
         </div>

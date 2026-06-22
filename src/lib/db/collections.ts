@@ -96,6 +96,20 @@ export async function getCollections(userId: string): Promise<CollectionWithStat
   })
 }
 
+export interface CollectionSimple {
+  id: string
+  name: string
+}
+
+export async function getUserCollections(userId: string): Promise<CollectionSimple[]> {
+  const collections = await prisma.collection.findMany({
+    where: { userId },
+    select: { id: true, name: true },
+    orderBy: { name: "asc" },
+  })
+  return collections
+}
+
 export async function createCollection(
   userId: string,
   data: CreateCollectionData

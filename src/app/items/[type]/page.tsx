@@ -68,9 +68,9 @@ export default async function ItemsListPage({
             </p>
           </div>
         ) : (
-          <div className={`grid gap-4 ${typeName === "image" ? "grid-cols-2 sm:grid-cols-3 md:grid-cols-4" : typeName === "file" ? "grid-cols-1" : "sm:grid-cols-2 xl:grid-cols-3"}`}>
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {items.map((item) => (
-              <ItemCardWithDrawer key={item.id} item={item} />
+              <ItemCardWithDrawer key={item.id} item={item} compact />
             ))}
           </div>
         )}

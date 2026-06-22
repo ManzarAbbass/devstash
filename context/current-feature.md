@@ -1,16 +1,20 @@
-# Current Feature
+# Current Feature: Collections Pages
 
 ## Status
 
-<!-- Not Started | In Progress | Completed -->
+In Progress
 
 ## Goals
 
-<!-- Goals and requirements -->
+- Create `/collections` page showing all collections using existing card components
+- Create `/collections/[id]` page showing items in that collection
+- Link "View all collections" in sidebar to `/collections`
+- Link all collection cards to their specific collection page
 
 ## Notes
 
-<!-- Any extra notes -->
+- Use existing card components and layouts
+- Follow existing patterns from `/items/[type]` pages
 
 ## History
 

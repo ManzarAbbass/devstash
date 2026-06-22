@@ -329,6 +329,23 @@ export async function getItemById(
   return formatItem(item)
 }
 
+export async function getItemsByCollection(userId: string, collectionId: string): Promise<ItemWithDetails[]> {
+  const itemCollections = await prisma.itemCollection.findMany({
+    where: { collectionId, item: { userId } },
+    include: {
+      item: {
+        include: {
+          itemType: { select: { name: true, icon: true, color: true } },
+          tags: { include: { tag: { select: { id: true, name: true } } } },
+        },
+      },
+    },
+    orderBy: { item: { createdAt: "desc" } },
+  })
+
+  return itemCollections.map((ic) => formatItem(ic.item))
+}
+
 export async function getItemsByType(userId: string, typeName: string): Promise<ItemWithDetails[]> {
   const items = await prisma.item.findMany({
     where: { userId, itemType: { name: typeName } },

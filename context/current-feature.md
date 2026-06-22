@@ -1,22 +1,16 @@
-# Current Feature: Add Item to Collections
+# Current Feature
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Completed -->
 
 ## Goals
 
-- Add a multi-select collection picker to the Create Item dialog (modal)
-- Add a multi-select collection picker to the Edit Item drawer
-- Wire selections to the server action (createItem / updateItem) via the ItemCollection join table
-- Pre-populate the picker with the item's current collections in edit mode
+<!-- Goals and requirements -->
 
 ## Notes
 
-- Don't worry about displaying the collection pages or collection detail views yet
-- Collections already exist in the DB with an ItemCollection join table (itemId, collectionId)
-- Fetch available collections from the server (owned by the current user)
-- Use a combobox or multi-select component consistent with the existing ShadCN UI patterns
+<!-- Any extra notes -->
 
 ## History
 
@@ -52,3 +46,4 @@ In Progress
 - 2026-06-21: Internal Refactor — Large File Splits: Extract `formatItem()` utility in `src/lib/db/items.ts`, eliminate 6x duplicated 18-line mapper (−64 lines) [Completed]
 - 2026-06-21: Internal Refactor — Large File Splits (Batch 2): Extract 11 components from item-drawer, create-item-dialog, profile-content, register-form, reset-password-form; shared FieldError, StatusCard, utils (−470 lines across 5 files) [Completed]
 - 2026-06-22: Collection Create — CreateCollectionDialog with name+description fields, server action with Zod validation, DB query, wired New Collection button in top bar, toast+router.refresh(), 9 unit tests [Completed]
+- 2026-06-22: Add Item to Collections — CollectionSelect multi-select component, wired into Create Item dialog and Edit Item drawer, collection association in createItem/updateItem server actions and DB queries, collections API route for edit pre-population, read-only collection badges in drawer view mode [Completed]

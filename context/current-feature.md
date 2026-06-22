@@ -1,16 +1,22 @@
-# Current Feature
+# Current Feature: Add Item to Collections
 
 ## Status
 
-<!-- Not Started | In Progress | Completed -->
+In Progress
 
 ## Goals
 
-<!-- Goals and requirements -->
+- Add a multi-select collection picker to the Create Item dialog (modal)
+- Add a multi-select collection picker to the Edit Item drawer
+- Wire selections to the server action (createItem / updateItem) via the ItemCollection join table
+- Pre-populate the picker with the item's current collections in edit mode
 
 ## Notes
 
-<!-- Any extra notes -->
+- Don't worry about displaying the collection pages or collection detail views yet
+- Collections already exist in the DB with an ItemCollection join table (itemId, collectionId)
+- Fetch available collections from the server (owned by the current user)
+- Use a combobox or multi-select component consistent with the existing ShadCN UI patterns
 
 ## History
 

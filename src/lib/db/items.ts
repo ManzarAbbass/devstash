@@ -12,6 +12,7 @@ export interface CreateItemData {
   fileUrl?: string | null
   fileName?: string | null
   fileSize?: number | null
+  collectionIds?: string[]
 }
 
 export interface ItemWithDetails {
@@ -221,6 +222,7 @@ export async function updateItem(
     url: string | null
     language: string | null
     tags: string[]
+    collectionIds?: string[]
   }
 ): Promise<ItemWithDetails> {
   const item = await prisma.item.update({
@@ -241,6 +243,12 @@ export async function updateItem(
             },
           },
         })),
+      },
+      collections: {
+        deleteMany: {},
+        create: data.collectionIds?.map((collectionId) => ({
+          collectionId,
+        })) ?? [],
       },
     },
     include: {
@@ -279,6 +287,13 @@ export async function createItem(
           },
         })),
       },
+      collections: data.collectionIds?.length
+        ? {
+            create: data.collectionIds.map((collectionId) => ({
+              collectionId,
+            })),
+          }
+        : undefined,
     },
     include: {
       itemType: { select: { name: true, icon: true, color: true } },
@@ -287,6 +302,14 @@ export async function createItem(
   })
 
   return formatItem(item)
+}
+
+export async function getItemCollectionIds(userId: string, itemId: string): Promise<string[]> {
+  const collections = await prisma.itemCollection.findMany({
+    where: { item: { userId, id: itemId } },
+    select: { collectionId: true },
+  })
+  return collections.map((c) => c.collectionId)
 }
 
 export async function getItemById(

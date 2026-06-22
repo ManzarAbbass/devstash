@@ -16,6 +16,7 @@ const updateItemSchema = z.object({
   url: z.union([z.string().url("Invalid URL"), z.null()]).optional(),
   language: z.string().nullable().optional(),
   tags: z.array(z.string().trim().min(1)),
+  collectionIds: z.array(z.string()).optional(),
 })
 
 export type UpdateItemData = z.infer<typeof updateItemSchema>
@@ -44,7 +45,7 @@ export async function updateItem(
     return { success: false, error: fieldErrors }
   }
 
-  const { title, tags, description, content, url, language } = parsed.data
+  const { title, tags, description, content, url, language, collectionIds } = parsed.data
 
   try {
     const updated = await updateItemQuery(session.user.id, itemId, {
@@ -54,6 +55,7 @@ export async function updateItem(
       content: content ?? null,
       url: url ?? null,
       language: language ?? null,
+      collectionIds,
     })
     return { success: true, data: updated }
   } catch {
@@ -77,6 +79,7 @@ const createItemSchema = z.object({
   fileUrl: z.string().nullable().optional(),
   fileName: z.string().nullable().optional(),
   fileSize: z.number().nullable().optional(),
+  collectionIds: z.array(z.string()).optional(),
 })
 
 export type CreateItemData = z.infer<typeof createItemSchema>
@@ -104,7 +107,7 @@ export async function createItem(
     return { success: false, error: fieldErrors }
   }
 
-  const { title, contentType, itemTypeId, tags, description, content, url, language, fileUrl, fileName, fileSize } = parsed.data
+  const { title, contentType, itemTypeId, tags, description, content, url, language, fileUrl, fileName, fileSize, collectionIds } = parsed.data
 
   if (contentType === "link" && !url) {
     return { success: false, error: { url: ["URL is required for link type"] } }
@@ -123,6 +126,7 @@ export async function createItem(
       fileUrl: fileUrl ?? null,
       fileName: fileName ?? null,
       fileSize: fileSize ?? null,
+      collectionIds,
     })
     return { success: true, data: created }
   } catch {

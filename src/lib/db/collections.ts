@@ -1,5 +1,19 @@
 import { prisma } from "@/lib/prisma"
 
+export interface CreateCollectionData {
+  name: string
+  description?: string | null
+}
+
+export interface CollectionDetails {
+  id: string
+  name: string
+  description: string | null
+  isFavorite: boolean
+  defaultTypeId: string | null
+  createdAt: Date
+}
+
 export interface CollectionWithStats {
   id: string
   name: string
@@ -80,6 +94,28 @@ export async function getCollections(userId: string): Promise<CollectionWithStat
       typeIcons,
     }
   })
+}
+
+export async function createCollection(
+  userId: string,
+  data: CreateCollectionData
+): Promise<CollectionDetails> {
+  const collection = await prisma.collection.create({
+    data: {
+      name: data.name,
+      description: data.description ?? null,
+      userId,
+    },
+  })
+
+  return {
+    id: collection.id,
+    name: collection.name,
+    description: collection.description,
+    isFavorite: collection.isFavorite,
+    defaultTypeId: collection.defaultTypeId,
+    createdAt: collection.createdAt,
+  }
 }
 
 

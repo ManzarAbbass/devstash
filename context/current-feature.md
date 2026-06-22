@@ -1,16 +1,26 @@
-# Current Feature
+# Current Feature: Collection Create
 
 ## Status
 
-<!-- Not Started | In Progress | Completed -->
+Completed
 
 ## Goals
 
-<!-- Goals and requirements -->
+- Add `createCollection` DB query function to `src/lib/db/collections.ts`
+- Add `createCollection` server action to `src/actions/collections.ts` with Zod validation
+- Create `CreateCollectionDialog` component in `src/components/collections/` with name + description fields
+- Wire the "New Collection" button in the top bar to open the dialog
+- Show toast on success/failure
+- Call `router.refresh()` on success to update the page
+- Write unit tests for the DB query and server action
+- Follow the same patterns as item create (server action pattern, not API route)
 
 ## Notes
 
-<!-- Any extra notes -->
+- Collections are user-scoped (userId field)
+- No tags, no type selectors — just name (required) and description (optional)
+- Follow the `createItem` pattern: server action → DB query → component → wire up
+- The "New Collection" button already exists in the top bar but has no onClick handler
 
 ## History
 

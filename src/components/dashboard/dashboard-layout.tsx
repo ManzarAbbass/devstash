@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Sidebar, SidebarContent } from "@/components/dashboard/sidebar"
 import { CreateItemDialog } from "@/components/items/create-item-dialog"
+import { CreateCollectionDialog } from "@/components/collections/create-collection-dialog"
 import { CreateItemContext } from "@/lib/create-item-context"
 import type { SidebarData } from "@/lib/db/items"
 
@@ -17,6 +18,7 @@ export function DashboardLayout({ children, sidebarData }: { children: ReactNode
   const [isMobile, setIsMobile] = useState(false)
   const [createDialogOpen, setCreateDialogOpen] = useState(false)
   const [dialogInitialType, setDialogInitialType] = useState<string | undefined>()
+  const [collectionDialogOpen, setCollectionDialogOpen] = useState(false)
 
   const typeFromPath = pathname.match(/^\/items\/(\w+)/)?.[1]
   const typeName = typeFromPath ? (typeFromPath.endsWith("s") ? typeFromPath.slice(0, -1) : typeFromPath) : undefined
@@ -52,7 +54,7 @@ export function DashboardLayout({ children, sidebarData }: { children: ReactNode
             <Input placeholder="Search items..." className="pl-8" />
           </div>
           <div className="flex w-40 items-center justify-end gap-2">
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" onClick={() => setCollectionDialogOpen(true)}>
               New Collection
             </Button>
             <Button size="sm" onClick={handleNewItemClick}>
@@ -64,6 +66,10 @@ export function DashboardLayout({ children, sidebarData }: { children: ReactNode
               onOpenChange={setCreateDialogOpen}
               itemTypes={sidebarData.itemTypes}
               initialType={dialogInitialType}
+            />
+            <CreateCollectionDialog
+              open={collectionDialogOpen}
+              onOpenChange={setCollectionDialogOpen}
             />
             {isMobile && (
               <Sheet>

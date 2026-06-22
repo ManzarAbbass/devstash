@@ -1,26 +1,16 @@
-# Current Feature: Collection Create
+# Current Feature
 
 ## Status
 
-Completed
+<!-- Not Started | In Progress | Completed -->
 
 ## Goals
 
-- Add `createCollection` DB query function to `src/lib/db/collections.ts`
-- Add `createCollection` server action to `src/actions/collections.ts` with Zod validation
-- Create `CreateCollectionDialog` component in `src/components/collections/` with name + description fields
-- Wire the "New Collection" button in the top bar to open the dialog
-- Show toast on success/failure
-- Call `router.refresh()` on success to update the page
-- Write unit tests for the DB query and server action
-- Follow the same patterns as item create (server action pattern, not API route)
+<!-- Goals and requirements -->
 
 ## Notes
 
-- Collections are user-scoped (userId field)
-- No tags, no type selectors — just name (required) and description (optional)
-- Follow the `createItem` pattern: server action → DB query → component → wire up
-- The "New Collection" button already exists in the top bar but has no onClick handler
+<!-- Any extra notes -->
 
 ## History
 
@@ -55,3 +45,4 @@ Completed
 - 2026-06-21: Quick Wins Cleanup — H3: Password minimum 6→8 (3 server + 3 client files); L3: Suspense fallbacks on 5 auth pages; M2: env guard in resend.ts; M3: env guard in rate-limit.ts; M5: AbortController in ItemDrawer; L1: Extract shared iconMap to src/lib/icons.ts; L2: Extract formatFileSize/extractFileKey to src/lib/utils.ts [Completed]
 - 2026-06-21: Internal Refactor — Large File Splits: Extract `formatItem()` utility in `src/lib/db/items.ts`, eliminate 6x duplicated 18-line mapper (−64 lines) [Completed]
 - 2026-06-21: Internal Refactor — Large File Splits (Batch 2): Extract 11 components from item-drawer, create-item-dialog, profile-content, register-form, reset-password-form; shared FieldError, StatusCard, utils (−470 lines across 5 files) [Completed]
+- 2026-06-22: Collection Create — CreateCollectionDialog with name+description fields, server action with Zod validation, DB query, wired New Collection button in top bar, toast+router.refresh(), 9 unit tests [Completed]

@@ -1,20 +1,16 @@
-# Current Feature: Collections Pages
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Create `/collections` page showing all collections using existing card components
-- Create `/collections/[id]` page showing items in that collection
-- Link "View all collections" in sidebar to `/collections`
-- Link all collection cards to their specific collection page
+<!-- Bullet points of what success looks like -->
 
 ## Notes
 
-- Use existing card components and layouts
-- Follow existing patterns from `/items/[type]` pages
+<!-- Additional context, constraints, or details from spec -->
 
 ## History
 
@@ -51,3 +47,4 @@ In Progress
 - 2026-06-21: Internal Refactor — Large File Splits (Batch 2): Extract 11 components from item-drawer, create-item-dialog, profile-content, register-form, reset-password-form; shared FieldError, StatusCard, utils (−470 lines across 5 files) [Completed]
 - 2026-06-22: Collection Create — CreateCollectionDialog with name+description fields, server action with Zod validation, DB query, wired New Collection button in top bar, toast+router.refresh(), 9 unit tests [Completed]
 - 2026-06-22: Add Item to Collections — CollectionSelect multi-select component, wired into Create Item dialog and Edit Item drawer, collection association in createItem/updateItem server actions and DB queries, collections API route for edit pre-population, read-only collection badges in drawer view mode [Completed]
+- 2026-06-23: Collections Pages — `/collections` and `/collections/[id]` pages, extracted `CollectionCard` from `main-content.tsx` into dedicated component, sidebar "View all collections" link, compact card layout on collection and item-type pages to match dashboard recent items [Completed]

@@ -3,9 +3,9 @@ import { PackageOpen } from "lucide-react"
 
 import { auth } from "@/auth"
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
-import { getSidebarData } from "@/lib/db/items"
+import { getSidebarData, getItemsByCollection } from "@/lib/db/items"
+import { getSearchData } from "@/lib/db/search"
 import { getCollections } from "@/lib/db/collections"
-import { getItemsByCollection } from "@/lib/db/items"
 import { ItemCardWithDrawer } from "@/components/items/item-card-with-drawer"
 import { CollectionDetailHeader } from "@/components/collections/collection-detail-header"
 
@@ -21,8 +21,9 @@ export default async function CollectionDetailPage({
   if (!session?.user?.id) redirect("/sign-in")
   const userId = session.user.id
 
-  const [sidebarData, collections, items] = await Promise.all([
+  const [sidebarData, searchData, collections, items] = await Promise.all([
     getSidebarData(userId),
+    getSearchData(userId),
     getCollections(userId),
     getItemsByCollection(userId, id),
   ])
@@ -31,7 +32,7 @@ export default async function CollectionDetailPage({
   if (!collection) notFound()
 
   return (
-    <DashboardLayout sidebarData={sidebarData}>
+    <DashboardLayout sidebarData={sidebarData} searchData={searchData}>
       <div className="flex flex-col gap-6">
         <CollectionDetailHeader
           collection={{ id: collection.id, name: collection.name, description: collection.description, isFavorite: collection.isFavorite }}

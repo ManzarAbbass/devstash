@@ -12,14 +12,28 @@ import { Sidebar, SidebarContent } from "@/components/dashboard/sidebar"
 import { CreateItemDialog } from "@/components/items/create-item-dialog"
 import { CreateCollectionDialog } from "@/components/collections/create-collection-dialog"
 import { CreateItemContext } from "@/lib/create-item-context"
+import { CommandPalette } from "@/components/search/command-palette"
 import type { SidebarData } from "@/lib/db/items"
+import type { SearchData } from "@/lib/db/search"
 
-export function DashboardLayout({ children, sidebarData }: { children: ReactNode; sidebarData: SidebarData }) {
+export function DashboardLayout({ children, sidebarData, searchData }: { children: ReactNode; sidebarData: SidebarData; searchData: SearchData }) {
   const pathname = usePathname()
   const [isMobile, setIsMobile] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
   const [createDialogOpen, setCreateDialogOpen] = useState(false)
   const [dialogInitialType, setDialogInitialType] = useState<string | undefined>()
   const [collectionDialogOpen, setCollectionDialogOpen] = useState(false)
+
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault()
+        setSearchOpen((prev) => !prev)
+      }
+    }
+    document.addEventListener("keydown", down)
+    return () => document.removeEventListener("keydown", down)
+  }, [])
 
   const typeFromPath = pathname.match(/^\/items\/(\w+)/)?.[1]
   const typeName = typeFromPath ? (typeFromPath.endsWith("s") ? typeFromPath.slice(0, -1) : typeFromPath) : undefined
@@ -52,7 +66,12 @@ export function DashboardLayout({ children, sidebarData }: { children: ReactNode
           </Link>
           <div className="relative mx-auto w-full max-w-md">
             <Search className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-            <Input placeholder="Search items..." className="pl-8" />
+            <Input
+              readOnly
+              placeholder="Search items...  ⌘K"
+              className="pl-8 cursor-pointer"
+              onClick={() => setSearchOpen(true)}
+            />
           </div>
           <div className="flex w-40 items-center justify-end gap-2">
             <Button variant="outline" size="sm" onClick={() => setCollectionDialogOpen(true)}>
@@ -72,6 +91,7 @@ export function DashboardLayout({ children, sidebarData }: { children: ReactNode
               open={collectionDialogOpen}
               onOpenChange={setCollectionDialogOpen}
             />
+            <CommandPalette open={searchOpen} onOpenChange={setSearchOpen} data={searchData} />
             {isMobile && (
               <Sheet>
                 <SheetTrigger

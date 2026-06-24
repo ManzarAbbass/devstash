@@ -12,6 +12,7 @@ import {
 import { auth } from "@/auth"
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
 import { getSidebarData, getItemsByType } from "@/lib/db/items"
+import { getSearchData } from "@/lib/db/search"
 import { ItemCardWithDrawer } from "@/components/items/item-card-with-drawer"
 import { AddItemButton } from "@/components/items/add-item-button"
 
@@ -39,8 +40,9 @@ export default async function ItemsListPage({
 
   const typeName = type.endsWith("s") ? type.slice(0, -1) : type
 
-  const [sidebarData, items] = await Promise.all([
+  const [sidebarData, searchData, items] = await Promise.all([
     getSidebarData(userId),
+    getSearchData(userId),
     getItemsByType(userId, typeName),
   ])
 
@@ -48,7 +50,7 @@ export default async function ItemsListPage({
   const TypeIcon = typeIcons[typeName] || Code2
 
   return (
-    <DashboardLayout sidebarData={sidebarData}>
+    <DashboardLayout sidebarData={sidebarData} searchData={searchData}>
       <div className="flex flex-col gap-6">
         <div className="flex items-center justify-between">
           <div>

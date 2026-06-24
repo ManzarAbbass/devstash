@@ -1,24 +1,22 @@
-# Current Feature: Collection Actions — Edit / Delete Items from Collection, Favorite Button
+<!--
+# Current Feature
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Complete -->
 
 ## Goals
 
-- [ ] Add edit modal on `/collections/[id]` to edit collection meta (name, description)
-- [ ] Add delete (remove from collection) button with confirmation dialog on `/collections/[id]` — items are NOT deleted, only disassociated from the collection
-- [ ] Add favorite icon/button on `/collections/[id]` (UI only, no backend)
-- [ ] Add 3-dot dropdown on `CollectionCard` (on `/collections` and dashboard) with Edit, Delete, Favorite menu items
-- [ ] Clicking the card body (not the 3-dot area) navigates to the collection page
+<!-- Bullet points of what success looks like -->
 
 ## Notes
 
-- Items should NOT be deleted from the database — only the `ItemCollection` join record is removed
-- Favorites are frontend-only for now; implement the icon/button without wiring to a server action
+<!-- Additional context, constraints, or details from spec -->
+-->
 
 ## History
 
+- 2026-06-24: Collection Actions — Edit/delete collection on detail page and card dropdown, EditCollectionDialog for meta, card body click navigation, 3-dot dropdown with Edit/Delete/Favorite (UI only) [Completed]
 - 2026-05-23: Dashboard UI Phase 1 — ShadCN init, layout, dark mode, top bar, placeholders [Completed]
 - 2026-05-23: Dashboard UI Phase 2 — Collapsible sidebar with icon collapse, toggle in sidebar, centered search [Completed]
 - 2026-05-23: Dashboard UI Phase 2 (redo) — Sidebar redesign: collapsible to icons, toggle inside, Nav heading, centered search [Completed]

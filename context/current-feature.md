@@ -1,8 +1,9 @@
+<!--
 # Current Feature
 
 ## Status
 
-Not Started
+<!-- Not Started | In Progress | Complete -->
 
 ## Goals
 
@@ -11,6 +12,7 @@ Not Started
 ## Notes
 
 <!-- Additional context, constraints, or details from spec -->
+-->
 
 ## History
 

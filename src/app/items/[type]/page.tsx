@@ -15,6 +15,8 @@ import { getSidebarData, getItemsByType } from "@/lib/db/items"
 import { getSearchData } from "@/lib/db/search"
 import { ItemCardWithDrawer } from "@/components/items/item-card-with-drawer"
 import { AddItemButton } from "@/components/items/add-item-button"
+import { PaginationControls } from "@/components/ui/pagination-controls"
+import { ITEMS_PER_PAGE } from "@/lib/constants"
 
 export const dynamic = "force-dynamic"
 
@@ -30,24 +32,30 @@ const typeIcons: Record<string, typeof Code2> = {
 
 export default async function ItemsListPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ type: string }>
+  searchParams: Promise<{ page?: string }>
 }) {
   const { type } = await params
+  const { page: pageStr } = await searchParams
   const session = await auth()
   if (!session?.user?.id) redirect("/sign-in")
   const userId = session.user.id
 
   const typeName = type.endsWith("s") ? type.slice(0, -1) : type
+  const currentPage = Math.max(1, Number(pageStr) || 1)
 
-  const [sidebarData, searchData, items] = await Promise.all([
+  const [sidebarData, searchData, { items, total }] = await Promise.all([
     getSidebarData(userId),
     getSearchData(userId),
-    getItemsByType(userId, typeName),
+    getItemsByType(userId, typeName, currentPage),
   ])
 
   const displayName = typeName.charAt(0).toUpperCase() + typeName.slice(1)
   const TypeIcon = typeIcons[typeName] || Code2
+  const totalPages = Math.ceil(total / ITEMS_PER_PAGE)
+  const baseUrl = `/items/${type}`
 
   return (
     <DashboardLayout sidebarData={sidebarData} searchData={searchData}>
@@ -55,7 +63,7 @@ export default async function ItemsListPage({
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold">{displayName}s</h1>
-            <p className="text-xs text-muted-foreground">Items: {items.length}</p>
+            <p className="text-xs text-muted-foreground">Items: {total}</p>
           </div>
           <AddItemButton type={typeName} />
         </div>
@@ -76,6 +84,7 @@ export default async function ItemsListPage({
             ))}
           </div>
         )}
+        <PaginationControls currentPage={currentPage} totalPages={totalPages} baseUrl={baseUrl} />
       </div>
     </DashboardLayout>
   )

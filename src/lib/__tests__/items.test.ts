@@ -146,6 +146,10 @@ describe("updateItem", () => {
             },
           ],
         },
+        collections: {
+          deleteMany: {},
+          create: [],
+        },
       },
       include: {
         itemType: { select: { name: true, icon: true, color: true } },
@@ -255,6 +259,9 @@ describe("createItem", () => {
         content: "console.log('hello')",
         url: null,
         language: "javascript",
+        fileUrl: null,
+        fileName: null,
+        fileSize: null,
         userId: "user-1",
         tags: {
           create: [
@@ -359,6 +366,7 @@ describe("deleteItem", () => {
 
     expect(prisma.item.delete).toHaveBeenCalledWith({
       where: { id: "item-1", userId: "user-1" },
+      select: { fileUrl: true },
     })
   })
 

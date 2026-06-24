@@ -7,19 +7,30 @@ import { getSidebarData } from "@/lib/db/items"
 import { getSearchData } from "@/lib/db/search"
 import { getCollections } from "@/lib/db/collections"
 import { CollectionCard } from "@/components/collections/collection-card"
+import { PaginationControls } from "@/components/ui/pagination-controls"
+import { COLLECTIONS_PER_PAGE } from "@/lib/constants"
 
 export const dynamic = "force-dynamic"
 
-export default async function CollectionsPage() {
+export default async function CollectionsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>
+}) {
+  const { page: pageStr } = await searchParams
   const session = await auth()
   if (!session?.user?.id) redirect("/sign-in")
   const userId = session.user.id
 
-  const [sidebarData, searchData, collections] = await Promise.all([
+  const currentPage = Math.max(1, Number(pageStr) || 1)
+
+  const [sidebarData, searchData, { collections, total }] = await Promise.all([
     getSidebarData(userId),
     getSearchData(userId),
-    getCollections(userId),
+    getCollections(userId, currentPage),
   ])
+
+  const totalPages = Math.ceil(total / COLLECTIONS_PER_PAGE)
 
   return (
     <DashboardLayout sidebarData={sidebarData} searchData={searchData}>
@@ -42,6 +53,7 @@ export default async function CollectionsPage() {
             ))}
           </div>
         )}
+        <PaginationControls currentPage={currentPage} totalPages={totalPages} baseUrl="/collections" />
       </div>
     </DashboardLayout>
   )

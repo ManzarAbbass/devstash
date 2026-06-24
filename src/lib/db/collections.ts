@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma"
+import { COLLECTIONS_PER_PAGE } from "@/lib/constants"
 
 export interface CreateCollectionData {
   name: string
@@ -26,11 +27,16 @@ export interface CollectionWithStats {
   typeIcons: { name: string; icon: string; color: string }[]
 }
 
-export async function getCollections(userId: string): Promise<CollectionWithStats[]> {
-  const [collections, aggregation, itemTypes] = await Promise.all([
+export async function getCollections(userId: string, page?: number): Promise<{ collections: CollectionWithStats[]; total: number }> {
+  const skip = page ? (page - 1) * COLLECTIONS_PER_PAGE : undefined
+  const take = page ? COLLECTIONS_PER_PAGE : undefined
+
+  const [collections, aggregation, itemTypes, total] = await Promise.all([
     prisma.collection.findMany({
       where: { userId },
       orderBy: { createdAt: "desc" },
+      skip,
+      take,
     }),
     prisma.$queryRaw<
       { collection_id: string; item_type_id: string; count: number }[]
@@ -46,6 +52,7 @@ export async function getCollections(userId: string): Promise<CollectionWithStat
       GROUP BY ic."collectionId", i."itemTypeId"
     `,
     prisma.itemType.findMany(),
+    prisma.collection.count({ where: { userId } }),
   ])
 
   const typeMap = new Map(itemTypes.map((t) => [t.id, t]))
@@ -60,40 +67,43 @@ export async function getCollections(userId: string): Promise<CollectionWithStat
     typeCounts.set(row.item_type_id, row.count)
   }
 
-  return collections.map((col) => {
-    const typeCounts = aggByCollection.get(col.id) ?? new Map()
-    const sorted = [...typeCounts.entries()]
-      .map(([typeId, count]) => {
-        const type = typeMap.get(typeId)
-        if (!type) return null
-        return { count, name: type.name, icon: type.icon, color: type.color }
-      })
-      .filter((t): t is NonNullable<typeof t> => t !== null)
-      .sort((a, b) => b.count - a.count)
+  return {
+    collections: collections.map((col) => {
+      const typeCounts = aggByCollection.get(col.id) ?? new Map()
+      const sorted = [...typeCounts.entries()]
+        .map(([typeId, count]) => {
+          const type = typeMap.get(typeId)
+          if (!type) return null
+          return { count, name: type.name, icon: type.icon, color: type.color }
+        })
+        .filter((t): t is NonNullable<typeof t> => t !== null)
+        .sort((a, b) => b.count - a.count)
 
-    const itemCount = sorted.reduce((sum, t) => sum + t.count, 0)
-    const dominantType = sorted.length > 0 ? sorted[0] : null
+      const itemCount = sorted.reduce((sum, t) => sum + t.count, 0)
+      const dominantType = sorted.length > 0 ? sorted[0] : null
 
-    const typeIcons = sorted.map((t) => ({
-      name: t.name,
-      icon: t.icon,
-      color: t.color,
-    }))
+      const typeIcons = sorted.map((t) => ({
+        name: t.name,
+        icon: t.icon,
+        color: t.color,
+      }))
 
-    return {
-      id: col.id,
-      name: col.name,
-      description: col.description,
-      isFavorite: col.isFavorite,
-      defaultTypeId: col.defaultTypeId,
-      createdAt: col.createdAt,
-      itemCount,
-      dominantType: dominantType
-        ? { name: dominantType.name, icon: dominantType.icon, color: dominantType.color }
-        : null,
-      typeIcons,
-    }
-  })
+      return {
+        id: col.id,
+        name: col.name,
+        description: col.description,
+        isFavorite: col.isFavorite,
+        defaultTypeId: col.defaultTypeId,
+        createdAt: col.createdAt,
+        itemCount,
+        dominantType: dominantType
+          ? { name: dominantType.name, icon: dominantType.icon, color: dominantType.color }
+          : null,
+        typeIcons,
+      }
+    }),
+    total,
+  }
 }
 
 export interface CollectionSimple {

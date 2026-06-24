@@ -11,14 +11,17 @@ import { getCollections } from "@/lib/db/collections"
 import { getPinnedItems, getRecentItems, getItemStats } from "@/lib/db/items"
 import { ItemCardWithDrawer } from "@/components/items/item-card-with-drawer"
 import { CollectionCard } from "@/components/collections/collection-card"
+import { DASHBOARD_COLLECTIONS_LIMIT } from "@/lib/constants"
 
 export async function MainContent({ userId }: { userId: string }) {
-  const [collections, pinnedItems, recentItems, { totalItems, favoriteItems }] = await Promise.all([
+  const [{ collections }, pinnedItems, recentItems, { totalItems, favoriteItems }] = await Promise.all([
     getCollections(userId),
     getPinnedItems(userId),
     getRecentItems(userId),
     getItemStats(userId),
   ])
+
+  const displayCollections = collections.slice(0, DASHBOARD_COLLECTIONS_LIMIT)
 
   return (
     <div className="flex flex-col gap-8">
@@ -38,7 +41,7 @@ export async function MainContent({ userId }: { userId: string }) {
           </Link>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {collections.map((col) => (
+          {displayCollections.map((col) => (
             <CollectionCard key={col.id} collection={col} />
           ))}
         </div>

@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma"
+import { ITEMS_PER_PAGE } from "@/lib/constants"
 
 export interface CreateItemData {
   title: string
@@ -329,34 +330,58 @@ export async function getItemById(
   return formatItem(item)
 }
 
-export async function getItemsByCollection(userId: string, collectionId: string): Promise<ItemWithDetails[]> {
-  const itemCollections = await prisma.itemCollection.findMany({
-    where: { collectionId, item: { userId } },
-    include: {
-      item: {
-        include: {
-          itemType: { select: { name: true, icon: true, color: true } },
-          tags: { include: { tag: { select: { id: true, name: true } } } },
+export async function getItemsByCollection(
+  userId: string,
+  collectionId: string,
+  page: number = 1,
+): Promise<{ items: ItemWithDetails[]; total: number }> {
+  const where = { collectionId, item: { userId } }
+  const skip = (page - 1) * ITEMS_PER_PAGE
+
+  const [itemCollections, total] = await Promise.all([
+    prisma.itemCollection.findMany({
+      where,
+      include: {
+        item: {
+          include: {
+            itemType: { select: { name: true, icon: true, color: true } },
+            tags: { include: { tag: { select: { id: true, name: true } } } },
+          },
         },
       },
-    },
-    orderBy: { item: { createdAt: "desc" } },
-  })
+      orderBy: { item: { createdAt: "desc" } },
+      skip,
+      take: ITEMS_PER_PAGE,
+    }),
+    prisma.itemCollection.count({ where }),
+  ])
 
-  return itemCollections.map((ic) => formatItem(ic.item))
+  return { items: itemCollections.map((ic) => formatItem(ic.item)), total }
 }
 
-export async function getItemsByType(userId: string, typeName: string): Promise<ItemWithDetails[]> {
-  const items = await prisma.item.findMany({
-    where: { userId, itemType: { name: typeName } },
-    include: {
-      itemType: { select: { name: true, icon: true, color: true } },
-      tags: { include: { tag: { select: { id: true, name: true } } } },
-    },
-    orderBy: { createdAt: "desc" },
-  })
+export async function getItemsByType(
+  userId: string,
+  typeName: string,
+  page: number = 1,
+): Promise<{ items: ItemWithDetails[]; total: number }> {
+  const where = { userId, itemType: { name: typeName } }
+  const skip = (page - 1) * ITEMS_PER_PAGE
 
-  return items.map(formatItem)
+  const [items, total] = await Promise.all([
+    prisma.item.findMany({
+      where,
+      include: {
+        itemType: { select: { name: true, icon: true, color: true } },
+        tags: { include: { tag: { select: { id: true, name: true } } } },
+      },
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: ITEMS_PER_PAGE,
+    }),
+    prisma.item.count({ where }),
+  ])
+
+  return { items: items.map(formatItem), total }
 }
 
 export async function deleteItem(userId: string, itemId: string): Promise<{ fileUrl: string | null }> {

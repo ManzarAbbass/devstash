@@ -110,7 +110,7 @@ export function DashboardLayout({ children, sidebarData, searchData }: { childre
         </header>
         <div className="flex flex-1 overflow-hidden">
           {!isMobile && <Sidebar data={sidebarData} />}
-          <main className="flex-1 overflow-y-auto p-6">{children}</main>
+          <main className="flex-1 overflow-y-auto p-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">{children}</main>
         </div>
       </div>
     </CreateItemContext.Provider>

@@ -238,7 +238,7 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
 
       <Separator />
 
-      <div className="flex flex-col gap-5 overflow-y-auto px-4 pb-4 scrollbar-none">
+      <div className="flex flex-col gap-5 overflow-y-auto px-4 pb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         {/* Description */}
         <div>
           <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">

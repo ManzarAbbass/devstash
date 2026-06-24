@@ -1,18 +1,21 @@
-<!--
-# Current Feature
+# Current Feature: Collection Actions — Edit / Delete Items from Collection, Favorite Button
 
 ## Status
 
-<!-- Not Started | In Progress | Complete -->
+In Progress
 
 ## Goals
 
-<!-- Bullet points of what success looks like -->
+- [ ] Add edit modal on `/collections/[id]` to edit collection meta (name, description)
+- [ ] Add delete (remove from collection) button with confirmation dialog on `/collections/[id]` — items are NOT deleted, only disassociated from the collection
+- [ ] Add favorite icon/button on `/collections/[id]` (UI only, no backend)
+- [ ] Add 3-dot dropdown on `CollectionCard` (on `/collections` and dashboard) with Edit, Delete, Favorite menu items
+- [ ] Clicking the card body (not the 3-dot area) navigates to the collection page
 
 ## Notes
 
-<!-- Additional context, constraints, or details from spec -->
--->
+- Items should NOT be deleted from the database — only the `ItemCollection` join record is removed
+- Favorites are frontend-only for now; implement the icon/button without wiring to a server action
 
 ## History
 

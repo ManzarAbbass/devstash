@@ -110,6 +110,40 @@ export async function getUserCollections(userId: string): Promise<CollectionSimp
   return collections
 }
 
+export interface UpdateCollectionData {
+  name: string
+  description?: string | null
+}
+
+export async function updateCollection(
+  userId: string,
+  collectionId: string,
+  data: UpdateCollectionData
+): Promise<CollectionDetails> {
+  const collection = await prisma.collection.update({
+    where: { id: collectionId, userId },
+    data: {
+      name: data.name,
+      description: data.description ?? null,
+    },
+  })
+
+  return {
+    id: collection.id,
+    name: collection.name,
+    description: collection.description,
+    isFavorite: collection.isFavorite,
+    defaultTypeId: collection.defaultTypeId,
+    createdAt: collection.createdAt,
+  }
+}
+
+export async function deleteCollection(userId: string, collectionId: string): Promise<void> {
+  await prisma.collection.delete({
+    where: { id: collectionId, userId },
+  })
+}
+
 export async function createCollection(
   userId: string,
   data: CreateCollectionData

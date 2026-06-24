@@ -7,6 +7,7 @@ import { getSidebarData } from "@/lib/db/items"
 import { getCollections } from "@/lib/db/collections"
 import { getItemsByCollection } from "@/lib/db/items"
 import { ItemCardWithDrawer } from "@/components/items/item-card-with-drawer"
+import { CollectionDetailHeader } from "@/components/collections/collection-detail-header"
 
 export const dynamic = "force-dynamic"
 
@@ -32,15 +33,10 @@ export default async function CollectionDetailPage({
   return (
     <DashboardLayout sidebarData={sidebarData}>
       <div className="flex flex-col gap-6">
-        <div>
-          <h1 className="text-2xl font-bold">{collection.name}</h1>
-          {collection.description && (
-            <p className="mt-1 text-sm text-muted-foreground">{collection.description}</p>
-          )}
-          <p className="text-xs text-muted-foreground">
-            {items.length} {items.length === 1 ? "item" : "items"}
-          </p>
-        </div>
+        <CollectionDetailHeader
+          collection={{ id: collection.id, name: collection.name, description: collection.description, isFavorite: collection.isFavorite }}
+          itemCount={items.length}
+        />
         {items.length === 0 ? (
           <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border py-16 text-center">
             <div className="mb-4 flex size-16 items-center justify-center rounded-full bg-muted">

@@ -2,6 +2,7 @@ import { redirect } from "next/navigation"
 import { auth } from "@/auth"
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
 import { getSidebarData } from "@/lib/db/items"
+import { getSearchData } from "@/lib/db/search"
 import { getUserProfile, getProfileStats } from "@/lib/db/users"
 import { ProfileContent } from "./profile-content"
 
@@ -12,14 +13,15 @@ export default async function ProfilePage() {
   if (!session?.user?.id) redirect("/sign-in")
   const userId = session.user.id
 
-  const [sidebarData, profile, stats] = await Promise.all([
+  const [sidebarData, searchData, profile, stats] = await Promise.all([
     getSidebarData(userId),
+    getSearchData(userId),
     getUserProfile(userId),
     getProfileStats(userId),
   ])
 
   return (
-    <DashboardLayout sidebarData={sidebarData}>
+    <DashboardLayout sidebarData={sidebarData} searchData={searchData}>
       <ProfileContent profile={profile} stats={stats} />
     </DashboardLayout>
   )

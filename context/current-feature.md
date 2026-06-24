@@ -16,7 +16,6 @@
 
 ## History
 
-- 2026-06-24: Collection Actions — Edit/delete collection on detail page and card dropdown, EditCollectionDialog for meta, card body click navigation, 3-dot dropdown with Edit/Delete/Favorite (UI only) [Completed]
 - 2026-05-23: Dashboard UI Phase 1 — ShadCN init, layout, dark mode, top bar, placeholders [Completed]
 - 2026-05-23: Dashboard UI Phase 2 — Collapsible sidebar with icon collapse, toggle in sidebar, centered search [Completed]
 - 2026-05-23: Dashboard UI Phase 2 (redo) — Sidebar redesign: collapsible to icons, toggle inside, Nav heading, centered search [Completed]
@@ -51,3 +50,4 @@
 - 2026-06-22: Collection Create — CreateCollectionDialog with name+description fields, server action with Zod validation, DB query, wired New Collection button in top bar, toast+router.refresh(), 9 unit tests [Completed]
 - 2026-06-22: Add Item to Collections — CollectionSelect multi-select component, wired into Create Item dialog and Edit Item drawer, collection association in createItem/updateItem server actions and DB queries, collections API route for edit pre-population, read-only collection badges in drawer view mode [Completed]
 - 2026-06-23: Collections Pages — `/collections` and `/collections/[id]` pages, extracted `CollectionCard` from `main-content.tsx` into dedicated component, sidebar "View all collections" link, compact card layout on collection and item-type pages to match dashboard recent items [Completed]
+- 2026-06-24: Collection Actions — Edit/delete collection on detail page and card dropdown, EditCollectionDialog for meta, card body click navigation, 3-dot dropdown with Edit/Delete/Favorite (UI only) [Completed]

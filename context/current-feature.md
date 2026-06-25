@@ -1,18 +1,17 @@
-<!--
-# Current Feature
+# Current Feature: Settings Page
 
 ## Status
 
-<!-- Not Started | In Progress | Complete -->
+In Progress
 
 ## Goals
 
-<!-- Bullet points of what success looks like -->
+- Create a settings page at `/settings`
+- Add a settings link in the user avatar dropdown in the sidebar
+- Protect the `/settings` route (require authentication)
+- Move Account actions (delete account, forgot password) from profile to settings page
 
 ## Notes
-
-<!-- Additional context, constraints, or details from spec -->
--->
 
 ## History
 

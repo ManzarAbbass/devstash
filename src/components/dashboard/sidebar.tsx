@@ -239,6 +239,10 @@ export function SidebarContent({
               <User className="size-4" />
               Profile
             </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push("/settings")}>
+              <Settings className="size-4" />
+              Settings
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/sign-in" })}>
               <LogOut className="size-4" />

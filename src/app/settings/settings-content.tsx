@@ -9,9 +9,11 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ChangePasswordForm } from "@/components/profile/change-password-form"
 import { DeleteAccountConfirmation } from "@/components/profile/delete-account-confirmation"
+import { EditorPreferencesForm } from "@/components/settings/editor-preferences-form"
 import type { UserProfile } from "@/lib/db/users"
+import type { EditorPreferences } from "@/lib/editor-preferences"
 
-export function SettingsContent({ profile }: { profile: UserProfile }) {
+export function SettingsContent({ profile, editorPrefs }: { profile: UserProfile; editorPrefs: EditorPreferences }) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
 
   const handleDeleteAccount = async (password?: string) => {
@@ -39,6 +41,8 @@ export function SettingsContent({ profile }: { profile: UserProfile }) {
         <h1 className="text-2xl font-bold">Settings</h1>
         <p className="text-sm text-muted-foreground">Manage your account settings</p>
       </div>
+
+      <EditorPreferencesForm initial={editorPrefs} />
 
       {profile.hasPassword && (
         <Card>

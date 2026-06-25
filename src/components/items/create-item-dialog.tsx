@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { CodeEditor } from "@/components/ui/code-editor"
+import { useEditorPreferences } from "@/lib/editor-preferences-context"
 import { FileUpload } from "@/components/items/file-upload"
 import { FieldError } from "@/components/ui/field-error"
 import { ItemTypeSelector } from "@/components/items/item-type-selector"
@@ -34,6 +35,7 @@ const creationTypes = ["snippet", "prompt", "command", "note", "file", "image", 
 
 export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }: CreateItemDialogProps) {
   const router = useRouter()
+  const { preferences: editorPrefs } = useEditorPreferences()
   const [selectedType, setSelectedType] = useState(initialType && creationTypes.includes(initialType as typeof creationTypes[number]) ? initialType : "snippet")
   const [saving, setSaving] = useState(false)
   const [formErrors, setFormErrors] = useState<Record<string, string[]> | null>(null)
@@ -183,6 +185,7 @@ export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }:
                     value={content}
                     onChange={(v) => setContent(v ?? "")}
                     language={language || "plaintext"}
+                    preferences={editorPrefs}
                   />
                 ) : (
                   <Textarea

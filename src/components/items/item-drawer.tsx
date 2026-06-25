@@ -14,6 +14,7 @@ import { Separator } from "@/components/ui/separator"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { CodeEditor } from "@/components/ui/code-editor"
+import { useEditorPreferences } from "@/lib/editor-preferences-context"
 import type { ItemWithDetails } from "@/lib/db/items"
 import { updateItem, deleteItem } from "@/actions/items"
 import type { UpdateItemData } from "@/actions/items"
@@ -46,6 +47,7 @@ function DrawerSkeleton() {
 
 export function ItemDrawer({ itemId }: { itemId: string }) {
   const router = useRouter()
+  const { preferences: editorPrefs } = useEditorPreferences()
   const [item, setItem] = useState<ItemWithDetails | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -283,6 +285,7 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
                     value={formContent}
                     onChange={(v) => setFormContent(v ?? "")}
                     language={formLanguage || "plaintext"}
+                    preferences={editorPrefs}
                   />
                 ) : (
                   <Textarea
@@ -301,6 +304,7 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
                     value={item.content}
                     language={item.language}
                     readOnly
+                    preferences={editorPrefs}
                   />
                 ) : (
                   <pre className="overflow-x-auto whitespace-pre-wrap rounded-lg bg-muted p-3 text-xs leading-relaxed">

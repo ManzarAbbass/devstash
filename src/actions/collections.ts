@@ -2,7 +2,7 @@
 
 import { z } from "zod"
 import { auth } from "@/auth"
-import { getUserCollections as getUserCollectionsQuery, createCollection as createCollectionQuery, updateCollection as updateCollectionQuery, deleteCollection as deleteCollectionQuery } from "@/lib/db/collections"
+import { getUserCollections as getUserCollectionsQuery, createCollection as createCollectionQuery, updateCollection as updateCollectionQuery, deleteCollection as deleteCollectionQuery, toggleCollectionFavorite as toggleCollectionFavoriteQuery } from "@/lib/db/collections"
 
 const createCollectionSchema = z.object({
   name: z.string().trim().min(1, "Name is required"),
@@ -118,6 +118,24 @@ export async function updateCollection(
 export type DeleteCollectionResult =
   | { success: true }
   | { success: false; error: string }
+
+export type ToggleFavoriteResult =
+  | { success: true; data: { id: string; name: string; isFavorite: boolean } }
+  | { success: false; error: string }
+
+export async function toggleCollectionFavorite(collectionId: string): Promise<ToggleFavoriteResult> {
+  const session = await auth()
+  if (!session?.user?.id) {
+    return { success: false, error: "Unauthorized" }
+  }
+
+  try {
+    const updated = await toggleCollectionFavoriteQuery(session.user.id, collectionId)
+    return { success: true, data: { id: updated.id, name: updated.name, isFavorite: updated.isFavorite } }
+  } catch {
+    return { success: false, error: "Failed to toggle favorite" }
+  }
+}
 
 export async function deleteCollection(
   collectionId: string

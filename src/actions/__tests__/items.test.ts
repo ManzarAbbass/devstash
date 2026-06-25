@@ -19,6 +19,7 @@ const mockCreatedItem = {
   fileName: null,
   fileSize: null,
   createdAt: new Date(),
+  updatedAt: new Date(),
   itemTypeId: "type_snippet",
   itemType: { name: "snippet", icon: "Code", color: "#3b82f6" },
   tags: [{ id: "tag-1", name: "javascript" }],

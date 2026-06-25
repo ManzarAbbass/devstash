@@ -106,6 +106,40 @@ export async function getCollections(userId: string, page?: number): Promise<{ c
   }
 }
 
+export async function getFavoriteCollections(userId: string): Promise<CollectionDetails[]> {
+  const collections = await prisma.collection.findMany({
+    where: { userId, isFavorite: true },
+    orderBy: { updatedAt: "desc" },
+  })
+  return collections.map((col) => ({
+    id: col.id,
+    name: col.name,
+    description: col.description,
+    isFavorite: col.isFavorite,
+    defaultTypeId: col.defaultTypeId,
+    createdAt: col.createdAt,
+  }))
+}
+
+export async function toggleCollectionFavorite(userId: string, collectionId: string): Promise<CollectionDetails> {
+  const current = await prisma.collection.findUniqueOrThrow({
+    where: { id: collectionId, userId },
+    select: { isFavorite: true },
+  })
+  const collection = await prisma.collection.update({
+    where: { id: collectionId, userId },
+    data: { isFavorite: !current.isFavorite },
+  })
+  return {
+    id: collection.id,
+    name: collection.name,
+    description: collection.description,
+    isFavorite: collection.isFavorite,
+    defaultTypeId: collection.defaultTypeId,
+    createdAt: collection.createdAt,
+  }
+}
+
 export interface CollectionSimple {
   id: string
   name: string

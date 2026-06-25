@@ -1,17 +1,16 @@
-# Current Feature: Settings Page
+# Current Feature
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Complete -->
 
 ## Goals
 
-- Create a settings page at `/settings`
-- Add a settings link in the user avatar dropdown in the sidebar
-- Protect the `/settings` route (require authentication)
-- Move Account actions (delete account, forgot password) from profile to settings page
+<!-- Bullet points of what success looks like -->
 
 ## Notes
+
+<!-- Additional context, constraints, or details from spec -->
 
 ## History
 
@@ -52,3 +51,4 @@ In Progress
 - 2026-06-24: Collection Actions — Edit/delete collection on detail page and card dropdown, EditCollectionDialog for meta, card body click navigation, 3-dot dropdown with Edit/Delete/Favorite (UI only) [Completed]
 - 2026-06-24: Global Search/Command Palette — cmdk-based command palette with fuzzy search, Cmd+K/Ctrl+K shortcut, grouped results (Items + Collections), keyboard navigation, TopBar search input opens palette, ⌘K hint, pre-fetched search data, 8 unit tests [Completed]
 - 2026-06-24: Pagination — Added pagination to /items/[type], /collections/[id], and /collections pages with numbered page links and prev/next controls; created PaginationControls component; seeded 22+ snippets for pagination test data; added sidebar scrolling with hidden scrollbar; DASHBOARD_COLLECTIONS_LIMIT = 6 [Completed]
+- 2026-06-25: Settings Page — New /settings route with Change Password + Delete Account, Settings link in sidebar dropdown, removed account actions from profile [Completed]

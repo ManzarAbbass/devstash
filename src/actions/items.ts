@@ -6,6 +6,7 @@ import {
   createItem as createItemQuery,
   updateItem as updateItemQuery,
   deleteItem as deleteItemQuery,
+  toggleItemFavorite as toggleItemFavoriteQuery,
 } from "@/lib/db/items"
 import { supabaseAdmin, STORAGE_BUCKET } from "@/lib/supabase"
 
@@ -155,6 +156,24 @@ export async function deleteItem(
     return { success: true }
   } catch {
     return { success: false, error: "Failed to delete item" }
+  }
+}
+
+export type ToggleFavoriteResult =
+  | { success: true; data: import("@/lib/db/items").ItemWithDetails }
+  | { success: false; error: string }
+
+export async function toggleItemFavorite(itemId: string): Promise<ToggleFavoriteResult> {
+  const session = await auth()
+  if (!session?.user?.id) {
+    return { success: false, error: "Unauthorized" }
+  }
+
+  try {
+    const updated = await toggleItemFavoriteQuery(session.user.id, itemId)
+    return { success: true, data: updated }
+  } catch {
+    return { success: false, error: "Failed to toggle favorite" }
   }
 }
 

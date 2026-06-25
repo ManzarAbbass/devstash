@@ -30,6 +30,7 @@ export interface ItemWithDetails {
   fileName: string | null
   fileSize: number | null
   createdAt: Date
+  updatedAt: Date
   itemTypeId: string
   itemType: {
     name: string
@@ -53,6 +54,7 @@ function formatItem(item: {
   fileName: string | null
   fileSize: number | null
   createdAt: Date
+  updatedAt: Date
   itemTypeId: string
   itemType: { name: string; icon: string; color: string }
   tags: { tag: { id: string; name: string } }[]
@@ -71,10 +73,24 @@ function formatItem(item: {
     fileName: item.fileName,
     fileSize: item.fileSize,
     createdAt: item.createdAt,
+    updatedAt: item.updatedAt,
     itemTypeId: item.itemTypeId,
     itemType: item.itemType,
     tags: item.tags.map((t) => t.tag),
   }
+}
+
+export async function getFavoriteItems(userId: string): Promise<ItemWithDetails[]> {
+  const items = await prisma.item.findMany({
+    where: { userId, isFavorite: true },
+    include: {
+      itemType: { select: { name: true, icon: true, color: true } },
+      tags: { include: { tag: { select: { id: true, name: true } } } },
+    },
+    orderBy: { updatedAt: "desc" },
+  })
+
+  return items.map(formatItem)
 }
 
 export async function getPinnedItems(userId: string): Promise<ItemWithDetails[]> {
@@ -211,6 +227,22 @@ async function getSidebarCollections(userId: string) {
       dominantTypeColor,
     }
   })
+}
+
+export async function toggleItemFavorite(userId: string, itemId: string): Promise<ItemWithDetails> {
+  const current = await prisma.item.findUniqueOrThrow({
+    where: { id: itemId, userId },
+    select: { isFavorite: true },
+  })
+  const item = await prisma.item.update({
+    where: { id: itemId, userId },
+    data: { isFavorite: !current.isFavorite },
+    include: {
+      itemType: { select: { name: true, icon: true, color: true } },
+      tags: { include: { tag: { select: { id: true, name: true } } } },
+    },
+  })
+  return formatItem(item)
 }
 
 export async function updateItem(

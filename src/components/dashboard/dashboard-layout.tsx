@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, type ReactNode } from "react"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
-import { Search, PanelLeft, Plus } from "lucide-react"
+import { Search, PanelLeft, Plus, Star } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -90,7 +90,14 @@ export function DashboardLayout({ children, sidebarData, searchData }: { childre
               onClick={() => setSearchOpen(true)}
             />
           </div>
-          <div className="flex w-40 items-center justify-end gap-2">
+          <div className="flex w-52 items-center justify-end gap-1">
+            <Link
+              href="/favorites"
+              className="flex items-center justify-center rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              aria-label="Favorites"
+            >
+              <Star className="size-4" />
+            </Link>
             <Button variant="outline" size="sm" onClick={() => setCollectionDialogOpen(true)}>
               New Collection
             </Button>

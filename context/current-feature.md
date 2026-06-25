@@ -1,33 +1,20 @@
-# Current Feature: Editor Preferences Settings
+# Current Feature
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Complete -->
 
 ## Goals
 
-- Font size dropdown on settings page
-- Tab size dropdown on settings page
-- Word wrap toggle (default: on)
-- Minimap toggle (default: off)
-- Theme dropdown: vs-dark, monokai, github-dark (default: vs-dark)
-- Store preferences in JSON column `editorPreferences` on User model
-- Create and run a database migration for the column (no `db push`)
-- Create server action to update editor preferences
-- Apply settings to Monaco editor component
-- Auto-save on change with success toast
-- Create `EditorPreferencesContext` for client components
+<!-- Bullet points of what success looks like -->
 
 ## Notes
 
-- Spec: context/features/editor-settings-spec.md
-- Theme options: vs-dark, monokai, github-dark (default: vs-dark)
-- Word wrap default: on
-- Minimap default: off
-- Auto-save means no save button — changes persist immediately via server action
+<!-- Additional context, constraints, or details from spec -->
 
 ## History
 
+- 2026-06-25: Editor Preferences Settings — Editor pref card on /settings with font/tab size, word wrap/minimap toggles, theme dropdown; auto-save to editorPreferences JSON column; context provider; applied to Monaco editor across app; 16 unit tests [Completed]
 - 2026-05-23: Dashboard UI Phase 1 — ShadCN init, layout, dark mode, top bar, placeholders [Completed]
 - 2026-05-23: Dashboard UI Phase 2 — Collapsible sidebar with icon collapse, toggle in sidebar, centered search [Completed]
 - 2026-05-23: Dashboard UI Phase 2 (redo) — Sidebar redesign: collapsible to icons, toggle inside, Nav heading, centered search [Completed]

@@ -1,27 +1,16 @@
-# Current Feature: Favorites Page
+# Current Feature
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Complete -->
 
 ## Goals
 
-- Add star icon button to TopBar linking to /favorites
-- Create /favorites route with protection
-- Fetch all user favorited items and collections
-- Compact list view (VS Code/terminal style, not cards)
-- Each row: type icon, title, type badge, date added
-- Separate sections for items and collections with counts
-- Click item opens ItemDrawer, click collection navigates to /collections/[id]
-- Empty state when no favorites
-- Sort by most recently favorited (updatedAt)
+<!-- Bullet points of what success looks like -->
 
 ## Notes
 
-- Monospace or semi-monospace font
-- Minimal padding, high density
-- Subtle hover states
-- No cards or heavy borders, clean lines only
+<!-- Additional context, constraints, or details from spec -->
 
 ## History
 
@@ -64,3 +53,4 @@ In Progress
 - 2026-06-24: Pagination — Added pagination to /items/[type], /collections/[id], and /collections pages with numbered page links and prev/next controls; created PaginationControls component; seeded 22+ snippets for pagination test data; added sidebar scrolling with hidden scrollbar; DASHBOARD_COLLECTIONS_LIMIT = 6 [Completed]
 - 2026-06-25: Settings Page — New /settings route with Change Password + Delete Account, Settings link in sidebar dropdown, removed account actions from profile [Completed]
 - 2026-06-25: Editor Preferences Settings — Editor pref card on /settings with font/tab size, word wrap/minimap toggles, theme dropdown; auto-save to editorPreferences JSON column; context provider; applied to Monaco editor across app; 16 unit tests [Completed]
+- 2026-06-25: Favorites Page — `/favorites` route with auth protection, compact terminal-style list view, separate sections for items and collections with counts, ItemDrawer on click, collection link navigation, empty state, toggle favorite server actions, star icon in TopBar [Completed]

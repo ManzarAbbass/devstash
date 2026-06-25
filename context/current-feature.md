@@ -14,7 +14,6 @@
 
 ## History
 
-- 2026-06-25: Editor Preferences Settings — Editor pref card on /settings with font/tab size, word wrap/minimap toggles, theme dropdown; auto-save to editorPreferences JSON column; context provider; applied to Monaco editor across app; 16 unit tests [Completed]
 - 2026-05-23: Dashboard UI Phase 1 — ShadCN init, layout, dark mode, top bar, placeholders [Completed]
 - 2026-05-23: Dashboard UI Phase 2 — Collapsible sidebar with icon collapse, toggle in sidebar, centered search [Completed]
 - 2026-05-23: Dashboard UI Phase 2 (redo) — Sidebar redesign: collapsible to icons, toggle inside, Nav heading, centered search [Completed]
@@ -53,3 +52,4 @@
 - 2026-06-24: Global Search/Command Palette — cmdk-based command palette with fuzzy search, Cmd+K/Ctrl+K shortcut, grouped results (Items + Collections), keyboard navigation, TopBar search input opens palette, ⌘K hint, pre-fetched search data, 8 unit tests [Completed]
 - 2026-06-24: Pagination — Added pagination to /items/[type], /collections/[id], and /collections pages with numbered page links and prev/next controls; created PaginationControls component; seeded 22+ snippets for pagination test data; added sidebar scrolling with hidden scrollbar; DASHBOARD_COLLECTIONS_LIMIT = 6 [Completed]
 - 2026-06-25: Settings Page — New /settings route with Change Password + Delete Account, Settings link in sidebar dropdown, removed account actions from profile [Completed]
+- 2026-06-25: Editor Preferences Settings — Editor pref card on /settings with font/tab size, word wrap/minimap toggles, theme dropdown; auto-save to editorPreferences JSON column; context provider; applied to Monaco editor across app; 16 unit tests [Completed]

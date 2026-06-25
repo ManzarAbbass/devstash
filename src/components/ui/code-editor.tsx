@@ -4,6 +4,7 @@ import { useRef, useCallback, useState } from "react"
 import Editor, { type BeforeMount, type OnMount } from "@monaco-editor/react"
 import { Copy, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import type { EditorPreferences } from "@/lib/editor-preferences"
 
 const languageMap: Record<string, string> = {
   typescript: "typescript",
@@ -62,9 +63,10 @@ interface CodeEditorProps {
   onChange?: (value: string | undefined) => void
   language?: string | null
   readOnly?: boolean
+  preferences?: EditorPreferences
 }
 
-export function CodeEditor({ value, onChange, language, readOnly = false }: CodeEditorProps) {
+export function CodeEditor({ value, onChange, language, readOnly = false, preferences }: CodeEditorProps) {
   const [copied, setCopied] = useState(false)
   const lineCount = (value.match(/\n/g) || []).length + 1
   const initialHeight = Math.min(Math.max(lineCount * 20 + 16, 80), 250)
@@ -98,6 +100,50 @@ export function CodeEditor({ value, onChange, language, readOnly = false }: Code
         "scrollbarSlider.hoverBackground": "#525252cc",
         "scrollbarSlider.activeBackground": "#737373",
         "editorOverviewRuler.background": "#171717",
+      },
+    })
+    monaco.editor.defineTheme("monokai", {
+      base: "vs-dark",
+      inherit: true,
+      rules: [
+        { token: "comment", foreground: "#75715e", fontStyle: "italic" },
+        { token: "keyword", foreground: "#f92672" },
+        { token: "string", foreground: "#e6db74" },
+        { token: "number", foreground: "#ae81ff" },
+        { token: "type", foreground: "#66d9ef" },
+        { token: "function", foreground: "#a6e22e" },
+      ],
+      colors: {
+        "editor.background": "#272822",
+        "editor.foreground": "#f8f8f2",
+        "editor.lineHighlightBackground": "#3e3d32",
+        "editor.selectionBackground": "#49483e",
+        "editorCursor.foreground": "#f8f8f0",
+        "editorLineNumber.foreground": "#75715e",
+        "editorLineNumber.activeForeground": "#f8f8f2",
+        "editorGutter.background": "#272822",
+      },
+    })
+    monaco.editor.defineTheme("githubDark", {
+      base: "vs-dark",
+      inherit: true,
+      rules: [
+        { token: "comment", foreground: "#8b949e", fontStyle: "italic" },
+        { token: "keyword", foreground: "#ff7b72" },
+        { token: "string", foreground: "#a5d6ff" },
+        { token: "number", foreground: "#79c0ff" },
+        { token: "type", foreground: "#ffa657" },
+        { token: "function", foreground: "#d2a8ff" },
+      ],
+      colors: {
+        "editor.background": "#0d1117",
+        "editor.foreground": "#c9d1d9",
+        "editor.lineHighlightBackground": "#161b22",
+        "editor.selectionBackground": "#3b5998",
+        "editorCursor.foreground": "#c9d1d9",
+        "editorLineNumber.foreground": "#484f58",
+        "editorLineNumber.activeForeground": "#8b949e",
+        "editorGutter.background": "#0d1117",
       },
     })
   }, [])
@@ -150,16 +196,16 @@ export function CodeEditor({ value, onChange, language, readOnly = false }: Code
         onChange={onChange}
         onMount={handleEditorDidMount}
         beforeMount={handleBeforeMount}
-        theme="appDark"
+        theme={preferences?.theme === "github-dark" ? "githubDark" : preferences?.theme === "monokai" ? "monokai" : preferences?.theme ?? "appDark"}
         options={{
           readOnly,
-          minimap: { enabled: false },
+          minimap: { enabled: preferences?.minimap ?? false },
           lineNumbers: "on",
           scrollBeyondLastLine: false,
           folding: false,
-          fontSize: 12,
-          tabSize: 2,
-          wordWrap: "on",
+          fontSize: preferences?.fontSize ?? 12,
+          tabSize: preferences?.tabSize ?? 2,
+          wordWrap: preferences?.wordWrap ?? "on",
           automaticLayout: true,
           overviewRulerLanes: 0,
           hideCursorInOverviewRuler: true,

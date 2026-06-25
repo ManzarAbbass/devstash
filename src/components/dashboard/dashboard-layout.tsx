@@ -12,9 +12,12 @@ import { Sidebar, SidebarContent } from "@/components/dashboard/sidebar"
 import { CreateItemDialog } from "@/components/items/create-item-dialog"
 import { CreateCollectionDialog } from "@/components/collections/create-collection-dialog"
 import { CreateItemContext } from "@/lib/create-item-context"
+import { EditorPreferencesContext } from "@/lib/editor-preferences-context"
 import { CommandPalette } from "@/components/search/command-palette"
 import type { SidebarData } from "@/lib/db/items"
 import type { SearchData } from "@/lib/db/search"
+import type { EditorPreferences } from "@/lib/editor-preferences"
+import { defaultEditorPreferences } from "@/lib/editor-preferences"
 
 export function DashboardLayout({ children, sidebarData, searchData }: { children: ReactNode; sidebarData: SidebarData; searchData: SearchData }) {
   const pathname = usePathname()
@@ -38,6 +41,15 @@ export function DashboardLayout({ children, sidebarData, searchData }: { childre
   const typeFromPath = pathname.match(/^\/items\/(\w+)/)?.[1]
   const typeName = typeFromPath ? (typeFromPath.endsWith("s") ? typeFromPath.slice(0, -1) : typeFromPath) : undefined
 
+  const [editorPrefs, setEditorPrefs] = useState<EditorPreferences>(defaultEditorPreferences)
+
+  useEffect(() => {
+    fetch("/api/settings/editor-preferences")
+      .then((res) => res.ok ? res.json() : null)
+      .then((data) => { if (data) setEditorPrefs(data) })
+      .catch(() => {})
+  }, [])
+
   const openDialog = useCallback((initialType?: string) => {
     setDialogInitialType(initialType)
     setCreateDialogOpen(true)
@@ -54,8 +66,13 @@ export function DashboardLayout({ children, sidebarData, searchData }: { childre
     return () => window.removeEventListener("resize", check)
   }, [])
 
+  const updateEditorPrefs = useCallback((prefs: Partial<EditorPreferences>) => {
+    setEditorPrefs((prev) => ({ ...prev, ...prefs }))
+  }, [])
+
   return (
     <CreateItemContext.Provider value={{ openDialog }}>
+    <EditorPreferencesContext.Provider value={{ preferences: editorPrefs, updatePreferences: updateEditorPrefs }}>
       <div className="flex h-screen flex-col">
         <header className="flex items-center gap-2 border-b border-border px-4 py-2">
           <Link href="/dashboard" className="flex w-40 items-center gap-2">
@@ -113,6 +130,7 @@ export function DashboardLayout({ children, sidebarData, searchData }: { childre
           <main className="flex-1 overflow-y-auto p-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">{children}</main>
         </div>
       </div>
+    </EditorPreferencesContext.Provider>
     </CreateItemContext.Provider>
   )
 }

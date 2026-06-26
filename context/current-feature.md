@@ -1,16 +1,23 @@
-# Current Feature
+# Current Feature: Add client-side sorting to the favorites page
 
 ## Status
 
-<!-- Not Started | In Progress | Complete -->
+In Progress
 
 ## Goals
 
-<!-- Bullet points of what success looks like -->
+- Add a sort control (Name / Date / Type) to the favorites page
+- Sort items by: name (A-Z), date (newest first), type (contentType)
+- Sort collections by: name (A-Z), date (newest first), name (when type sort active)
+- All sorting is client-side — no additional DB queries
+- Match the terminal/compact aesthetic of the existing favorites list
 
 ## Notes
 
-<!-- Additional context, constraints, or details from spec -->
+- Sort state managed via useState in FavoritesList
+- Uses existing Base UI Select component for the sort dropdown
+- Collections don't have a content type; type sort falls back to alphabetical by name
+- Default sort: Date (most recent first) — matches current behavior
 
 ## History
 

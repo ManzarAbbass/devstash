@@ -1,15 +1,59 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { FolderClosed, Star } from "lucide-react"
+import { ArrowUpDown, FolderClosed, Star } from "lucide-react"
 import { Sheet, SheetContent } from "@/components/ui/sheet"
 import { ItemDrawer } from "@/components/items/item-drawer"
 import { Badge } from "@/components/ui/badge"
+import { SelectRoot as Select, SelectItem } from "@/components/ui/select"
 import { iconMap } from "@/lib/icons"
 import type { ItemWithDetails } from "@/lib/db/items"
 import type { CollectionDetails } from "@/lib/db/collections"
+
+type SortKey = "name" | "date" | "type"
+
+const sortLabels: Record<SortKey, string> = {
+  name: "Name",
+  date: "Date",
+  type: "Type",
+}
+
+function sortItems(items: ItemWithDetails[], sort: SortKey): ItemWithDetails[] {
+  const sorted = [...items]
+  switch (sort) {
+    case "name":
+      sorted.sort((a, b) => a.title.localeCompare(b.title))
+      break
+    case "date":
+      sorted.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
+      break
+    case "type":
+      sorted.sort((a, b) => {
+        const cmp = a.contentType.localeCompare(b.contentType)
+        if (cmp !== 0) return cmp
+        return a.title.localeCompare(b.title)
+      })
+      break
+  }
+  return sorted
+}
+
+function sortCollections(collections: CollectionDetails[], sort: SortKey): CollectionDetails[] {
+  const sorted = [...collections]
+  switch (sort) {
+    case "name":
+      sorted.sort((a, b) => a.name.localeCompare(b.name))
+      break
+    case "date":
+      sorted.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+      break
+    case "type":
+      sorted.sort((a, b) => a.name.localeCompare(b.name))
+      break
+  }
+  return sorted
+}
 
 interface FavoritesListProps {
   items: ItemWithDetails[]
@@ -71,34 +115,53 @@ function CollectionRow({ collection }: { collection: CollectionDetails }) {
 }
 
 export function FavoritesList({ items, collections }: FavoritesListProps) {
+  const [sort, setSort] = useState<SortKey>("date")
+
+  const sortedItems = useMemo(() => sortItems(items, sort), [items, sort])
+  const sortedCollections = useMemo(() => sortCollections(collections, sort), [collections, sort])
+
   return (
     <div className="overflow-hidden rounded-lg border border-border">
-      {items.length > 0 && (
+      <div className="flex items-center justify-between border-b border-border bg-muted/30 px-3 py-1.5">
+        <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
+          <ArrowUpDown className="size-3" />
+          <span className="font-mono">Sort</span>
+        </div>
+        <Select value={sort} onValueChange={(v) => v && setSort(v as SortKey)}>
+          {(Object.keys(sortLabels) as SortKey[]).map((key) => (
+            <SelectItem key={key} value={key}>
+              {sortLabels[key]}
+            </SelectItem>
+          ))}
+        </Select>
+      </div>
+
+      {sortedItems.length > 0 && (
         <div>
           <div className="flex items-center gap-2 border-b border-border bg-muted/30 px-3 py-1.5">
             <Star className="size-3.5 text-muted-foreground" />
             <span className="font-mono text-xs font-medium text-muted-foreground">
-              Items ({items.length})
+              Items ({sortedItems.length})
             </span>
           </div>
           <div className="divide-y divide-border/50">
-            {items.map((item) => (
+            {sortedItems.map((item) => (
               <ItemRow key={item.id} item={item} />
             ))}
           </div>
         </div>
       )}
 
-      {collections.length > 0 && (
+      {sortedCollections.length > 0 && (
         <div>
           <div className="flex items-center gap-2 border-b border-border bg-muted/30 px-3 py-1.5">
             <Star className="size-3.5 text-muted-foreground" />
             <span className="font-mono text-xs font-medium text-muted-foreground">
-              Collections ({collections.length})
+              Collections ({sortedCollections.length})
             </span>
           </div>
           <div className="divide-y divide-border/50">
-            {collections.map((collection) => (
+            {sortedCollections.map((collection) => (
               <CollectionRow key={collection.id} collection={collection} />
             ))}
           </div>

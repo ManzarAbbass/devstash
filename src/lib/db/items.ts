@@ -87,7 +87,7 @@ export async function getFavoriteItems(userId: string): Promise<ItemWithDetails[
       itemType: { select: { name: true, icon: true, color: true } },
       tags: { include: { tag: { select: { id: true, name: true } } } },
     },
-    orderBy: { updatedAt: "desc" },
+    orderBy: [{ isPinned: "desc" }, { updatedAt: "desc" }],
   })
 
   return items.map(formatItem)
@@ -113,7 +113,7 @@ export async function getRecentItems(userId: string): Promise<ItemWithDetails[]>
       itemType: { select: { name: true, icon: true, color: true } },
       tags: { include: { tag: { select: { id: true, name: true } } } },
     },
-    orderBy: { createdAt: "desc" },
+    orderBy: [{ isPinned: "desc" }, { createdAt: "desc" }],
     take: 10,
   })
 
@@ -237,6 +237,22 @@ export async function toggleItemFavorite(userId: string, itemId: string): Promis
   const item = await prisma.item.update({
     where: { id: itemId, userId },
     data: { isFavorite: !current.isFavorite },
+    include: {
+      itemType: { select: { name: true, icon: true, color: true } },
+      tags: { include: { tag: { select: { id: true, name: true } } } },
+    },
+  })
+  return formatItem(item)
+}
+
+export async function toggleItemPin(userId: string, itemId: string): Promise<ItemWithDetails> {
+  const current = await prisma.item.findUniqueOrThrow({
+    where: { id: itemId, userId },
+    select: { isPinned: true },
+  })
+  const item = await prisma.item.update({
+    where: { id: itemId, userId },
+    data: { isPinned: !current.isPinned },
     include: {
       itemType: { select: { name: true, icon: true, color: true } },
       tags: { include: { tag: { select: { id: true, name: true } } } },
@@ -381,7 +397,7 @@ export async function getItemsByCollection(
           },
         },
       },
-      orderBy: { item: { createdAt: "desc" } },
+      orderBy: [{ item: { isPinned: "desc" } }, { item: { createdAt: "desc" } }],
       skip,
       take: ITEMS_PER_PAGE,
     }),
@@ -406,7 +422,7 @@ export async function getItemsByType(
         itemType: { select: { name: true, icon: true, color: true } },
         tags: { include: { tag: { select: { id: true, name: true } } } },
       },
-      orderBy: { createdAt: "desc" },
+      orderBy: [{ isPinned: "desc" }, { createdAt: "desc" }],
       skip,
       take: ITEMS_PER_PAGE,
     }),

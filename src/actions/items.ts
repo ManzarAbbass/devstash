@@ -7,6 +7,7 @@ import {
   updateItem as updateItemQuery,
   deleteItem as deleteItemQuery,
   toggleItemFavorite as toggleItemFavoriteQuery,
+  toggleItemPin as toggleItemPinQuery,
 } from "@/lib/db/items"
 import { supabaseAdmin, STORAGE_BUCKET } from "@/lib/supabase"
 
@@ -174,6 +175,24 @@ export async function toggleItemFavorite(itemId: string): Promise<ToggleFavorite
     return { success: true, data: updated }
   } catch {
     return { success: false, error: "Failed to toggle favorite" }
+  }
+}
+
+export type TogglePinResult =
+  | { success: true; data: import("@/lib/db/items").ItemWithDetails }
+  | { success: false; error: string }
+
+export async function toggleItemPin(itemId: string): Promise<TogglePinResult> {
+  const session = await auth()
+  if (!session?.user?.id) {
+    return { success: false, error: "Unauthorized" }
+  }
+
+  try {
+    const updated = await toggleItemPinQuery(session.user.id, itemId)
+    return { success: true, data: updated }
+  } catch {
+    return { success: false, error: "Failed to toggle pin" }
   }
 }
 

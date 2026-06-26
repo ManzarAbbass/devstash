@@ -28,7 +28,7 @@ export async function getSearchData(userId: string): Promise<SearchData> {
         content: true,
         itemType: { select: { name: true, icon: true, color: true } },
       },
-      orderBy: { createdAt: "desc" },
+      orderBy: [{ isPinned: "desc" }, { createdAt: "desc" }],
     }),
     prisma.collection.findMany({
       where: { userId },

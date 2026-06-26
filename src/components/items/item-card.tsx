@@ -3,6 +3,7 @@
 import {
   Code2,
   Copy,
+  Pin,
   Star,
   Download,
   File,
@@ -144,6 +145,9 @@ export function ItemCard({ item, compact, onToggleFavorite }: { item: ItemWithDe
           >
             <Star className={`size-3.5 ${item.isFavorite ? "fill-yellow-500 text-yellow-500" : "text-muted-foreground"}`} />
           </button>
+          {item.isPinned && (
+            <Pin className="size-3 text-sky-500" />
+          )}
           <button
             type="button"
             aria-label="Copy"

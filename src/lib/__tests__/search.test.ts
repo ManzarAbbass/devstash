@@ -99,7 +99,7 @@ describe("getSearchData", () => {
         content: true,
         itemType: { select: { name: true, icon: true, color: true } },
       },
-      orderBy: { createdAt: "desc" },
+      orderBy: [{ isPinned: "desc" }, { createdAt: "desc" }],
     })
   })
 

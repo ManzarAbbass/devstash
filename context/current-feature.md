@@ -1,27 +1,20 @@
-# Current Feature: Add Favorite Toggle Buttons
+# Current Feature
 
 ## Status
 
-In Progress
-
-- 2026-06-27: Favorite toggle wired in ItemDrawerActions, ItemCard (via ItemCardWithDrawer), CollectionCard dropdown, and CollectionDetailHeader [In Progress]
+<!-- Not Started | In Progress | Complete -->
 
 ## Goals
 
-- Wire `toggleItemFavorite` server action to the star button in `ItemDrawerActions`
-- Add clickable favorite toggle to `ItemCard`
-- Wire `toggleCollectionFavorite` to the "Favorite" dropdown item in `CollectionCard`
-- Wire `toggleCollectionFavorite` to the star button in `CollectionDetailHeader`
+<!-- Bullet points of what success looks like -->
 
 ## Notes
 
-- DB layer and server actions (`toggleItemFavorite`, `toggleCollectionFavorite`) already exist
-- Only the UI wiring is missing — buttons are visual-only placeholders
-- Use `startTransition` for client-side server action calls
-- Use `router.refresh()` after toggling to reflect changes
+<!-- Additional context, constraints, or details from spec -->
 
 ## History
 
+- 2026-06-27: Favorite Toggle Buttons — Wired toggleItemFavorite/toggleCollectionFavorite server actions to star buttons in ItemDrawerActions, ItemCard (via ItemCardWithDrawer), CollectionCard dropdown, and CollectionDetailHeader [Completed]
 - 2026-05-23: Dashboard UI Phase 1 — ShadCN init, layout, dark mode, top bar, placeholders [Completed]
 - 2026-05-23: Dashboard UI Phase 2 — Collapsible sidebar with icon collapse, toggle in sidebar, centered search [Completed]
 - 2026-05-23: Dashboard UI Phase 2 (redo) — Sidebar redesign: collapsible to icons, toggle inside, Nav heading, centered search [Completed]

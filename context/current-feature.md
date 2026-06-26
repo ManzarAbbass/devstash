@@ -14,7 +14,6 @@
 
 ## History
 
-- 2026-06-27: Favorite Toggle Buttons — Wired toggleItemFavorite/toggleCollectionFavorite server actions to star buttons in ItemDrawerActions, ItemCard (via ItemCardWithDrawer), CollectionCard dropdown, and CollectionDetailHeader [Completed]
 - 2026-05-23: Dashboard UI Phase 1 — ShadCN init, layout, dark mode, top bar, placeholders [Completed]
 - 2026-05-23: Dashboard UI Phase 2 — Collapsible sidebar with icon collapse, toggle in sidebar, centered search [Completed]
 - 2026-05-23: Dashboard UI Phase 2 (redo) — Sidebar redesign: collapsible to icons, toggle inside, Nav heading, centered search [Completed]
@@ -55,3 +54,4 @@
 - 2026-06-25: Settings Page — New /settings route with Change Password + Delete Account, Settings link in sidebar dropdown, removed account actions from profile [Completed]
 - 2026-06-25: Editor Preferences Settings — Editor pref card on /settings with font/tab size, word wrap/minimap toggles, theme dropdown; auto-save to editorPreferences JSON column; context provider; applied to Monaco editor across app; 16 unit tests [Completed]
 - 2026-06-25: Favorites Page — `/favorites` route with auth protection, compact terminal-style list view, separate sections for items and collections with counts, ItemDrawer on click, collection link navigation, empty state, toggle favorite server actions, star icon in TopBar [Completed]
+- 2026-06-27: Favorite Toggle Buttons — Wired toggleItemFavorite/toggleCollectionFavorite server actions to star buttons in ItemDrawerActions, ItemCard (via ItemCardWithDrawer), CollectionCard dropdown, and CollectionDetailHeader [Completed]

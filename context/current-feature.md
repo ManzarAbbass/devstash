@@ -1,25 +1,20 @@
-# Current Feature: Add client-side sorting to the favorites page
+# Current Feature
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Complete -->
 
 ## Goals
 
-- Add a sort control (Name / Date / Type) to the favorites page
-- Sort items by: name (A-Z), date (newest first), type (contentType)
-- Sort collections by: name (A-Z), date (newest first), name (when type sort active)
-- All sorting is client-side — no additional DB queries
-- Match the terminal/compact aesthetic of the existing favorites list
+<!-- Bullet points of what success looks like -->
 
 ## Notes
 
-- Sort state managed via useState in FavoritesList
-- Uses existing Base UI Select component for the sort dropdown
-- Collections don't have a content type; type sort falls back to alphabetical by name
-- Default sort: Date (most recent first) — matches current behavior
+<!-- Additional context, constraints, or details from spec -->
 
 ## History
+
+- 2026-06-27: Favorites Client-Side Sorting — Added sort by Name / Date / Type to favorites page using Base UI Select, client-side useMemo sorting (no DB changes), matches terminal aesthetic [Completed]
 
 - 2026-05-23: Dashboard UI Phase 1 — ShadCN init, layout, dark mode, top bar, placeholders [Completed]
 - 2026-05-23: Dashboard UI Phase 2 — Collapsible sidebar with icon collapse, toggle in sidebar, centered search [Completed]

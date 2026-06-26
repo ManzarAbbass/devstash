@@ -24,6 +24,7 @@ interface ItemDrawerActionsProps {
   onCancelEdit: () => void
   onEnterEdit: () => void
   onDelete: () => void
+  onToggleFavorite: () => void
 }
 
 export function ItemDrawerActions({
@@ -38,6 +39,7 @@ export function ItemDrawerActions({
   onCancelEdit,
   onEnterEdit,
   onDelete,
+  onToggleFavorite,
 }: ItemDrawerActionsProps) {
   if (isEditing) {
     return (
@@ -54,7 +56,7 @@ export function ItemDrawerActions({
 
   return (
     <div className="flex items-center gap-0.5 px-4">
-      <Button variant="ghost" size="icon-sm" aria-label="Favorite">
+      <Button variant="ghost" size="icon-sm" aria-label="Favorite" onClick={onToggleFavorite}>
         <Star className={`size-4 ${isFavorite ? "fill-yellow-500 text-yellow-500" : ""}`} />
       </Button>
       <Button variant="ghost" size="icon-sm" aria-label="Pin">

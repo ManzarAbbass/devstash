@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { Pencil, Trash2, Star } from "lucide-react"
 import { toast } from "sonner"
 
-import { deleteCollection } from "@/actions/collections"
+import { deleteCollection, toggleCollectionFavorite } from "@/actions/collections"
 import { Button } from "@/components/ui/button"
 import {
   AlertDialog,
@@ -34,6 +34,20 @@ export function CollectionDetailHeader({ collection, itemCount }: CollectionDeta
   const [editOpen, setEditOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const [isFavorite, setIsFavorite] = useState(collection.isFavorite)
+
+  async function handleToggleFavorite() {
+    const newState = !isFavorite
+    setIsFavorite(newState)
+    const result = await toggleCollectionFavorite(collection.id)
+    if (!result.success) {
+      setIsFavorite(!newState)
+      toast.error(result.error)
+      return
+    }
+    toast.success(newState ? "Added to favorites" : "Removed from favorites")
+    router.refresh()
+  }
 
   async function handleDelete() {
     setDeleting(true)
@@ -62,8 +76,8 @@ export function CollectionDetailHeader({ collection, itemCount }: CollectionDeta
           </p>
         </div>
         <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon" aria-label="Favorite">
-            <Star className={`size-4 ${collection.isFavorite ? "fill-yellow-500 text-yellow-500" : ""}`} />
+          <Button variant="ghost" size="icon" aria-label={isFavorite ? "Unfavorite" : "Favorite"} onClick={handleToggleFavorite}>
+            <Star className={`size-4 ${isFavorite ? "fill-yellow-500 text-yellow-500" : ""}`} />
           </Button>
           <Button variant="ghost" size="icon" aria-label="Edit" onClick={() => setEditOpen(true)}>
             <Pencil className="size-4" />

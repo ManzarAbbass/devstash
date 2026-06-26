@@ -16,7 +16,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { CodeEditor } from "@/components/ui/code-editor"
 import { useEditorPreferences } from "@/lib/editor-preferences-context"
 import type { ItemWithDetails } from "@/lib/db/items"
-import { updateItem, deleteItem } from "@/actions/items"
+import { updateItem, deleteItem, toggleItemFavorite } from "@/actions/items"
 import type { UpdateItemData } from "@/actions/items"
 import { iconMap } from "@/lib/icons"
 import { extractFileKey } from "@/lib/utils"
@@ -171,6 +171,17 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
     router.refresh()
   }
 
+  async function handleToggleFavorite() {
+    if (!item) return
+    const result = await toggleItemFavorite(item.id)
+    if (!result.success) {
+      toast.error(result.error)
+      return
+    }
+    setItem(result.data)
+    router.refresh()
+  }
+
   async function handleSave() {
     if (!item) return
     setSaving(true)
@@ -236,6 +247,7 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
         onCancelEdit={handleCancelEdit}
         onEnterEdit={handleEnterEdit}
         onDelete={handleDelete}
+        onToggleFavorite={handleToggleFavorite}
       />
 
       <Separator />

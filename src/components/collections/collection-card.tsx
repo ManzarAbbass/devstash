@@ -7,7 +7,7 @@ import { toast } from "sonner"
 
 import { iconMap } from "@/lib/icons"
 import type { CollectionWithStats } from "@/lib/db/collections"
-import { deleteCollection } from "@/actions/collections"
+import { deleteCollection, toggleCollectionFavorite } from "@/actions/collections"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -41,11 +41,22 @@ export function CollectionCard({ collection }: { collection: CollectionWithStats
     router.push(`/collections/${collection.id}`)
   }, [router, collection.id])
 
+  async function handleToggleFavorite() {
+    const result = await toggleCollectionFavorite(collection.id)
+    if (!result.success) {
+      toast.error(result.error)
+      return
+    }
+    toast.success(result.data.isFavorite ? "Added to favorites" : "Removed from favorites")
+    router.refresh()
+  }
+
   const handleDropdownSelect = useCallback((action: string) => {
     setDropdownOpen(false)
     if (action === "edit") setEditOpen(true)
     else if (action === "delete") setDeleteOpen(true)
-  }, [])
+    else if (action === "favorite") handleToggleFavorite()
+  }, [handleToggleFavorite])
 
   async function handleDelete() {
     setDeleting(true)

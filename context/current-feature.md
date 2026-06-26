@@ -1,16 +1,24 @@
-# Current Feature
+# Current Feature: Add Favorite Toggle Buttons
 
 ## Status
 
-<!-- Not Started | In Progress | Complete -->
+In Progress
+
+- 2026-06-27: Favorite toggle wired in ItemDrawerActions, ItemCard (via ItemCardWithDrawer), CollectionCard dropdown, and CollectionDetailHeader [In Progress]
 
 ## Goals
 
-<!-- Bullet points of what success looks like -->
+- Wire `toggleItemFavorite` server action to the star button in `ItemDrawerActions`
+- Add clickable favorite toggle to `ItemCard`
+- Wire `toggleCollectionFavorite` to the "Favorite" dropdown item in `CollectionCard`
+- Wire `toggleCollectionFavorite` to the star button in `CollectionDetailHeader`
 
 ## Notes
 
-<!-- Additional context, constraints, or details from spec -->
+- DB layer and server actions (`toggleItemFavorite`, `toggleCollectionFavorite`) already exist
+- Only the UI wiring is missing — buttons are visual-only placeholders
+- Use `startTransition` for client-side server action calls
+- Use `router.refresh()` after toggling to reflect changes
 
 ## History
 

@@ -49,7 +49,7 @@ function handleQuickCopy(item: ItemWithDetails) {
   toast.success("Copied!")
 }
 
-export function ItemCard({ item, compact }: { item: ItemWithDetails; compact?: boolean }) {
+export function ItemCard({ item, compact, onToggleFavorite }: { item: ItemWithDetails; compact?: boolean; onToggleFavorite?: () => void }) {
   const Icon = iconMap[item.itemType.icon] || Code2
   const typeName = item.itemType.name.toLowerCase()
 
@@ -133,7 +133,17 @@ export function ItemCard({ item, compact }: { item: ItemWithDetails; compact?: b
           <span className="truncate text-sm font-medium">{item.title}</span>
         </div>
         <div className="flex items-center gap-1 shrink-0">
-          {item.isFavorite && <Star className="size-3.5 fill-yellow-500 text-yellow-500" />}
+          <button
+            type="button"
+            aria-label={item.isFavorite ? "Unfavorite" : "Favorite"}
+            className="p-0.5 rounded hover:bg-muted"
+            onClick={(e) => {
+              e.stopPropagation()
+              onToggleFavorite?.()
+            }}
+          >
+            <Star className={`size-3.5 ${item.isFavorite ? "fill-yellow-500 text-yellow-500" : "text-muted-foreground"}`} />
+          </button>
           <button
             type="button"
             aria-label="Copy"

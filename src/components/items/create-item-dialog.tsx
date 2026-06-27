@@ -139,7 +139,7 @@ export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }:
           <DialogDescription>Choose a type and fill in the details below.</DialogDescription>
         </DialogHeader>
 
-        <div className="flex-1 overflow-y-auto -mx-6 px-6">
+        <div className="flex-1 overflow-y-auto scrollbar-none -mx-6 px-6">
           <div className="flex flex-col gap-5">
             {/* Type selector */}
             <ItemTypeSelector selectedType={selectedType} onSelect={setSelectedType} />

@@ -23,7 +23,7 @@ export function ItemTypeSelector({ selectedType, onSelect }: ItemTypeSelectorPro
       <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
         Type
       </h3>
-      <div className="grid grid-cols-7 gap-2">
+      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-2">
         {creationTypes.map((type) => {
           const meta = typeMeta[type]
           const Icon = meta.icon

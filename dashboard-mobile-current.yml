@@ -1,0 +1,304 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e47]:
+    - banner [ref=e48]:
+      - button "Open sidebar" [ref=e49]:
+        - img
+      - link "D" [ref=e50] [cursor=pointer]:
+        - /url: /dashboard
+        - generic [ref=e51]: D
+      - generic [ref=e52]:
+        - button "Search" [ref=e53]:
+          - img
+        - link "Favorites" [ref=e54] [cursor=pointer]:
+          - /url: /favorites
+          - img [ref=e55]
+        - button "Create" [ref=e57]:
+          - img
+    - main [ref=e59]:
+      - generic [ref=e60]:
+        - heading "Dashboard" [level=1] [ref=e61]
+        - generic [ref=e62]:
+          - generic [ref=e63]:
+            - img [ref=e65]
+            - generic [ref=e69]:
+              - paragraph [ref=e70]: "39"
+              - paragraph [ref=e71]: Total Items
+          - generic [ref=e72]:
+            - img [ref=e74]
+            - generic [ref=e77]:
+              - paragraph [ref=e78]: "6"
+              - paragraph [ref=e79]: Collections
+          - generic [ref=e80]:
+            - img [ref=e82]
+            - generic [ref=e84]:
+              - paragraph [ref=e85]: "13"
+              - paragraph [ref=e86]: Favorite Items
+          - generic [ref=e87]:
+            - img [ref=e89]
+            - generic [ref=e91]:
+              - paragraph [ref=e92]: "2"
+              - paragraph [ref=e93]: Favorite Collections
+        - generic [ref=e94]:
+          - generic [ref=e95]:
+            - heading "Recent Collections" [level=2] [ref=e96]
+            - link "View all" [ref=e97] [cursor=pointer]:
+              - /url: /collections
+          - generic [ref=e98]:
+            - button "Database Snippets 20 items SQL queries and database-related code patterns" [ref=e99] [cursor=pointer]:
+              - generic [ref=e100]:
+                - generic [ref=e101]: Database Snippets
+                - button [ref=e103]:
+                  - img [ref=e104]
+              - generic [ref=e108]: 20 items
+              - generic [ref=e109]: SQL queries and database-related code patterns
+              - generic "snippet" [ref=e111]:
+                - img [ref=e112]
+            - button "Design Resources 4 items UI/UX resources and references" [ref=e116] [cursor=pointer]:
+              - generic [ref=e117]:
+                - generic [ref=e118]: Design Resources
+                - button [ref=e120]:
+                  - img [ref=e121]
+              - generic [ref=e125]: 4 items
+              - generic [ref=e126]: UI/UX resources and references
+              - generic "link" [ref=e128]:
+                - img [ref=e129]
+            - button "Terminal Commands 4 items Useful shell commands for everyday development" [ref=e132] [cursor=pointer]:
+              - generic [ref=e133]:
+                - generic [ref=e134]: Terminal Commands
+                - button [ref=e136]:
+                  - img [ref=e137]
+              - generic [ref=e141]: 4 items
+              - generic [ref=e142]: Useful shell commands for everyday development
+              - generic "command" [ref=e144]:
+                - img [ref=e145]
+            - button "DevOps 5 items Infrastructure and deployment resources" [ref=e147] [cursor=pointer]:
+              - generic [ref=e148]:
+                - generic [ref=e149]: DevOps
+                - button [ref=e151]:
+                  - img [ref=e152]
+              - generic [ref=e156]: 5 items
+              - generic [ref=e157]: Infrastructure and deployment resources
+              - generic [ref=e158]:
+                - generic "link" [ref=e159]:
+                  - img [ref=e160]
+                - generic "snippet" [ref=e163]:
+                  - img [ref=e164]
+                - generic "command" [ref=e168]:
+                  - img [ref=e169]
+                - generic "file" [ref=e171]:
+                  - img [ref=e172]
+            - button "AI Workflows 3 items AI prompts and workflow automations" [ref=e175] [cursor=pointer]:
+              - generic [ref=e176]:
+                - generic [ref=e177]: AI Workflows
+                - button [ref=e179]:
+                  - img [ref=e180]
+              - generic [ref=e184]: 3 items
+              - generic [ref=e185]: AI prompts and workflow automations
+              - generic "prompt" [ref=e187]:
+                - img [ref=e188]
+            - button "React Patterns 3 items Reusable React patterns and hooks" [ref=e191] [cursor=pointer]:
+              - generic [ref=e192]:
+                - generic [ref=e193]: React Patterns
+                - button [ref=e195]:
+                  - img [ref=e196]
+              - generic [ref=e200]: 3 items
+              - generic [ref=e201]: Reusable React patterns and hooks
+              - generic "snippet" [ref=e203]:
+                - img [ref=e204]
+        - generic [ref=e208]:
+          - generic [ref=e209]:
+            - img [ref=e210]
+            - heading "Pinned Items" [level=2] [ref=e212]
+          - generic [ref=e213]:
+            - generic [ref=e215] [cursor=pointer]:
+              - generic [ref=e216]:
+                - generic [ref=e217]:
+                  - img [ref=e218]
+                  - generic [ref=e222]: Object Diff Utility
+                - generic [ref=e223]:
+                  - button "Favorite" [ref=e224]:
+                    - img [ref=e225]
+                  - img [ref=e227]
+                  - button "Copy" [ref=e229]:
+                    - img [ref=e230]
+                  - generic [ref=e233]: Jun 25
+              - generic [ref=e234]: Deep compare two objects and return the differences
+            - generic [ref=e236] [cursor=pointer]:
+              - generic [ref=e237]:
+                - generic [ref=e238]:
+                  - img [ref=e239]
+                  - generic [ref=e243]: Array Methods Cheat Sheet
+                - generic [ref=e244]:
+                  - button "Favorite" [ref=e245]:
+                    - img [ref=e246]
+                  - img [ref=e248]
+                  - button "Copy" [ref=e250]:
+                    - img [ref=e251]
+                  - generic [ref=e254]: Jun 25
+              - generic [ref=e255]: Common JavaScript array operations
+            - generic [ref=e257] [cursor=pointer]:
+              - generic [ref=e258]:
+                - generic [ref=e259]:
+                  - img [ref=e260]
+                  - generic [ref=e262]: Git Operations
+                - generic [ref=e263]:
+                  - button "Unfavorite" [ref=e264]:
+                    - img [ref=e265]
+                  - img [ref=e267]
+                  - button "Copy" [ref=e269]:
+                    - img [ref=e270]
+                  - generic [ref=e273]: Jun 25
+              - generic [ref=e274]: Essential Git commands for daily workflows
+            - generic [ref=e276] [cursor=pointer]:
+              - generic [ref=e277]:
+                - generic [ref=e278]:
+                  - img [ref=e279]
+                  - generic [ref=e283]: Custom Hooks
+                - generic [ref=e284]:
+                  - button "Unfavorite" [ref=e285]:
+                    - img [ref=e286]
+                  - img [ref=e288]
+                  - button "Copy" [ref=e290]:
+                    - img [ref=e291]
+                  - generic [ref=e294]: Jun 25
+              - generic [ref=e295]: Reusable debounce and localStorage hooks
+        - generic [ref=e296]:
+          - heading "Recent Items" [level=2] [ref=e297]
+          - generic [ref=e298]:
+            - generic [ref=e300] [cursor=pointer]:
+              - generic [ref=e301]:
+                - generic [ref=e302]:
+                  - img [ref=e303]
+                  - generic [ref=e307]: Object Diff Utility
+                - generic [ref=e308]:
+                  - button "Favorite" [ref=e309]:
+                    - img [ref=e310]
+                  - img [ref=e312]
+                  - button "Copy" [ref=e314]:
+                    - img [ref=e315]
+                  - generic [ref=e318]: Jun 25
+              - generic [ref=e319]: Deep compare two objects and return the differences
+            - generic [ref=e321] [cursor=pointer]:
+              - generic [ref=e322]:
+                - generic [ref=e323]:
+                  - img [ref=e324]
+                  - generic [ref=e328]: Array Methods Cheat Sheet
+                - generic [ref=e329]:
+                  - button "Favorite" [ref=e330]:
+                    - img [ref=e331]
+                  - img [ref=e333]
+                  - button "Copy" [ref=e335]:
+                    - img [ref=e336]
+                  - generic [ref=e339]: Jun 25
+              - generic [ref=e340]: Common JavaScript array operations
+            - generic [ref=e342] [cursor=pointer]:
+              - generic [ref=e343]:
+                - generic [ref=e344]:
+                  - img [ref=e345]
+                  - generic [ref=e347]: Git Operations
+                - generic [ref=e348]:
+                  - button "Unfavorite" [ref=e349]:
+                    - img [ref=e350]
+                  - img [ref=e352]
+                  - button "Copy" [ref=e354]:
+                    - img [ref=e355]
+                  - generic [ref=e358]: Jun 25
+              - generic [ref=e359]: Essential Git commands for daily workflows
+            - generic [ref=e361] [cursor=pointer]:
+              - generic [ref=e362]:
+                - generic [ref=e363]:
+                  - img [ref=e364]
+                  - generic [ref=e368]: Custom Hooks
+                - generic [ref=e369]:
+                  - button "Unfavorite" [ref=e370]:
+                    - img [ref=e371]
+                  - img [ref=e373]
+                  - button "Copy" [ref=e375]:
+                    - img [ref=e376]
+                  - generic [ref=e379]: Jun 25
+              - generic [ref=e380]: Reusable debounce and localStorage hooks
+            - generic [ref=e383] [cursor=pointer]:
+              - img "Computer Science_Enthausiast (1).pdf" [ref=e385]
+              - generic [ref=e386]:
+                - paragraph [ref=e387]: Computer Science_Enthausiast (1).pdf
+                - paragraph [ref=e388]: 117.6 KB
+                - paragraph [ref=e389]: This is a CV
+              - generic [ref=e390]:
+                - generic [ref=e391]: Jun 27
+                - button "Download" [ref=e392]:
+                  - img
+            - generic [ref=e394] [cursor=pointer]:
+              - generic [ref=e395]:
+                - generic [ref=e396]:
+                  - img [ref=e397]
+                  - generic [ref=e401]: CSS Variables Theming
+                - generic [ref=e402]:
+                  - button "Favorite" [ref=e403]:
+                    - img [ref=e404]
+                  - button "Copy" [ref=e406]:
+                    - img [ref=e407]
+                  - generic [ref=e410]: Jun 25
+              - generic [ref=e411]: Create a theme system with CSS custom properties
+            - generic [ref=e413] [cursor=pointer]:
+              - generic [ref=e414]:
+                - generic [ref=e415]:
+                  - img [ref=e416]
+                  - generic [ref=e420]: Rate Limiter Utility
+                - generic [ref=e421]:
+                  - button "Favorite" [ref=e422]:
+                    - img [ref=e423]
+                  - button "Copy" [ref=e425]:
+                    - img [ref=e426]
+                  - generic [ref=e429]: Jun 25
+              - generic [ref=e430]: Simple in-memory rate limiter for Node.js
+            - generic [ref=e432] [cursor=pointer]:
+              - generic [ref=e433]:
+                - generic [ref=e434]:
+                  - img [ref=e435]
+                  - generic [ref=e439]: Tailwind Class Merger
+                - generic [ref=e440]:
+                  - button "Favorite" [ref=e441]:
+                    - img [ref=e442]
+                  - button "Copy" [ref=e444]:
+                    - img [ref=e445]
+                  - generic [ref=e448]: Jun 25
+              - generic [ref=e449]: Merge Tailwind classes without conflicts
+            - generic [ref=e451] [cursor=pointer]:
+              - generic [ref=e452]:
+                - generic [ref=e453]:
+                  - img [ref=e454]
+                  - generic [ref=e458]: LocalStorage with Expiry
+                - generic [ref=e459]:
+                  - button "Favorite" [ref=e460]:
+                    - img [ref=e461]
+                  - button "Copy" [ref=e463]:
+                    - img [ref=e464]
+                  - generic [ref=e467]: Jun 25
+              - generic [ref=e468]: Cache data in localStorage with TTL support
+            - generic [ref=e470] [cursor=pointer]:
+              - generic [ref=e471]:
+                - generic [ref=e472]:
+                  - img [ref=e473]
+                  - generic [ref=e477]: Intersection Observer Hook
+                - generic [ref=e478]:
+                  - button "Favorite" [ref=e479]:
+                    - img [ref=e480]
+                  - button "Copy" [ref=e482]:
+                    - img [ref=e483]
+                  - generic [ref=e486]: Jun 25
+              - generic [ref=e487]: Detect element visibility with IntersectionObserver
+  - region "Notifications alt+T"
+  - generic [ref=e41] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e42]:
+      - img [ref=e43]
+    - generic [ref=e488]:
+      - button "Open issues overlay" [ref=e489]:
+        - generic [ref=e490]:
+          - generic [ref=e491]: "1"
+          - generic [ref=e492]: "2"
+        - generic [ref=e493]:
+          - text: Issue
+          - generic [ref=e494]: s
+      - button "Collapse issues badge" [ref=e495]:
+        - img [ref=e496]
+  - alert [ref=e46]

@@ -3,7 +3,16 @@
 import { useState, useEffect, useCallback, type ReactNode } from "react"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
-import { Search, PanelLeft, Plus, Star } from "lucide-react"
+import { Search, PanelLeft, Plus, Star, FolderPlus, FilePlus } from "lucide-react"
+
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuPortal,
+  DropdownMenuPositioner,
+  DropdownMenuPopup,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -75,13 +84,27 @@ export function DashboardLayout({ children, sidebarData, searchData }: { childre
     <EditorPreferencesContext.Provider value={{ preferences: editorPrefs, updatePreferences: updateEditorPrefs }}>
       <div className="flex h-screen flex-col">
         <header className="flex items-center gap-2 border-b border-border px-4 py-2">
-          <Link href="/dashboard" className="flex w-40 items-center gap-2">
+          {isMobile && (
+            <Sheet>
+              <SheetTrigger
+                render={
+                  <Button variant="ghost" size="icon" aria-label="Open sidebar" />
+                }
+              >
+                <PanelLeft className="size-4" />
+              </SheetTrigger>
+              <SheetContent side="left" className="w-64 p-0">
+                <SidebarContent data={sidebarData} collapsed={false} />
+              </SheetContent>
+            </Sheet>
+          )}
+          <Link href="/dashboard" className="flex md:w-40 items-center gap-2">
             <div className="flex size-7 items-center justify-center rounded-lg bg-purple-600 text-xs font-bold text-white">
               D
             </div>
-            <span className="text-sm font-semibold">DevStash</span>
+            <span className="hidden md:inline text-sm font-semibold">DevStash</span>
           </Link>
-          <div className="relative mx-auto w-full max-w-md">
+          <div className="relative mx-auto hidden md:block w-full max-w-md">
             <Search className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               readOnly
@@ -90,7 +113,12 @@ export function DashboardLayout({ children, sidebarData, searchData }: { childre
               onClick={() => setSearchOpen(true)}
             />
           </div>
-          <div className="flex w-52 items-center justify-end gap-1">
+          <div className="flex items-center justify-end gap-1 max-md:ml-auto">
+            {isMobile && (
+              <Button variant="ghost" size="icon" onClick={() => setSearchOpen(true)} aria-label="Search">
+                <Search className="size-4" />
+              </Button>
+            )}
             <Link
               href="/favorites"
               className="flex items-center justify-center rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
@@ -98,13 +126,40 @@ export function DashboardLayout({ children, sidebarData, searchData }: { childre
             >
               <Star className="size-4" />
             </Link>
-            <Button variant="outline" size="sm" onClick={() => setCollectionDialogOpen(true)}>
-              New Collection
-            </Button>
-            <Button size="sm" onClick={handleNewItemClick}>
-              <Plus className="size-4" />
-              New Item
-            </Button>
+            {!isMobile && (
+              <>
+                <Button variant="outline" size="sm" onClick={() => setCollectionDialogOpen(true)}>
+                  New Collection
+                </Button>
+                <Button size="sm" onClick={handleNewItemClick}>
+                  <Plus className="size-4" />
+                  New Item
+                </Button>
+              </>
+            )}
+            {isMobile && (
+              <DropdownMenu>
+                <DropdownMenuTrigger
+                  render={<Button variant="default" size="icon" aria-label="Create" />}
+                >
+                  <Plus className="size-4" />
+                </DropdownMenuTrigger>
+                <DropdownMenuPortal>
+                  <DropdownMenuPositioner align="end">
+                    <DropdownMenuPopup>
+                      <DropdownMenuItem onClick={() => setCollectionDialogOpen(true)}>
+                        <FolderPlus className="size-4" />
+                        New Collection
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={handleNewItemClick}>
+                        <FilePlus className="size-4" />
+                        New Item
+                      </DropdownMenuItem>
+                    </DropdownMenuPopup>
+                  </DropdownMenuPositioner>
+                </DropdownMenuPortal>
+              </DropdownMenu>
+            )}
             <CreateItemDialog
               open={createDialogOpen}
               onOpenChange={setCreateDialogOpen}
@@ -116,20 +171,6 @@ export function DashboardLayout({ children, sidebarData, searchData }: { childre
               onOpenChange={setCollectionDialogOpen}
             />
             <CommandPalette open={searchOpen} onOpenChange={setSearchOpen} data={searchData} />
-            {isMobile && (
-              <Sheet>
-                <SheetTrigger
-                  render={
-                    <Button variant="ghost" size="icon" aria-label="Open sidebar" />
-                  }
-                >
-                  <PanelLeft className="size-4" />
-                </SheetTrigger>
-                <SheetContent side="left" className="w-64 p-0">
-                  <SidebarContent data={sidebarData} collapsed={false} />
-                </SheetContent>
-              </Sheet>
-            )}
           </div>
         </header>
         <div className="flex flex-1 overflow-hidden">

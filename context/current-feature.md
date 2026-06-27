@@ -1,16 +1,34 @@
-# Current Feature
+# Current Feature: Homepage Implementation
 
 ## Status
 
-<!-- Not Started | In Progress | Complete -->
+In Progress
 
 ## Goals
 
-<!-- Bullet points of what success looks like -->
+- All sections from the prototype render correctly: Nav, Hero, Features, AI, Pricing, CTA, Footer
+- Chaos icons animate, bounce off walls, and repel from mouse cursor
+- Pricing toggle switches between monthly/yearly amounts
+- Mobile menu opens/closes on hamburger click
+- Scroll reveal fades in feature cards, price cards, and CTA section
+- Navbar gets opaque border on scroll
+- All buttons and links navigate to the correct routes
+- No `homepage.css` file remains — all styling uses Tailwind + `cn()`
+- Responsive breakpoints match previous behavior (3→2→1 col grids, hero visual stacks vertically on mobile, arrow rotates 90°)
+- No `"use client"` leaks into server components — only Nav, ChaosAnimation, PricingCards, and ScrollReveal are client components
 
 ## Notes
 
-<!-- Additional context, constraints, or details from spec -->
+- Reference spec: `@context/features/homepage-spec.md`
+- Decompose current monolithic `src/app/page.tsx` (`"use client"`) into separate server + client component files under `src/components/homepage/`
+- File structure: Nav.tsx (client), HeroSection.tsx (server), ChaosAnimation.tsx (client), DashboardPreview.tsx (server), FeaturesSection.tsx (server), AiSection.tsx (server), PricingCards.tsx (client), Footer.tsx (server), plus a shared ScrollReveal.tsx (client)
+- Delete `src/app/homepage.css` — migrate all styles to Tailwind utility classes
+- Use ShadCN components: `Button` for nav/CTA buttons, `Badge` for "Pro Feature" badge, `Switch` for pricing toggle
+- Use `lucide-react` icons where applicable (Menu, X, Check, ArrowRight)
+- Navigation routing: Sign In → `/sign-in`, Get Started → `/register`, Features → `#features`, Pricing → `#pricing`
+- Button variants: primary for CTAs, outline for secondary, ghost for Sign In
+- Pricing data: Free $0 (50 items, 3 collections) vs Pro $8/mo / $6/yr (unlimited)
+- `ScrollReveal` wraps sections with IntersectionObserver, adding `opacity-100 translate-y-0` when visible
 
 ## History
 

@@ -68,3 +68,19 @@ body {
 .scrollbar-none {
   scrollbar-width: none;
 }
+
+/* Homepage animations */
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes arrow-pulse {
+  0%, 100% { opacity: 0.6; transform: translateX(0); }
+  50% { opacity: 1; transform: translateX(4px); }
+}
+
+@keyframes arrow-pulse-mobile {
+  0%, 100% { opacity: 0.6; transform: rotate(90deg) translateX(0); }
+  50% { opacity: 1; transform: rotate(90deg) translateX(4px); }
+}

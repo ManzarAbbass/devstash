@@ -1,30 +1,16 @@
-# Current Feature: Homepage Mockup
+# Current Feature
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Complete -->
 
 ## Goals
 
-- Create a marketing homepage prototype in `prototypes/homepage/` with `index.html`, `styles.css`, `script.js`
-- Hero Section: Chaos Container with 8 floating animated icons, Transform Arrow, Dashboard Preview
-- Fixed top nav with logo, Features/Pricing links, Sign In/Get Started buttons
-- Hero Text with gradient headline, subheadline, and CTA buttons
-- Features grid with 6 cards using item type accent colors
-- AI Section with Pro badge, checklist, and code editor mockup
-- Pricing section: Free ($0) vs Pro ($8/mo) with yearly toggle ($72/yr)
-- CTA section with "Ready to Organize Your Knowledge?" heading
-- Footer with logo, link columns, and copyright with current year
-- Animations: requestAnimationFrame icon drift, CSS arrow pulse, scroll fade-in, navbar scroll opacity
-- Responsive: mobile stacks vertically, arrow rotates 90°, single column grids
+<!-- Bullet points of what success looks like -->
 
 ## Notes
 
-- Output directory: `prototypes/homepage/`
-- Color palette: Snippet `#3b82f6`, Prompt `#f59e0b`, Command `#06b6d4`, Note `#22c55e`, File `#64748b`, Image `#ec4899`, URL `#6366f1`
-- Chaos icons: Notion, GitHub, Slack, VS Code, Browser tabs, Terminal, Text file, Bookmark
-- Icons float randomly, bounce off walls, rotate/scale pulse, repel from mouse cursor
-- Pro card has "Most Popular" badge
+<!-- Additional context, constraints, or details from spec -->
 
 ## History
 
@@ -71,3 +57,4 @@ In Progress
 - 2026-06-27: Favorite Toggle Buttons — Wired toggleItemFavorite/toggleCollectionFavorite server actions to star buttons in ItemDrawerActions, ItemCard (via ItemCardWithDrawer), CollectionCard dropdown, and CollectionDetailHeader [Completed]
 - 2026-06-27: Favorites Client-Side Sorting — Added sort by Name / Date / Type to favorites page using Base UI Select, client-side useMemo sorting (no DB changes), matches terminal aesthetic [Completed]
 - 2026-06-27: Pinned Items — toggleItemPin server action, Pin button wired in ItemDrawer, optimistic UI + toast, pinned items sort to top of all listings, static Pin indicator on ItemCard [Completed]
+- 2026-06-27: Homepage Mockup — Marketing homepage prototype at `/` with hero chaos animation, dashboard preview, features, AI, pricing, CTA, footer sections, responsive hamburger nav [Completed]

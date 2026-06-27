@@ -1,34 +1,16 @@
-# Current Feature: Homepage Implementation
+# Current Feature
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Complete -->
 
 ## Goals
 
-- All sections from the prototype render correctly: Nav, Hero, Features, AI, Pricing, CTA, Footer
-- Chaos icons animate, bounce off walls, and repel from mouse cursor
-- Pricing toggle switches between monthly/yearly amounts
-- Mobile menu opens/closes on hamburger click
-- Scroll reveal fades in feature cards, price cards, and CTA section
-- Navbar gets opaque border on scroll
-- All buttons and links navigate to the correct routes
-- No `homepage.css` file remains — all styling uses Tailwind + `cn()`
-- Responsive breakpoints match previous behavior (3→2→1 col grids, hero visual stacks vertically on mobile, arrow rotates 90°)
-- No `"use client"` leaks into server components — only Nav, ChaosAnimation, PricingCards, and ScrollReveal are client components
+<!-- Bullet points of what success looks like -->
 
 ## Notes
 
-- Reference spec: `@context/features/homepage-spec.md`
-- Decompose current monolithic `src/app/page.tsx` (`"use client"`) into separate server + client component files under `src/components/homepage/`
-- File structure: Nav.tsx (client), HeroSection.tsx (server), ChaosAnimation.tsx (client), DashboardPreview.tsx (server), FeaturesSection.tsx (server), AiSection.tsx (server), PricingCards.tsx (client), Footer.tsx (server), plus a shared ScrollReveal.tsx (client)
-- Delete `src/app/homepage.css` — migrate all styles to Tailwind utility classes
-- Use ShadCN components: `Button` for nav/CTA buttons, `Badge` for "Pro Feature" badge, `Switch` for pricing toggle
-- Use `lucide-react` icons where applicable (Menu, X, Check, ArrowRight)
-- Navigation routing: Sign In → `/sign-in`, Get Started → `/register`, Features → `#features`, Pricing → `#pricing`
-- Button variants: primary for CTAs, outline for secondary, ghost for Sign In
-- Pricing data: Free $0 (50 items, 3 collections) vs Pro $8/mo / $6/yr (unlimited)
-- `ScrollReveal` wraps sections with IntersectionObserver, adding `opacity-100 translate-y-0` when visible
+<!-- Additional context, constraints, or details from spec -->
 
 ## History
 
@@ -76,3 +58,4 @@ In Progress
 - 2026-06-27: Favorites Client-Side Sorting — Added sort by Name / Date / Type to favorites page using Base UI Select, client-side useMemo sorting (no DB changes), matches terminal aesthetic [Completed]
 - 2026-06-27: Pinned Items — toggleItemPin server action, Pin button wired in ItemDrawer, optimistic UI + toast, pinned items sort to top of all listings, static Pin indicator on ItemCard [Completed]
 - 2026-06-27: Homepage Mockup — Marketing homepage prototype at `/` with hero chaos animation, dashboard preview, features, AI, pricing, CTA, footer sections, responsive hamburger nav [Completed]
+- 2026-06-27: Homepage Implementation — Refactored monolithic client-page into server + client component composition (9 components under src/components/homepage/), migrated from homepage.css to Tailwind, blue gradient button theme, matching dashboard D-mark logo, proper routing [Completed]

@@ -1,16 +1,30 @@
-# Current Feature
+# Current Feature: Homepage Mockup
 
 ## Status
 
-<!-- Not Started | In Progress | Complete -->
+In Progress
 
 ## Goals
 
-<!-- Bullet points of what success looks like -->
+- Create a marketing homepage prototype in `prototypes/homepage/` with `index.html`, `styles.css`, `script.js`
+- Hero Section: Chaos Container with 8 floating animated icons, Transform Arrow, Dashboard Preview
+- Fixed top nav with logo, Features/Pricing links, Sign In/Get Started buttons
+- Hero Text with gradient headline, subheadline, and CTA buttons
+- Features grid with 6 cards using item type accent colors
+- AI Section with Pro badge, checklist, and code editor mockup
+- Pricing section: Free ($0) vs Pro ($8/mo) with yearly toggle ($72/yr)
+- CTA section with "Ready to Organize Your Knowledge?" heading
+- Footer with logo, link columns, and copyright with current year
+- Animations: requestAnimationFrame icon drift, CSS arrow pulse, scroll fade-in, navbar scroll opacity
+- Responsive: mobile stacks vertically, arrow rotates 90°, single column grids
 
 ## Notes
 
-<!-- Additional context, constraints, or details from spec -->
+- Output directory: `prototypes/homepage/`
+- Color palette: Snippet `#3b82f6`, Prompt `#f59e0b`, Command `#06b6d4`, Note `#22c55e`, File `#64748b`, Image `#ec4899`, URL `#6366f1`
+- Chaos icons: Notion, GitHub, Slack, VS Code, Browser tabs, Terminal, Text file, Bookmark
+- Icons float randomly, bounce off walls, rotate/scale pulse, repel from mouse cursor
+- Pro card has "Most Popular" badge
 
 ## History
 

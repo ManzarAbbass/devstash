@@ -72,15 +72,12 @@ export function SignInForm() {
   }
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center bg-background p-4">
+    <div className="relative flex min-h-screen items-center justify-center bg-background p-4 pt-16">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.06),transparent_50%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,hsl(var(--muted-foreground)/0.04),transparent_50%)]" />
 
       <Card className="relative w-full max-w-sm">
         <CardHeader className="text-center">
-          <div className="mx-auto flex size-10 items-center justify-center rounded-lg bg-purple-600 text-sm font-bold text-white">
-            D
-          </div>
           <CardTitle className="text-xl">Sign in to DevStash</CardTitle>
           <CardDescription>
             Enter your credentials or sign in with GitHub

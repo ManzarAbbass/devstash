@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { Menu, X } from "lucide-react"
+import { Menu, X, Folder } from "lucide-react"
 
 export function Nav() {
   const navRef = useRef<HTMLElement>(null)
@@ -29,9 +29,7 @@ export function Nav() {
     >
       <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-6">
         <a href="/" className="flex items-center gap-2.5 text-xl font-bold text-[#f4f4f5]">
-          <div className="flex size-7 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 text-xs font-bold text-white">
-            D
-          </div>
+          <Folder className="size-5 text-blue-500" />
           <span>DevStash</span>
         </a>
 

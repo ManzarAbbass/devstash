@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, type ReactNode } from "react"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
-import { Search, PanelLeft, Plus, Star, FolderPlus, FilePlus } from "lucide-react"
+import { Search, PanelLeft, Plus, Star, FolderPlus, FilePlus, FolderClosed } from "lucide-react"
 
 import {
   DropdownMenu,
@@ -99,9 +99,7 @@ export function DashboardLayout({ children, sidebarData, searchData }: { childre
             </Sheet>
           )}
           <Link href="/dashboard" className="flex md:w-40 items-center gap-2">
-            <div className="flex size-7 items-center justify-center rounded-lg bg-purple-600 text-xs font-bold text-white">
-              D
-            </div>
+            <FolderClosed className="size-5 text-purple-600" />
             <span className="hidden md:inline text-sm font-semibold">DevStash</span>
           </Link>
           <div className="relative mx-auto hidden md:block w-full max-w-md">

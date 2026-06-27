@@ -1,16 +1,20 @@
-# Current Feature
+# Current Feature: Auth Navbar — Homepage nav on sign-in/register, folder icon
 
 ## Status
 
-<!-- Not Started | In Progress | Complete -->
+In Progress
 
 ## Goals
 
-<!-- Bullet points of what success looks like -->
+- Homepage navbar (`Nav`) appears on /sign-in and /register pages
+- "D" icon removed from homepage nav and dashboard header
+- Folder icon replaces the "D" mark (with "DevStash" text beside it)
+- Card header "D" icon removed from sign-in and register forms
 
 ## Notes
 
-<!-- Additional context, constraints, or details from spec -->
+- User wants to redirect to home page from sign-in/register via the nav
+- pt-16 padding added to form containers to account for fixed nav height
 
 ## History
 

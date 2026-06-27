@@ -127,7 +127,7 @@ export function FavoritesList({ items, collections }: FavoritesListProps) {
           <ArrowUpDown className="size-3" />
           <span className="font-mono">Sort</span>
         </div>
-        <Select value={sort} onValueChange={(v) => v && setSort(v as SortKey)}>
+        <Select value={sort} onValueChange={(v) => v && setSort(v as SortKey)} label="Sort by">
           {(Object.keys(sortLabels) as SortKey[]).map((key) => (
             <SelectItem key={key} value={key}>
               {sortLabels[key]}

@@ -13,7 +13,7 @@ function DropdownMenuTrigger({ className, ...props }: MenuPrimitive.Trigger.Prop
     <MenuPrimitive.Trigger
       data-slot="dropdown-menu-trigger"
       className={cn("cursor-default", className)}
-      nativeButton={false}
+      nativeButton={true}
       {...props}
     />
   )

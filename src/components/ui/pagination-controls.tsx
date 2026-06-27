@@ -25,10 +25,15 @@ export function PaginationControls({ currentPage, totalPages, baseUrl }: Paginat
           <span className="sr-only">Previous</span>
         </Link>
       ) : (
-        <span className="inline-flex items-center justify-center rounded-md p-2 text-sm text-muted-foreground/50">
+        <Link
+          href="#"
+          aria-disabled
+          tabIndex={-1}
+          className="inline-flex items-center justify-center rounded-md p-2 text-sm text-muted-foreground/50 pointer-events-none"
+        >
           <ChevronLeft className="size-4" />
           <span className="sr-only">Previous</span>
-        </span>
+        </Link>
       )}
 
       {pages.map((page, i) => {
@@ -62,10 +67,15 @@ export function PaginationControls({ currentPage, totalPages, baseUrl }: Paginat
           <span className="sr-only">Next</span>
         </Link>
       ) : (
-        <span className="inline-flex items-center justify-center rounded-md p-2 text-sm text-muted-foreground/50">
+        <Link
+          href="#"
+          aria-disabled
+          tabIndex={-1}
+          className="inline-flex items-center justify-center rounded-md p-2 text-sm text-muted-foreground/50 pointer-events-none"
+        >
           <ChevronRight className="size-4" />
           <span className="sr-only">Next</span>
-        </span>
+        </Link>
       )}
     </nav>
   )

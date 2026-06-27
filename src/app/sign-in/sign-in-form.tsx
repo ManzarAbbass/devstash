@@ -4,7 +4,7 @@ import { useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { signIn } from "next-auth/react"
-import { Mail, Lock } from "lucide-react"
+import { Mail, Lock, LoaderCircle } from "lucide-react"
 
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
@@ -142,7 +142,7 @@ export function SignInForm() {
             )}
 
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Signing in..." : "Sign in"}
+              {loading ? <><LoaderCircle className="size-4 animate-spin" /> Signing in...</> : "Sign in"}
             </Button>
           </form>
 

@@ -1,20 +1,16 @@
-# Current Feature: Auth Navbar — Homepage nav on sign-in/register, folder icon
+# Current Feature
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Complete -->
 
 ## Goals
 
-- Homepage navbar (`Nav`) appears on /sign-in and /register pages
-- "D" icon removed from homepage nav and dashboard header
-- Folder icon replaces the "D" mark (with "DevStash" text beside it)
-- Card header "D" icon removed from sign-in and register forms
+<!-- Bullet points of what success looks like -->
 
 ## Notes
 
-- User wants to redirect to home page from sign-in/register via the nav
-- pt-16 padding added to form containers to account for fixed nav height
+<!-- Additional context, constraints, or details from spec -->
 
 ## History
 
@@ -64,3 +60,4 @@ In Progress
 - 2026-06-27: Homepage Mockup — Marketing homepage prototype at `/` with hero chaos animation, dashboard preview, features, AI, pricing, CTA, footer sections, responsive hamburger nav [Completed]
 - 2026-06-27: Homepage Implementation — Refactored monolithic client-page into server + client component composition (9 components under src/components/homepage/), migrated from homepage.css to Tailwind, blue gradient button theme, matching dashboard D-mark logo, proper routing [Completed]
 - 2026-06-27: Responsive Topbar — Hamburger moved to leftmost, search bar becomes icon + opens CommandPalette on mobile, New Item + New Collection merged into single "+" dropdown, logo shows icon-only on mobile (hidden text), removed rigid `w-52` on actions container, `max-md:ml-auto` to keep icons right-aligned [Completed]
+- 2026-06-28: Auth Navbar — Added homepage Nav to /sign-in and /register pages, replaced "D" icon with Folder/FolderClosed icon in nav and dashboard header, removed "D" icon from auth card headers [Completed]

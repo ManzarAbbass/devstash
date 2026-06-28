@@ -101,15 +101,38 @@ export function SidebarContent({
           <nav className="flex flex-col gap-0.5">
             {itemTypes.map((type) => {
               const Icon = iconMap[type.icon] || Code2
+              const isLocked = (type.name === "file" || type.name === "image") && !isPro
               return collapsed ? (
-                <Link
+                isLocked ? (
+                  <span
+                    key={type.id}
+                    className={`${iconOnlyClass} opacity-50`}
+                    title={`${type.name}s (Pro)`}
+                  >
+                    <Icon className="size-4" style={{ color: type.color }} />
+                  </span>
+                ) : (
+                  <Link
+                    key={type.id}
+                    href={`/items/${type.name}s`}
+                    className={iconOnlyClass}
+                    title={`${type.name}s`}
+                  >
+                    <Icon className="size-4" style={{ color: type.color }} />
+                  </Link>
+                )
+              ) : isLocked ? (
+                <button
                   key={type.id}
-                  href={`/items/${type.name}s`}
-                  className={iconOnlyClass}
-                  title={`${type.name}s`}
+                  type="button"
+                  onClick={() => router.push("/settings")}
+                  className={`${linkClass} w-full opacity-50`}
                 >
-                  <Icon className="size-4" style={{ color: type.color }} />
-                </Link>
+                  <Icon className="size-4 shrink-0" style={{ color: type.color }} />
+                  <span className="flex-1 capitalize">{type.name}s</span>
+                  <Badge variant="outline" className="text-[10px] leading-none px-1 py-0 h-4">PRO</Badge>
+                  <span className="text-xs text-muted-foreground">{type.count}</span>
+                </button>
               ) : (
                 <Link
                   key={type.id}

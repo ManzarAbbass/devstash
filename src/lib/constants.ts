@@ -2,3 +2,6 @@ export const ITEMS_PER_PAGE = 21
 export const COLLECTIONS_PER_PAGE = 21
 export const DASHBOARD_COLLECTIONS_LIMIT = 6
 export const DASHBOARD_RECENT_ITEMS_LIMIT = 10
+
+export const FREE_TIER_MAX_ITEMS = 50
+export const FREE_TIER_MAX_COLLECTIONS = 3

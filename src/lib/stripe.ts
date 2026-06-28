@@ -1,9 +1,23 @@
 import Stripe from "stripe"
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2026-06-24.dahlia",
-  typescript: true,
-})
+let _stripe: Stripe | undefined
 
-export const STRIPE_MONTHLY_PRICE_ID = process.env.STRIPE_PRICE_ID_MONTHLY!
-export const STRIPE_YEARLY_PRICE_ID = process.env.STRIPE_PRICE_ID_YEARLY!
+export function getStripe(): Stripe {
+  if (!_stripe) {
+    const key = process.env.STRIPE_SECRET_KEY
+    if (!key) throw new Error("STRIPE_SECRET_KEY is not set")
+    _stripe = new Stripe(key, {
+      apiVersion: "2026-06-24.dahlia",
+      typescript: true,
+    })
+  }
+  return _stripe
+}
+
+export function getStripePriceId(monthly: boolean): string {
+  const id = monthly
+    ? process.env.STRIPE_PRICE_ID_MONTHLY
+    : process.env.STRIPE_PRICE_ID_YEARLY
+  if (!id) throw new Error(`STRIPE_PRICE_ID_${monthly ? "MONTHLY" : "YEARLY"} is not set`)
+  return id
+}

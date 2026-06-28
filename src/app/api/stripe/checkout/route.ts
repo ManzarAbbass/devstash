@@ -1,9 +1,7 @@
 import { NextResponse } from "next/server"
 import { auth } from "@/auth"
-import { stripe, STRIPE_MONTHLY_PRICE_ID, STRIPE_YEARLY_PRICE_ID } from "@/lib/stripe"
+import { getStripe, getStripePriceId } from "@/lib/stripe"
 import { prisma } from "@/lib/prisma"
-
-const VALID_PRICE_IDS = [STRIPE_MONTHLY_PRICE_ID, STRIPE_YEARLY_PRICE_ID]
 
 export async function POST(request: Request) {
   try {
@@ -13,8 +11,10 @@ export async function POST(request: Request) {
     }
 
     const { priceId } = await request.json()
+    const stripe = getStripe()
+    const validPriceIds = [getStripePriceId(true), getStripePriceId(false)]
 
-    if (!priceId || !VALID_PRICE_IDS.includes(priceId)) {
+    if (!priceId || !validPriceIds.includes(priceId)) {
       return NextResponse.json({ error: "Invalid price ID" }, { status: 400 })
     }
 

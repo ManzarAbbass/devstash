@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { stripe } from "@/lib/stripe"
+import { getStripe } from "@/lib/stripe"
 import { prisma } from "@/lib/prisma"
 
 export async function POST(request: Request) {
@@ -11,6 +11,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Missing stripe-signature header" }, { status: 400 })
     }
 
+    const stripe = getStripe()
     const event = stripe.webhooks.constructEvent(
       body,
       signature,

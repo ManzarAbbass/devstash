@@ -1,5 +1,7 @@
-import { Download, File } from "lucide-react"
+import { Download, File, Lock, Crown } from "lucide-react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import { formatFileSize } from "@/lib/utils"
 
 interface FileDisplayProps {
@@ -8,9 +10,37 @@ interface FileDisplayProps {
   fileSize: number | null
   typeName: string
   onDownload: () => void
+  isPro?: boolean
 }
 
-export function FileDisplay({ fileUrl, fileName, fileSize, typeName, onDownload }: FileDisplayProps) {
+export function FileDisplay({ fileUrl, fileName, fileSize, typeName, onDownload, isPro }: FileDisplayProps) {
+  const router = useRouter()
+
+  if (!isPro) {
+    return (
+      <div>
+        <div className="mb-1.5 flex items-center justify-between">
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            {typeName === "image" ? "Image" : "File"}
+          </h3>
+          <Badge variant="outline" className="text-[10px] leading-none px-1 py-0 h-4">PRO</Badge>
+        </div>
+        <div className="flex cursor-pointer flex-col items-center gap-3 rounded-lg border border-border p-6 text-center" onClick={() => router.push("/settings")}>
+          <Lock className="size-8 text-muted-foreground/50" />
+          <div>
+            <p className="flex items-center justify-center gap-1 text-sm font-medium text-muted-foreground">
+              <Crown className="size-4" />
+              Pro feature
+            </p>
+            <p className="mt-1 text-xs text-muted-foreground/60">
+              Upgrade to Pro to view and download {typeName === "image" ? "images" : "files"}.
+            </p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div>
       <div className="mb-1.5 flex items-center justify-between">

@@ -80,7 +80,7 @@ export default async function ItemsListPage({
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {items.map((item) => (
-              <ItemCardWithDrawer key={item.id} item={item} compact />
+              <ItemCardWithDrawer key={item.id} item={item} compact isPro={session.user.isPro} />
             ))}
           </div>
         )}

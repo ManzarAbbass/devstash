@@ -1,4 +1,5 @@
-import { Code2, Sparkles, Terminal, StickyNote, Link2, File, Image } from "lucide-react"
+import { Code2, Sparkles, Terminal, StickyNote, Link2, File, Image, Lock } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
 
 const creationTypes = ["snippet", "prompt", "command", "note", "file", "image", "link"] as const
 
@@ -27,23 +28,32 @@ export function ItemTypeSelector({ selectedType, onSelect, isPro }: ItemTypeSele
         Type
       </h3>
       <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-2">
-        {creationTypes.filter((type) => isPro || !proTypes.has(type)).map((type) => {
+        {creationTypes.map((type) => {
           const meta = typeMeta[type]
           const Icon = meta.icon
           const isSelected = selectedType === type
+          const isLocked = proTypes.has(type) && !isPro
           return (
             <button
               key={type}
               type="button"
+              disabled={isLocked}
               onClick={() => onSelect(type)}
-              className={`flex flex-col items-center gap-1.5 rounded-lg border p-3 text-xs capitalize transition-colors ${
-                isSelected
-                  ? "border-ring bg-muted text-foreground"
-                  : "border-border text-muted-foreground hover:border-muted-foreground/30 hover:text-foreground"
+              className={`relative flex flex-col items-center gap-1.5 rounded-lg border p-3 text-xs capitalize transition-colors ${
+                isLocked
+                  ? "cursor-not-allowed border-border/50 text-muted-foreground/50"
+                  : isSelected
+                    ? "border-ring bg-muted text-foreground"
+                    : "border-border text-muted-foreground hover:border-muted-foreground/30 hover:text-foreground"
               }`}
             >
-              <Icon className="size-5" style={{ color: meta.color }} />
-              <span>{meta.label}</span>
+              {isLocked && (
+                <div className="absolute right-1 top-1">
+                  <Lock className="size-3 text-muted-foreground/50" />
+                </div>
+              )}
+              <Icon className="size-5" style={{ color: isLocked ? undefined : meta.color }} />
+              <span className="flex items-center gap-1">{meta.label}{isLocked && <Badge variant="outline" className="text-[9px] leading-none px-1 py-0 h-3.5">PRO</Badge>}</span>
             </button>
           )
         })}

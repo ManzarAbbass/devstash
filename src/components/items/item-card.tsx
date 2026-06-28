@@ -8,7 +8,10 @@ import {
   Download,
   File,
   Image,
+  Lock,
+  Crown,
 } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 import { toast } from "sonner"
 
@@ -50,9 +53,31 @@ function handleQuickCopy(item: ItemWithDetails) {
   toast.success("Copied!")
 }
 
-export function ItemCard({ item, compact, onToggleFavorite }: { item: ItemWithDetails; compact?: boolean; onToggleFavorite?: () => void }) {
+export function ItemCard({ item, compact, onToggleFavorite, isPro }: { item: ItemWithDetails; compact?: boolean; onToggleFavorite?: () => void; isPro?: boolean }) {
+  const router = useRouter()
   const Icon = iconMap[item.itemType.icon] || Code2
   const typeName = item.itemType.name.toLowerCase()
+  const isLocked = contentTypesWithFile.includes(typeName) && !isPro
+
+  if (isLocked) {
+    return (
+      <div className="group flex cursor-pointer rounded-xl border border-border bg-card p-4 shadow-sm transition-all hover:bg-muted/50 hover:shadow-md" onClick={() => router.push("/settings")}>
+        <div className="flex w-full items-center gap-4">
+          <div className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-muted/50">
+            <Lock className="size-6 text-muted-foreground/50" />
+          </div>
+          <div className="min-w-0 flex-1 space-y-0.5">
+            <p className="truncate text-sm font-medium">{item.fileName || item.title}</p>
+            <p className="flex items-center gap-1 text-xs text-muted-foreground/60">
+              <Crown className="size-3" />
+              Upgrade to Pro to access
+            </p>
+          </div>
+          <Badge variant="outline" className="text-[10px] leading-none px-1 py-0 h-4 shrink-0">PRO</Badge>
+        </div>
+      </div>
+    )
+  }
 
   if (contentTypesWithFile.includes(typeName)) {
     if (typeName === "image" && !compact) {

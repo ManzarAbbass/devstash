@@ -12,6 +12,13 @@ export async function GET(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
+    if (!session.user.isPro) {
+      return NextResponse.json(
+        { error: "Upgrade to Pro to download files" },
+        { status: 403 }
+      )
+    }
+
     const { filekey } = await params
     const key = filekey.join("/")
 

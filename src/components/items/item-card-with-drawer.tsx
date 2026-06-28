@@ -9,10 +9,13 @@ import { ItemDrawer } from "./item-drawer"
 import { toggleItemFavorite } from "@/actions/items"
 import type { ItemWithDetails } from "@/lib/db/items"
 
-export function ItemCardWithDrawer({ item, compact }: { item: ItemWithDetails; compact?: boolean }) {
+const contentTypesWithFile = ["file", "image"]
+
+export function ItemCardWithDrawer({ item, compact, isPro }: { item: ItemWithDetails; compact?: boolean; isPro?: boolean }) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
+  const isLocked = contentTypesWithFile.includes(item.itemType.name.toLowerCase()) && !isPro
 
   function handleToggleFavorite() {
     startTransition(async () => {
@@ -25,10 +28,15 @@ export function ItemCardWithDrawer({ item, compact }: { item: ItemWithDetails; c
     })
   }
 
+  function handleClick() {
+    if (isLocked) return
+    setOpen(true)
+  }
+
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <div onClick={() => setOpen(true)} className="contents">
-        <ItemCard item={item} compact={compact} onToggleFavorite={handleToggleFavorite} />
+      <div onClick={handleClick} className="contents">
+        <ItemCard item={item} compact={compact} onToggleFavorite={handleToggleFavorite} isPro={isPro} />
       </div>
       <SheetContent side="right" className="w-3/4 sm:max-w-6xl">
         <ItemDrawer itemId={item.id} />

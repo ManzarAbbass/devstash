@@ -99,9 +99,7 @@ export function SidebarContent({
             </button>
           )}
           <nav className="flex flex-col gap-0.5">
-            {itemTypes
-              .filter((type) => isPro || (type.name !== "file" && type.name !== "image"))
-              .map((type) => {
+            {itemTypes.map((type) => {
               const Icon = iconMap[type.icon] || Code2
               return collapsed ? (
                 <Link

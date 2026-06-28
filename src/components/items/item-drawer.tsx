@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import { useSession } from "next-auth/react"
 import { toast } from "sonner"
 import {
   Code2,
@@ -47,6 +48,7 @@ function DrawerSkeleton() {
 
 export function ItemDrawer({ itemId }: { itemId: string }) {
   const router = useRouter()
+  const { data: session } = useSession()
   const { preferences: editorPrefs } = useEditorPreferences()
   const [item, setItem] = useState<ItemWithDetails | null>(null)
   const [loading, setLoading] = useState(true)
@@ -293,6 +295,7 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
             fileSize={item.fileSize}
             typeName={typeName}
             onDownload={handleDownload}
+            isPro={session?.user?.isPro}
           />
         )}
 

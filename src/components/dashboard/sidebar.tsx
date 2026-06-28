@@ -4,6 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useSession, signOut } from "next-auth/react"
+import { toast } from "sonner"
 import {
   Code2,
   Star,
@@ -125,7 +126,10 @@ export function SidebarContent({
                 <button
                   key={type.id}
                   type="button"
-                  onClick={() => router.push("/settings")}
+                  onClick={() => {
+                    toast.error("This feature requires a Pro subscription")
+                    router.push("/settings")
+                  }}
                   className={`${linkClass} w-full opacity-50`}
                 >
                   <Icon className="size-4 shrink-0" style={{ color: type.color }} />

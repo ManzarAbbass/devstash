@@ -61,7 +61,7 @@ export function ItemCard({ item, compact, onToggleFavorite, isPro }: { item: Ite
 
   if (isLocked) {
     return (
-      <div className="group flex cursor-pointer rounded-xl border border-border bg-card p-4 shadow-sm transition-all hover:bg-muted/50 hover:shadow-md" onClick={() => router.push("/settings")}>
+      <div className="group flex cursor-pointer rounded-xl border border-border bg-card p-4 shadow-sm transition-all hover:bg-muted/50 hover:shadow-md" onClick={() => { toast.error("This feature requires a Pro subscription"); router.push("/settings") }}>
         <div className="flex w-full items-center gap-4">
           <div className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-muted/50">
             <Lock className="size-6 text-muted-foreground/50" />

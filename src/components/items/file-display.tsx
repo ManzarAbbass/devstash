@@ -1,5 +1,6 @@
 import { Download, File, Lock, Crown } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { formatFileSize } from "@/lib/utils"
@@ -25,7 +26,7 @@ export function FileDisplay({ fileUrl, fileName, fileSize, typeName, onDownload,
           </h3>
           <Badge variant="outline" className="text-[10px] leading-none px-1 py-0 h-4">PRO</Badge>
         </div>
-        <div className="flex cursor-pointer flex-col items-center gap-3 rounded-lg border border-border p-6 text-center" onClick={() => router.push("/settings")}>
+        <div className="flex cursor-pointer flex-col items-center gap-3 rounded-lg border border-border p-6 text-center" onClick={() => { toast.error("This feature requires a Pro subscription"); router.push("/settings") }}>
           <Lock className="size-8 text-muted-foreground/50" />
           <div>
             <p className="flex items-center justify-center gap-1 text-sm font-medium text-muted-foreground">

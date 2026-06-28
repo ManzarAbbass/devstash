@@ -1,24 +1,16 @@
-# Current Feature: Stripe Integration — Phase 1: Core Infrastructure
+# Current Feature
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Complete -->
 
 ## Goals
 
-- [ ] Install `stripe` npm package
-- [ ] Add 5 Stripe env vars to `.env.example` (secret key, publishable key, webhook secret, monthly/yearly price IDs)
-- [ ] Create `src/lib/stripe.ts` — Stripe client singleton + price ID constants
-- [ ] Update `src/types/next-auth.d.ts` — add `isPro: boolean` to `Session.user`
-- [ ] Update `src/auth.ts` — `jwt` callback syncs `isPro` from DB; `session` callback injects `isPro` from token
-- [ ] Create `src/lib/constants.ts` — `FREE_TIER_MAX_ITEMS = 50`, `FREE_TIER_MAX_COLLECTIONS = 3`
-- [ ] Create `src/lib/pro.ts` — `getProStatus()`, `checkItemLimit()`, `checkCollectionLimit()`, `checkFileUploadAllowed()`
-- [ ] Write unit tests for `src/lib/pro.ts` covering free/pro limits and `getProStatus()`
+<!-- Bullet points of what success looks like -->
 
 ## Notes
 
-- Tests must mock Prisma (`prisma.item.count`, `prisma.collection.count`) and NextAuth (`auth()`)
-- Uses `apiVersion: "2025-02-24.acacia"` for Stripe client
+<!-- Additional context, constraints, or details from spec -->
 
 ## History
 
@@ -69,4 +61,5 @@ In Progress
 - 2026-06-27: Homepage Implementation — Refactored monolithic client-page into server + client component composition (9 components under src/components/homepage/), migrated from homepage.css to Tailwind, blue gradient button theme, matching dashboard D-mark logo, proper routing [Completed]
 - 2026-06-27: Responsive Topbar — Hamburger moved to leftmost, search bar becomes icon + opens CommandPalette on mobile, New Item + New Collection merged into single "+" dropdown, logo shows icon-only on mobile (hidden text), removed rigid `w-52` on actions container, `max-md:ml-auto` to keep icons right-aligned [Completed]
 - 2026-06-28: Auth Navbar — Added homepage Nav to /sign-in and /register pages, replaced "D" icon with Folder/FolderClosed icon in nav and dashboard header, removed "D" icon from auth card headers [Completed]
+- 2026-06-28: Stripe Phase 1 — Core Infrastructure: stripe SDK, env vars, client singleton, isPro in session, usage-limit helpers (50 items / 3 collections free tier), file upload gated to Pro, 11 unit tests [Completed]
 

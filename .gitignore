@@ -51,3 +51,6 @@ next-env.d.ts
 
 # playwright test artifacts
 .playwright-mcp/
+
+# AI assistant config (contains credentials)
+/AGENTS.md

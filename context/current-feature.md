@@ -1,25 +1,16 @@
-# Current Feature: Stripe Integration — Phase 2: Integration & UI
+# Current Feature
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Complete -->
 
 ## Goals
 
-- Build Stripe API routes (checkout, billing portal, webhook) with validation and error handling
-- Add feature gating to server actions and API routes (item limit, collection limit, file upload)
-- Wire subscription card on Settings page with Upgrade/Manage buttons
-- Wire PricingCards Pro card to checkout API and Free card to register/dashboard
-- Gate file/image type links in sidebar behind isPro
-- Gate file/image type options in Create Item Dialog behind isPro
-- Test end-to-end with Stripe CLI
+<!-- Bullet points of what success looks like -->
 
 ## Notes
 
-- Phase 1 (Stripe client, NextAuth types, constants, pro helpers) must be complete
-- Requires Stripe Dashboard products/prices created (monthly $8, yearly $72) and price IDs in `.env`
-- Stripe CLI installed and configured for local webhook forwarding
-- UI gating is cosmetic only; server-side gating is authoritative
+<!-- Additional context, constraints, or details from spec -->
 
 ## History
 
@@ -71,4 +62,5 @@ In Progress
 - 2026-06-27: Responsive Topbar — Hamburger moved to leftmost, search bar becomes icon + opens CommandPalette on mobile, New Item + New Collection merged into single "+" dropdown, logo shows icon-only on mobile (hidden text), removed rigid `w-52` on actions container, `max-md:ml-auto` to keep icons right-aligned [Completed]
 - 2026-06-28: Auth Navbar — Added homepage Nav to /sign-in and /register pages, replaced "D" icon with Folder/FolderClosed icon in nav and dashboard header, removed "D" icon from auth card headers [Completed]
 - 2026-06-28: Stripe Phase 1 — Core Infrastructure: stripe SDK, env vars, client singleton, isPro in session, usage-limit helpers (50 items / 3 collections free tier), file upload gated to Pro, 11 unit tests [Completed]
+- 2026-06-28: Stripe Phase 2 — Integration & UI: API routes (checkout, portal, webhook), feature gating on server actions + upload, settings subscription card with monthly/yearly toggle, PricingCards wired to checkout, sidebar + create dialog gating for file/image types, SessionProvider in root layout [Completed]
 

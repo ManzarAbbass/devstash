@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { signOut } from "next-auth/react"
+import { useSession, signOut } from "next-auth/react"
 import {
   Code2,
   Star,
@@ -53,6 +53,8 @@ export function SidebarContent({
 }) {
   const [collectionsOpen, setCollectionsOpen] = useState(true)
   const router = useRouter()
+  const { data: session } = useSession()
+  const isPro = session?.user?.isPro ?? false
   const { user, itemTypes, favoriteCollections, recentCollections } = data
 
   const initials = user.name
@@ -97,7 +99,9 @@ export function SidebarContent({
             </button>
           )}
           <nav className="flex flex-col gap-0.5">
-            {itemTypes.map((type) => {
+            {itemTypes
+              .filter((type) => isPro || (type.name !== "file" && type.name !== "image"))
+              .map((type) => {
               const Icon = iconMap[type.icon] || Code2
               return collapsed ? (
                 <Link

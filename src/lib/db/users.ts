@@ -12,6 +12,7 @@ export interface UserProfile {
   image: string | null
   createdAt: Date
   hasPassword: boolean
+  isPro: boolean
 }
 
 export interface ProfileStats {
@@ -30,6 +31,7 @@ export async function getUserProfile(userId: string): Promise<UserProfile> {
       image: true,
       createdAt: true,
       password: true,
+      isPro: true,
     },
   })
 
@@ -42,6 +44,7 @@ export async function getUserProfile(userId: string): Promise<UserProfile> {
     image: user.image,
     createdAt: user.createdAt,
     hasPassword: user.password !== null,
+    isPro: user.isPro,
   }
 }
 

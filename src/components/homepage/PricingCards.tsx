@@ -1,10 +1,16 @@
 "use client"
 
 import { useState } from "react"
+import { useSession } from "next-auth/react"
 import { ScrollReveal } from "./ScrollReveal"
 
-export function PricingCards() {
+export function PricingCards({ monthlyPriceId, yearlyPriceId }: {
+  monthlyPriceId: string
+  yearlyPriceId: string
+}) {
   const [yearly, setYearly] = useState(false)
+  const { data: session } = useSession()
+  const isAuthenticated = !!session?.user
 
   return (
     <section className="mx-auto max-w-[1200px] px-6 py-24 text-center" id="pricing">
@@ -58,10 +64,10 @@ export function PricingCards() {
               ))}
             </ul>
             <a
-              href="/register"
+              href={isAuthenticated ? "/dashboard" : "/register"}
               className="inline-flex w-full items-center justify-center rounded-lg border border-blue-500/50 bg-transparent px-5 py-2.5 text-sm font-semibold text-blue-400 transition-all hover:border-blue-500 hover:text-blue-300"
             >
-              Get Started
+              {isAuthenticated ? "Go to Dashboard" : "Get Started"}
             </a>
           </div>
         </ScrollReveal>
@@ -90,12 +96,32 @@ export function PricingCards() {
                 </li>
               ))}
             </ul>
-            <a
-              href="/register"
-              className="inline-flex w-full items-center justify-center rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition-all hover:from-blue-600 hover:to-blue-700"
-            >
-              Upgrade to Pro
-            </a>
+            {isAuthenticated ? (
+              <button
+                type="button"
+                onClick={async () => {
+                  try {
+                    const res = await fetch("/api/stripe/checkout", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ priceId: yearly ? yearlyPriceId : monthlyPriceId }),
+                    })
+                    const data = await res.json()
+                    if (data.url) window.location.href = data.url
+                  } catch {}
+                }}
+                className="inline-flex w-full items-center justify-center rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition-all hover:from-blue-600 hover:to-blue-700"
+              >
+                Upgrade to Pro
+              </button>
+            ) : (
+              <a
+                href="/sign-in"
+                className="inline-flex w-full items-center justify-center rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition-all hover:from-blue-600 hover:to-blue-700"
+              >
+                Upgrade to Pro
+              </a>
+            )}
           </div>
         </ScrollReveal>
       </div>

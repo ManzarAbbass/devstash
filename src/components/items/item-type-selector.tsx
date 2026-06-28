@@ -15,16 +15,19 @@ const typeMeta: Record<string, { icon: typeof Code2; label: string; color: strin
 interface ItemTypeSelectorProps {
   selectedType: string
   onSelect: (type: string) => void
+  isPro?: boolean
 }
 
-export function ItemTypeSelector({ selectedType, onSelect }: ItemTypeSelectorProps) {
+const proTypes = new Set(["file", "image"])
+
+export function ItemTypeSelector({ selectedType, onSelect, isPro }: ItemTypeSelectorProps) {
   return (
     <div>
       <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
         Type
       </h3>
       <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-2">
-        {creationTypes.map((type) => {
+        {creationTypes.filter((type) => isPro || !proTypes.has(type)).map((type) => {
           const meta = typeMeta[type]
           const Icon = meta.icon
           const isSelected = selectedType === type

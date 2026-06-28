@@ -4,6 +4,7 @@ import { FeaturesSection } from "@/components/homepage/FeaturesSection"
 import { AiSection } from "@/components/homepage/AiSection"
 import { PricingCards } from "@/components/homepage/PricingCards"
 import { Footer } from "@/components/homepage/Footer"
+import { STRIPE_MONTHLY_PRICE_ID, STRIPE_YEARLY_PRICE_ID } from "@/lib/stripe"
 
 export default function HomePage() {
   return (
@@ -12,7 +13,10 @@ export default function HomePage() {
       <HeroSection />
       <FeaturesSection />
       <AiSection />
-      <PricingCards />
+      <PricingCards
+        monthlyPriceId={STRIPE_MONTHLY_PRICE_ID}
+        yearlyPriceId={STRIPE_YEARLY_PRICE_ID}
+      />
       <Footer />
     </div>
   )

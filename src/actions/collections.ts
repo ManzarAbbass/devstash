@@ -3,6 +3,7 @@
 import { z } from "zod"
 import { auth } from "@/auth"
 import { getUserCollections as getUserCollectionsQuery, createCollection as createCollectionQuery, updateCollection as updateCollectionQuery, deleteCollection as deleteCollectionQuery, toggleCollectionFavorite as toggleCollectionFavoriteQuery } from "@/lib/db/collections"
+import { checkCollectionLimit } from "@/lib/pro"
 
 const createCollectionSchema = z.object({
   name: z.string().trim().min(1, "Name is required"),
@@ -43,6 +44,11 @@ export async function createCollection(
   }
 
   const { name, description } = parsed.data
+
+  const limitCheck = await checkCollectionLimit(session.user.id, session.user.isPro)
+  if (!limitCheck.allowed) {
+    return { success: false, error: limitCheck.reason }
+  }
 
   try {
     const created = await createCollectionQuery(session.user.id, {

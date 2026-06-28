@@ -10,6 +10,7 @@ import {
   toggleItemPin as toggleItemPinQuery,
 } from "@/lib/db/items"
 import { supabaseAdmin, STORAGE_BUCKET } from "@/lib/supabase"
+import { checkItemLimit } from "@/lib/pro"
 
 const updateItemSchema = z.object({
   title: z.string().trim().min(1, "Title is required"),
@@ -113,6 +114,11 @@ export async function createItem(
 
   if (contentType === "link" && !url) {
     return { success: false, error: { url: ["URL is required for link type"] } }
+  }
+
+  const limitCheck = await checkItemLimit(session.user.id, session.user.isPro)
+  if (!limitCheck.allowed) {
+    return { success: false, error: limitCheck.reason }
   }
 
   try {

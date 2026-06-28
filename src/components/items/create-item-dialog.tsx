@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import { useSession } from "next-auth/react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
@@ -35,6 +36,8 @@ const creationTypes = ["snippet", "prompt", "command", "note", "file", "image", 
 
 export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }: CreateItemDialogProps) {
   const router = useRouter()
+  const { data: session } = useSession()
+  const isPro = session?.user?.isPro ?? false
   const { preferences: editorPrefs } = useEditorPreferences()
   const [selectedType, setSelectedType] = useState(initialType && creationTypes.includes(initialType as typeof creationTypes[number]) ? initialType : "snippet")
   const [saving, setSaving] = useState(false)
@@ -142,7 +145,7 @@ export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }:
         <div className="flex-1 overflow-y-auto scrollbar-none -mx-6 px-6">
           <div className="flex flex-col gap-5">
             {/* Type selector */}
-            <ItemTypeSelector selectedType={selectedType} onSelect={setSelectedType} />
+            <ItemTypeSelector selectedType={selectedType} onSelect={setSelectedType} isPro={isPro} />
 
             <hr className="border-border" />
 

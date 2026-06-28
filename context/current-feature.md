@@ -1,16 +1,25 @@
-# Current Feature
+# Current Feature: Stripe Integration — Phase 2: Integration & UI
 
 ## Status
 
-<!-- Not Started | In Progress | Complete -->
+In Progress
 
 ## Goals
 
-<!-- Bullet points of what success looks like -->
+- Build Stripe API routes (checkout, billing portal, webhook) with validation and error handling
+- Add feature gating to server actions and API routes (item limit, collection limit, file upload)
+- Wire subscription card on Settings page with Upgrade/Manage buttons
+- Wire PricingCards Pro card to checkout API and Free card to register/dashboard
+- Gate file/image type links in sidebar behind isPro
+- Gate file/image type options in Create Item Dialog behind isPro
+- Test end-to-end with Stripe CLI
 
 ## Notes
 
-<!-- Additional context, constraints, or details from spec -->
+- Phase 1 (Stripe client, NextAuth types, constants, pro helpers) must be complete
+- Requires Stripe Dashboard products/prices created (monthly $8, yearly $72) and price IDs in `.env`
+- Stripe CLI installed and configured for local webhook forwarding
+- UI gating is cosmetic only; server-side gating is authoritative
 
 ## History
 

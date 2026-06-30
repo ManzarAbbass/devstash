@@ -2,7 +2,7 @@
 
 ## Status
 
-In Progress
+Complete
 
 ## Goals
 
@@ -69,4 +69,5 @@ In Progress
 - 2026-06-28: Stripe Phase 1 — Core Infrastructure: stripe SDK, env vars, client singleton, isPro in session, usage-limit helpers (50 items / 3 collections free tier), file upload gated to Pro, 11 unit tests [Completed]
 - 2026-06-28: Stripe Phase 2 — Integration & UI: API routes (checkout, portal, webhook), feature gating on server actions + upload, settings subscription card with monthly/yearly toggle, PricingCards wired to checkout, sidebar + create dialog gating for file/image types, SessionProvider in root layout [Completed]
 - 2026-06-30: Upgrade Flow — New `/upgrade` page with Free vs Pro comparison cards and monthly/yearly toggle, Upgrade ghost button in dashboard header for free users, checkout redirects to Stripe [Completed]
+- 2026-07-01: Language Select Dropdown — Replaced free-text language Input with Base UI Select in create item dialog and item drawer edit mode; moved language selector above content editor; shared LANGUAGE_OPTIONS (34 languages); fixed z-index and overflow clipping by removing overflow-hidden from dialog/sheet popups and rendering Positioner inline with z-[60] [Completed]
 

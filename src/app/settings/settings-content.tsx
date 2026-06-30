@@ -13,11 +13,12 @@ import { EditorPreferencesForm } from "@/components/settings/editor-preferences-
 import type { UserProfile } from "@/lib/db/users"
 import type { EditorPreferences } from "@/lib/editor-preferences"
 
-export function SettingsContent({ profile, editorPrefs, monthlyPriceId, yearlyPriceId }: {
+export function SettingsContent({ profile, editorPrefs, monthlyPriceId, yearlyPriceId, currentPlan }: {
   profile: UserProfile
   editorPrefs: EditorPreferences
   monthlyPriceId: string
   yearlyPriceId: string
+  currentPlan: "monthly" | "yearly" | null
 }) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [yearly, setYearly] = useState(false)
@@ -95,7 +96,7 @@ export function SettingsContent({ profile, editorPrefs, monthlyPriceId, yearlyPr
           <CardTitle>Subscription</CardTitle>
           <CardDescription>
             {profile.isPro
-              ? "You're on the DevStash Pro plan."
+              ? <>You're on the DevStash <span className="inline-flex items-center rounded-md bg-purple-600 px-1.5 py-0.5 text-xs font-semibold text-white">Pro</span> plan{currentPlan ? ` (${currentPlan === "yearly" ? "Yearly" : "Monthly"})` : ""}.</>
               : "You're on the Free plan."}
           </CardDescription>
         </CardHeader>

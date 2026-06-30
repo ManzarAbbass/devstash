@@ -134,7 +134,7 @@ export function SidebarContent({
                 >
                   <Icon className="size-4 shrink-0" style={{ color: type.color }} />
                   <span className="flex-1 capitalize">{type.name}s</span>
-                  <Badge variant="outline" className="text-[10px] leading-none px-1 py-0 h-4">PRO</Badge>
+                  <Badge variant="outline" className="text-[10px] leading-none px-1 py-0 h-4 bg-purple-600 text-white border-purple-500">PRO</Badge>
                   <span className="text-xs text-muted-foreground">{type.count}</span>
                 </button>
               ) : (
@@ -146,7 +146,7 @@ export function SidebarContent({
                   <Icon className="size-4 shrink-0" style={{ color: type.color }} />
                   <span className="flex-1 capitalize">{type.name}s</span>
                   {(type.name === "file" || type.name === "image") && (
-                    <Badge variant="outline" className="text-[10px] leading-none px-1 py-0 h-4">PRO</Badge>
+                    <Badge variant="outline" className="text-[10px] leading-none px-1 py-0 h-4 bg-purple-600 text-white border-purple-500">PRO</Badge>
                   )}
                   <span className="text-xs text-muted-foreground">{type.count}</span>
                 </Link>

@@ -13,6 +13,7 @@ export interface UserProfile {
   createdAt: Date
   hasPassword: boolean
   isPro: boolean
+  stripeSubscriptionId: string | null
 }
 
 export interface ProfileStats {
@@ -32,6 +33,7 @@ export async function getUserProfile(userId: string): Promise<UserProfile> {
       createdAt: true,
       password: true,
       isPro: true,
+      stripeSubscriptionId: true,
     },
   })
 
@@ -45,6 +47,7 @@ export async function getUserProfile(userId: string): Promise<UserProfile> {
     createdAt: user.createdAt,
     hasPassword: user.password !== null,
     isPro: user.isPro,
+    stripeSubscriptionId: user.stripeSubscriptionId,
   }
 }
 

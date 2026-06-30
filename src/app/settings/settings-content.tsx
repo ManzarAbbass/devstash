@@ -112,7 +112,7 @@ export function SettingsContent({ profile, editorPrefs, monthlyPriceId, yearlyPr
               </p>
               <div className="flex items-center gap-3">
                 <span className={`text-sm ${yearly ? "text-muted-foreground" : "text-foreground font-medium"}`}>
-                  ${yearly ? "72" : "8"}<span className="text-xs text-muted-foreground font-normal">/mo</span>
+                  ${yearly ? "72" : "8"}<span className="text-xs text-muted-foreground font-normal">{yearly ? "/yr" : "/mo"}</span>
                 </span>
                 <label className="relative inline-block h-6 w-[44px]">
                   <input
@@ -131,7 +131,7 @@ export function SettingsContent({ profile, editorPrefs, monthlyPriceId, yearlyPr
               </div>
               <Button onClick={handleCheckout} disabled={checkoutLoading} className="w-fit">
                 <Crown className="size-4" />
-                {checkoutLoading ? "Loading..." : `Upgrade to Pro - $${yearly ? "72" : "8"}/yr`}
+                {checkoutLoading ? "Loading..." : `Upgrade to Pro - $${yearly ? "72" : "8"}/${yearly ? "yr" : "mo"}`}
               </Button>
             </div>
           )}

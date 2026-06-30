@@ -53,6 +53,7 @@ export async function POST(request: Request) {
             where: { id: user.id },
             data: {
               isPro: isActive && !isCancelled,
+              stripeSubscriptionId: isCancelled ? null : user.stripeSubscriptionId,
             },
           })
         }

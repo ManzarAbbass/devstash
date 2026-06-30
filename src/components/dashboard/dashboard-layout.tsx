@@ -3,7 +3,8 @@
 import { useState, useEffect, useCallback, type ReactNode } from "react"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
-import { Search, PanelLeft, Plus, Star, FolderPlus, FilePlus, FolderClosed } from "lucide-react"
+import { Crown, Search, PanelLeft, Plus, Star, FolderPlus, FilePlus, FolderClosed } from "lucide-react"
+import { useSession } from "next-auth/react"
 
 import {
   DropdownMenu,
@@ -29,6 +30,8 @@ import type { EditorPreferences } from "@/lib/editor-preferences"
 import { defaultEditorPreferences } from "@/lib/editor-preferences"
 
 export function DashboardLayout({ children, sidebarData, searchData }: { children: ReactNode; sidebarData: SidebarData; searchData: SearchData }) {
+  const { data: session } = useSession()
+  const isPro = session?.user?.isPro ?? false
   const pathname = usePathname()
   const [isMobile, setIsMobile] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
@@ -124,6 +127,14 @@ export function DashboardLayout({ children, sidebarData, searchData }: { childre
             >
               <Star className="size-4" />
             </Link>
+            {!isPro && (
+              <Link href="/upgrade">
+                <Button variant="ghost" size="sm" className="text-muted-foreground">
+                  <Crown className="size-3.5" />
+                  Upgrade
+                </Button>
+              </Link>
+            )}
             {!isMobile && (
               <>
                 <Button variant="outline" size="sm" onClick={() => setCollectionDialogOpen(true)}>

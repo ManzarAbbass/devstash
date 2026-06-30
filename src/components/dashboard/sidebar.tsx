@@ -128,7 +128,7 @@ export function SidebarContent({
                   type="button"
                   onClick={() => {
                     toast.error("This feature requires a Pro subscription")
-                    router.push("/settings")
+                    router.push("/upgrade")
                   }}
                   className={`${linkClass} w-full opacity-50`}
                 >

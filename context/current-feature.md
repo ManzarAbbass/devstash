@@ -63,4 +63,5 @@
 - 2026-06-28: Auth Navbar — Added homepage Nav to /sign-in and /register pages, replaced "D" icon with Folder/FolderClosed icon in nav and dashboard header, removed "D" icon from auth card headers [Completed]
 - 2026-06-28: Stripe Phase 1 — Core Infrastructure: stripe SDK, env vars, client singleton, isPro in session, usage-limit helpers (50 items / 3 collections free tier), file upload gated to Pro, 11 unit tests [Completed]
 - 2026-06-28: Stripe Phase 2 — Integration & UI: API routes (checkout, portal, webhook), feature gating on server actions + upload, settings subscription card with monthly/yearly toggle, PricingCards wired to checkout, sidebar + create dialog gating for file/image types, SessionProvider in root layout [Completed]
+- 2026-06-30: Upgrade Flow — New `/upgrade` page with Free vs Pro comparison cards and monthly/yearly toggle, Upgrade ghost button in dashboard header for free users, checkout redirects to Stripe [Completed]
 

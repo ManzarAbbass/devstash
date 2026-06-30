@@ -14,6 +14,8 @@ import { FileUpload } from "@/components/items/file-upload"
 import { FieldError } from "@/components/ui/field-error"
 import { ItemTypeSelector } from "@/components/items/item-type-selector"
 import { CollectionSelect } from "@/components/items/collection-select"
+import { SelectRoot, SelectItem } from "@/components/ui/select"
+import { LANGUAGE_OPTIONS } from "@/lib/languages"
 import {
   Dialog,
   DialogContent,
@@ -177,6 +179,22 @@ export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }:
               <FieldError field="description" errors={formErrors} />
             </div>
 
+            {/* Language */}
+            {showLanguage && (
+              <div>
+                <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  Language
+                </h3>
+                <SelectRoot value={language} onValueChange={(v) => setLanguage(v ?? "")}>
+                  <SelectItem value="">None</SelectItem>
+                  {LANGUAGE_OPTIONS.map((lang) => (
+                    <SelectItem key={lang.value} value={lang.value}>{lang.label}</SelectItem>
+                  ))}
+                </SelectRoot>
+                <FieldError field="language" errors={formErrors} />
+              </div>
+            )}
+
             {/* Content */}
             {showContent && (
               <div>
@@ -199,22 +217,6 @@ export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }:
                   />
                 )}
                 <FieldError field="content" errors={formErrors} />
-              </div>
-            )}
-
-            {/* Language */}
-            {showLanguage && (
-              <div>
-                <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  Language
-                </h3>
-                <Input
-                  value={language}
-                  onChange={(e) => setLanguage(e.target.value)}
-                  placeholder="e.g. typescript, python"
-                  className="h-8"
-                />
-                <FieldError field="language" errors={formErrors} />
               </div>
             )}
 

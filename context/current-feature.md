@@ -2,15 +2,20 @@
 
 ## Status
 
-<!-- Not Started | In Progress | Complete -->
+In Progress
 
 ## Goals
 
-<!-- Bullet points of what success looks like -->
+- Replace free-text language `Input` with a language dropdown (`Select`) in create item dialog and item drawer edit mode
+- Move language selector above the content editor so syntax highlighting applies as user types
+- Create shared `LANGUAGE_OPTIONS` constant for consistency across the app
 
 ## Notes
 
-<!-- Additional context, constraints, or details from spec -->
+- `src/lib/languages.ts` created with 34 language options
+- Both `create-item-dialog.tsx` and `item-drawer.tsx` updated — language dropdown moved above content, free-text `Input` replaced with `Select`
+- CodeEditor already supports syntax highlighting via its `language` prop — dropdown value flows directly to it
+- "None" option clears the language (defaults to `plaintext` in editor)
 
 ## History
 

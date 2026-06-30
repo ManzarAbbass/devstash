@@ -66,9 +66,13 @@ export async function POST(request: Request) {
         })
 
         if (user) {
+          const stripe = getStripe()
+          const subscription = await stripe.subscriptions.retrieve(invoice.subscription)
+          const isActive = subscription.status === "active" || subscription.status === "trialing"
+          const isCancelled = subscription.status === "active" && subscription.cancel_at_period_end
           await prisma.user.update({
             where: { id: user.id },
-            data: { isPro: true },
+            data: { isPro: isActive && !isCancelled },
           })
         }
         break

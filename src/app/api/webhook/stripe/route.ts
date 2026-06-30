@@ -41,16 +41,18 @@ export async function POST(request: Request) {
       }
 
       case "customer.subscription.updated": {
-        const subscription = event.data.object as { id: string; status: string }
+        const subscription = event.data.object as { id: string; status: string; cancel_at_period_end: boolean }
         const user = await prisma.user.findFirst({
           where: { stripeSubscriptionId: subscription.id },
         })
 
         if (user) {
+          const isActive = (subscription.status === "active" || subscription.status === "trialing")
+          const isCancelled = subscription.status === "active" && subscription.cancel_at_period_end
           await prisma.user.update({
             where: { id: user.id },
             data: {
-              isPro: subscription.status === "active" || subscription.status === "trialing",
+              isPro: isActive && !isCancelled,
             },
           })
         }
@@ -107,9 +109,10 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ received: true })
-  } catch {
+  } catch (error) {
+    console.error("Stripe webhook error:", error)
     return NextResponse.json(
-      { error: "Webhook error" },
+      { error: error instanceof Error ? error.message : "Webhook error" },
       { status: 400 }
     )
   }

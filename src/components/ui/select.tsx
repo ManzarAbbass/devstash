@@ -32,17 +32,15 @@ export function SelectRoot({
           <ChevronDown className="size-4 text-muted-foreground" />
         </Select.Icon>
       </Select.Trigger>
-      <Select.Portal>
-        <Select.Positioner sideOffset={4}>
-          <Select.Popup
-            className={cn(
-              "z-50 min-w-[var(--anchor-width)] overflow-hidden rounded-lg border border-border bg-popover p-1 text-sm text-popover-foreground shadow-lg"
-            )}
-          >
-            {children}
-          </Select.Popup>
-        </Select.Positioner>
-      </Select.Portal>
+      <Select.Positioner sideOffset={4}>
+        <Select.Popup
+          className={cn(
+            "z-[60] min-w-[var(--anchor-width)] overflow-hidden rounded-lg border border-border bg-popover p-1 text-sm text-popover-foreground shadow-lg"
+          )}
+        >
+          {children}
+        </Select.Popup>
+      </Select.Positioner>
     </Select.Root>
   )
 }

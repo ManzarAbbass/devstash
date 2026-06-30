@@ -23,6 +23,8 @@ import { iconMap } from "@/lib/icons"
 import { extractFileKey } from "@/lib/utils"
 import { FieldError } from "@/components/ui/field-error"
 import { CollectionSelect } from "@/components/items/collection-select"
+import { SelectRoot, SelectItem } from "@/components/ui/select"
+import { LANGUAGE_OPTIONS } from "@/lib/languages"
 import { getUserCollections } from "@/actions/collections"
 import { ItemDrawerHeader } from "./item-drawer-header"
 import { ItemDrawerActions } from "./item-drawer-actions"
@@ -299,6 +301,28 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
           />
         )}
 
+        {/* Language */}
+        {contentTypesWithLanguage.includes(typeName) && (
+          <div>
+            <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Language
+            </h3>
+            {isEditing ? (
+              <div>
+                <SelectRoot value={formLanguage} onValueChange={(v) => setFormLanguage(v ?? "")}>
+                  <SelectItem value="">None</SelectItem>
+                  {LANGUAGE_OPTIONS.map((lang) => (
+                    <SelectItem key={lang.value} value={lang.value}>{lang.label}</SelectItem>
+                  ))}
+                </SelectRoot>
+                <FieldError field="language" errors={formErrors} />
+              </div>
+            ) : (
+              item.language && <p className="text-sm">{item.language}</p>
+            )}
+          </div>
+        )}
+
         {/* Content */}
         {contentTypesWithContent.includes(typeName) && (
           <div>
@@ -339,28 +363,6 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
                   </pre>
                 )
               )
-            )}
-          </div>
-        )}
-
-        {/* Language */}
-        {contentTypesWithLanguage.includes(typeName) && (
-          <div>
-            <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Language
-            </h3>
-            {isEditing ? (
-              <div>
-                <Input
-                  value={formLanguage}
-                  onChange={(e) => setFormLanguage(e.target.value)}
-                  placeholder="Language (optional)"
-                  className="h-8"
-                />
-                <FieldError field="language" errors={formErrors} />
-              </div>
-            ) : (
-              item.language && <p className="text-sm">{item.language}</p>
             )}
           </div>
         )}

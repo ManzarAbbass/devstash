@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { toast } from "sonner"
-import { Code2 } from "lucide-react"
+import { Code2, Sparkles } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import {
   SheetHeader,
@@ -16,7 +16,7 @@ import { CodeEditor } from "@/components/ui/code-editor"
 import { useEditorPreferences } from "@/lib/editor-preferences-context"
 import type { ItemWithDetails } from "@/lib/db/items"
 import { updateItem, deleteItem, toggleItemFavorite, toggleItemPin } from "@/actions/items"
-import { explainCode } from "@/actions/ai"
+import { explainCode, suggestTags } from "@/actions/ai"
 import type { UpdateItemData } from "@/actions/items"
 import { iconMap } from "@/lib/icons"
 import { extractFileKey } from "@/lib/utils"
@@ -64,6 +64,8 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
   const [formLanguage, setFormLanguage] = useState("")
   const [formUrl, setFormUrl] = useState("")
   const [formTags, setFormTags] = useState("")
+  const [suggestedTags, setSuggestedTags] = useState<string[]>([])
+  const [suggestingTags, setSuggestingTags] = useState(false)
   const [formErrors, setFormErrors] = useState<Record<string, string[]> | null>(null)
   const [collections, setCollections] = useState<{ id: string; name: string }[]>([])
   const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>([])
@@ -139,6 +141,8 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
     setFormLanguage(item.language ?? "")
     setFormUrl(item.url ?? "")
     setFormTags(item.tags.map((t) => t.name).join(", "))
+    setSuggestedTags([])
+    setSuggestingTags(false)
     setSelectedCollectionIds(itemCollectionIds)
     setFormErrors(null)
     setIsEditing(true)
@@ -146,6 +150,8 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
 
   function handleCancelEdit() {
     setIsEditing(false)
+    setSuggestedTags([])
+    setSuggestingTags(false)
     setFormErrors(null)
   }
 
@@ -216,6 +222,27 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
 
     setExplanation(result.explanation)
     setIsExplaining(false)
+  }
+
+  async function handleSuggestTags() {
+    if (!formTitle.trim()) return
+    setSuggestingTags(true)
+    const result = await suggestTags({ title: formTitle.trim() })
+    setSuggestingTags(false)
+    if (result.success) {
+      setSuggestedTags(result.tags)
+    } else {
+      toast.error(result.error)
+    }
+  }
+
+  function handleAcceptTag(tag: string) {
+    setFormTags((prev) => (prev ? `${prev}, ${tag}` : tag))
+    setSuggestedTags((prev) => prev.filter((t) => t !== tag))
+  }
+
+  function handleRejectTag(tag: string) {
+    setSuggestedTags((prev) => prev.filter((t) => t !== tag))
   }
 
   async function handleSave() {
@@ -437,6 +464,46 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
                 placeholder="tag1, tag2, tag3"
                 className="h-8"
               />
+              {formTitle.trim().length > 0 && suggestedTags.length === 0 && (
+                <button
+                  type="button"
+                  onClick={handleSuggestTags}
+                  disabled={suggestingTags}
+                  className="mt-1.5 inline-flex items-center gap-1.5 rounded-md border border-primary/30 bg-primary/5 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/10 hover:text-primary transition-colors"
+                >
+                  <Sparkles className="size-3" />
+                  {suggestingTags ? "Suggesting..." : "Suggest Tags"}
+                </button>
+              )}
+              {suggestedTags.length > 0 && (
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {suggestedTags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="inline-flex items-center gap-1.5 rounded-full border bg-muted/50 pl-2.5 pr-1 py-0.5 text-xs"
+                    >
+                      <span className="text-muted-foreground">#</span>
+                      {tag}
+                      <button
+                        type="button"
+                        onClick={() => handleAcceptTag(tag)}
+                        className="ml-0.5 rounded-full p-0.5 text-green-600 hover:bg-green-500/10 hover:text-green-700 transition-colors"
+                        title="Accept tag"
+                      >
+                        ✓
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleRejectTag(tag)}
+                        className="rounded-full p-0.5 text-red-500 hover:bg-red-500/10 hover:text-red-600 transition-colors"
+                        title="Reject tag"
+                      >
+                        ✕
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
               <FieldError field="tags" errors={formErrors} />
             </div>
           ) : (

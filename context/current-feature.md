@@ -1,16 +1,22 @@
-# Current Feature
+# Current Feature: AI Tag Suggestions
 
 ## Status
 
-<!-- Not Started | In Progress | Complete -->
+In Progress
 
 ## Goals
 
-<!-- Goals for the current feature -->
+- Suggest Tags button appears in tags field when user types a title in the create item dialog
+- Clicking it calls DeepSeek via OpenRouter to generate 1-5 relevant tags
+- Each suggested tag shows ✓ (accept) and ✕ (reject) buttons
+- Accepted tags are appended to the comma-separated tags input
+- Pro gating and rate limiting (10 req/min) applied
 
 ## Notes
 
-<!-- Additional context and implementation notes -->
+- Server action: `suggestTags` in `src/actions/ai.ts`
+- UI: `src/components/items/create-item-dialog.tsx` — Tags section with inline suggest/reject UI
+- Rate limiter: `rateLimiters.suggestTags` in `src/lib/rate-limit.ts`
 
 ## History
 

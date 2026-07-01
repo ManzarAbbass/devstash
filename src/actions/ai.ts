@@ -47,24 +47,6 @@ export async function explainCode(data: ExplainCodeData): Promise<ExplainCodeRes
     return { success: true, explanation: text }
   } catch (err) {
     console.error("explainCode error:", err)
-
-    if (process.env.NODE_ENV !== "production") {
-      return {
-        success: true,
-        explanation: `**What this code does:**
-
-This ${parsed.data.language || "code"} defines a reusable utility function. It takes input parameters, processes them, and returns a result.
-
-**Key concepts:**
-
-- It uses TypeScript generics for type safety
-- Common patterns include iteration, conditionals, and data transformation
-- The function is designed to be pure (no side effects)
-
-> ⚠️ AI explanation unavailable — showing mock response. Add a valid GEMINI_API_KEY to enable real AI explanations.`,
-      }
-    }
-
     return { success: false, error: "Failed to generate explanation. Please try again." }
   }
 }

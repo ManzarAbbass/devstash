@@ -107,9 +107,8 @@ describe("explainCode action", () => {
     }
   })
 
-  it("handles AI generation failure in production", async () => {
+  it("handles AI generation failure", async () => {
     vi.mocked(generate).mockRejectedValue(new Error("API error"))
-    vi.stubEnv("NODE_ENV", "production")
 
     const result = await explainCode({ content: "some code" })
 
@@ -117,21 +116,5 @@ describe("explainCode action", () => {
     if (!result.success) {
       expect(result.error).toBe("Failed to generate explanation. Please try again.")
     }
-
-    vi.unstubAllEnvs()
-  })
-
-  it("returns mock explanation in development", async () => {
-    vi.mocked(generate).mockRejectedValue(new Error("API error"))
-    vi.stubEnv("NODE_ENV", "development")
-
-    const result = await explainCode({ content: "some code" })
-
-    expect(result.success).toBe(true)
-    if (result.success) {
-      expect(result.explanation).toContain("mock response")
-    }
-
-    vi.unstubAllEnvs()
   })
 })

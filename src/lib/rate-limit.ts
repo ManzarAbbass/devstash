@@ -39,6 +39,11 @@ export const rateLimiters = {
     limiter: Ratelimit.slidingWindow(3, "15 m"),
     prefix: "ratelimit:resend-verification",
   }),
+  explainCode: new Ratelimit({
+    redis,
+    limiter: Ratelimit.slidingWindow(20, "1 m"),
+    prefix: "ratelimit:explain-code",
+  }),
 }
 
 export function getIP(request: Request): string {

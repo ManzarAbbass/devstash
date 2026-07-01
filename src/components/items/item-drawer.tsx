@@ -4,9 +4,7 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { toast } from "sonner"
-import {
-  Code2,
-} from "lucide-react"
+import { Code2 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import {
   SheetHeader,
@@ -18,6 +16,7 @@ import { CodeEditor } from "@/components/ui/code-editor"
 import { useEditorPreferences } from "@/lib/editor-preferences-context"
 import type { ItemWithDetails } from "@/lib/db/items"
 import { updateItem, deleteItem, toggleItemFavorite, toggleItemPin } from "@/actions/items"
+import { explainCode } from "@/actions/ai"
 import type { UpdateItemData } from "@/actions/items"
 import { iconMap } from "@/lib/icons"
 import { extractFileKey } from "@/lib/utils"
@@ -69,6 +68,8 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
   const [collections, setCollections] = useState<{ id: string; name: string }[]>([])
   const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>([])
   const [itemCollectionIds, setItemCollectionIds] = useState<string[]>([])
+  const [explanation, setExplanation] = useState<string | null>(null)
+  const [isExplaining, setIsExplaining] = useState(false)
 
   useEffect(() => {
     setLoading(true)
@@ -195,6 +196,26 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
     }
     setItem(result.data)
     router.refresh()
+  }
+
+  async function handleExplain() {
+    if (!item?.content) return
+    setIsExplaining(true)
+    setExplanation(null)
+
+    const result = await explainCode({
+      content: item.content,
+      language: item.language ?? undefined,
+    })
+
+    if (!result.success) {
+      toast.error(result.error)
+      setIsExplaining(false)
+      return
+    }
+
+    setExplanation(result.explanation)
+    setIsExplaining(false)
   }
 
   async function handleSave() {
@@ -356,6 +377,11 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
                     language={item.language}
                     readOnly
                     preferences={editorPrefs}
+                    showExplain={!isEditing}
+                    explanation={explanation}
+                    isExplaining={isExplaining}
+                    isPro={session?.user?.isPro ?? false}
+                    onExplain={handleExplain}
                   />
                 ) : (
                   <pre className="overflow-x-auto whitespace-pre-wrap rounded-lg bg-muted p-3 text-xs leading-relaxed">

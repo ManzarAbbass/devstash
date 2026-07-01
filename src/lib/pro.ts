@@ -43,6 +43,15 @@ export async function checkCollectionLimit(userId: string, isPro: boolean): Prom
   return { allowed: true }
 }
 
+export function checkAiAccess(isPro: boolean): ProCheckResult {
+  if (isPro) return { allowed: true }
+
+  return {
+    allowed: false,
+    reason: "AI features are a Pro feature. Upgrade to unlock.",
+  }
+}
+
 export function checkFileUploadAllowed(isPro: boolean): ProCheckResult {
   if (isPro) return { allowed: true }
 

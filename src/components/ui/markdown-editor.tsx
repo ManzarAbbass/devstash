@@ -3,6 +3,7 @@
 import { useState } from "react"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
+import { Sparkles, Crown, LoaderCircle } from "lucide-react"
 
 interface MarkdownEditorProps {
   value: string
@@ -11,6 +12,10 @@ interface MarkdownEditorProps {
   minRows?: number
   maxHeight?: number
   readOnly?: boolean
+  showOptimize?: boolean
+  isOptimizing?: boolean
+  isPro?: boolean
+  onOptimize?: () => void
 }
 
 export function MarkdownEditor({
@@ -20,6 +25,10 @@ export function MarkdownEditor({
   minRows = 6,
   maxHeight = 400,
   readOnly = false,
+  showOptimize = false,
+  isOptimizing = false,
+  isPro = true,
+  onOptimize,
 }: MarkdownEditorProps) {
   const [tab, setTab] = useState<"write" | "preview">("write")
 
@@ -57,7 +66,35 @@ export function MarkdownEditor({
             </button>
           </div>
         )}
-        <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Markdown</span>
+        <div className="flex items-center gap-2">
+          {showOptimize && !isOptimizing && (
+            isPro ? (
+              <button
+                type="button"
+                onClick={onOptimize}
+                className="inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-medium text-primary hover:bg-primary/10 transition-colors"
+                title="Optimize this prompt"
+              >
+                <Sparkles className="size-3" />
+                Optimize
+              </button>
+            ) : (
+              <button
+                type="button"
+                disabled
+                className="inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground cursor-not-allowed"
+                title="AI features require Pro subscription"
+              >
+                <Crown className="size-3 text-amber-500" />
+                Optimize
+              </button>
+            )
+          )}
+          {showOptimize && isOptimizing && (
+            <LoaderCircle className="size-3.5 animate-spin text-muted-foreground" />
+          )}
+          <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Markdown</span>
+        </div>
       </div>
       {tab === "write" && !readOnly ? (
         <textarea

@@ -2,15 +2,26 @@
 
 ## Status
 
-<!-- Not Started | In Progress | Complete -->
+In Progress
 
 ## Goals
 
-<!-- Goals for the current feature -->
+- Add an "Optimize" button in the prompt ItemDrawer content section header (same position as "Explain" button in CodeEditor)
+- AI analyzes the current prompt and suggests an improved version via Gemini API (gemini-1.5-flash)
+- Show the optimized prompt inline with "Use this?" — Accept / Reject buttons
+- Accept replaces the item content with the optimized version via server action
+- Pro-only feature (Crown icon with tooltip for free users)
+- Rate limited (20 req/min) following the same pattern as explainCode
 
 ## Notes
 
-<!-- Additional context and implementation notes -->
+- Follows the same patterns as ai-explain-spec:
+  - Server action in `src/actions/ai.ts` with auth, Zod validation, Pro gating, rate limiting, try/catch
+  - Reuses existing `generate()` from `@/lib/ai` (DeepSeek via OpenRouter)
+  - Rate limiter in `src/lib/rate-limit.ts`
+  - Client-side Pro gating with Crown icon for free users
+  - Unit tests in `src/actions/__tests__/ai.test.ts`
+- Uses existing OpenRouter setup — no additional API key needed
 
 ## History
 

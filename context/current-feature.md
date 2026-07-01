@@ -14,7 +14,6 @@
 
 ## History
 
-- 2026-07-01: AI Suggest Description — suggestDescription server action, rate limiter, "Suggest Description" button with Sparkles icon in create dialog and item drawer edit mode, AI generates 1-2 sentence description and fills textarea directly, Pro gated and rate limited, hidden scrollbar on description textarea [Completed]
 - 2026-05-23: Dashboard UI Phase 1 — ShadCN init, layout, dark mode, top bar, placeholders [Completed]
 - 2026-05-23: Dashboard UI Phase 2 — Collapsible sidebar with icon collapse, toggle in sidebar, centered search [Completed]
 - 2026-05-23: Dashboard UI Phase 2 (redo) — Sidebar redesign: collapsible to icons, toggle inside, Nav heading, centered search [Completed]
@@ -69,3 +68,4 @@
 - 2026-07-01: AI Explain Code — Google Gemini-powered code explanation for snippets and commands in item drawer. Sparkles button, Code/Explain tabs, Pro gating, rate limiting, mock fallback for dev, 7 unit tests [Completed]
 - 2026-07-01: AI Explain — Switched to DeepSeek via OpenRouter (free tier). Direct fetch to chat completions API, env var OPENROUTER_API_KEY, removed mock fallback [Completed]
 - 2026-07-01: AI Tag Suggestions — suggestTags server action, "Suggest Tags" button with Sparkles icon in create dialog and item drawer edit mode, AI generates 1-5 tags with accept/reject chips, Pro gated and rate limited [Completed]
+- 2026-07-01: AI Suggest Description — suggestDescription server action, rate limiter, "Suggest Description" button with Sparkles icon in create dialog and item drawer edit mode, AI generates 1-2 sentence description and fills textarea directly, Pro gated and rate limited, hidden scrollbar on description textarea [Completed]

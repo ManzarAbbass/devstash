@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { CodeEditor } from "@/components/ui/code-editor"
+import { MarkdownEditor } from "@/components/ui/markdown-editor"
 import { useEditorPreferences } from "@/lib/editor-preferences-context"
 import { FileUpload } from "@/components/items/file-upload"
 import { FieldError } from "@/components/ui/field-error"
@@ -263,11 +264,11 @@ export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }:
                     preferences={editorPrefs}
                   />
                 ) : (
-                  <Textarea
+                  <MarkdownEditor
                     value={content}
-                    onChange={(e) => setContent(e.target.value)}
+                    onChange={(v) => setContent(v)}
                     placeholder="Content (optional)"
-                    rows={5}
+                    minRows={5}
                   />
                 )}
                 <FieldError field="content" errors={formErrors} />

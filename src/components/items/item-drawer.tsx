@@ -13,6 +13,7 @@ import { Separator } from "@/components/ui/separator"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { CodeEditor } from "@/components/ui/code-editor"
+import { MarkdownEditor } from "@/components/ui/markdown-editor"
 import { useEditorPreferences } from "@/lib/editor-preferences-context"
 import type { ItemWithDetails } from "@/lib/db/items"
 import { updateItem, deleteItem, toggleItemFavorite, toggleItemPin } from "@/actions/items"
@@ -413,11 +414,11 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
                     preferences={editorPrefs}
                   />
                 ) : (
-                  <Textarea
+                  <MarkdownEditor
                     value={formContent}
-                    onChange={(e) => setFormContent(e.target.value)}
+                    onChange={(v) => setFormContent(v)}
                     placeholder="Content (optional)"
-                    rows={6}
+                    minRows={6}
                   />
                 )}
                 <FieldError field="content" errors={formErrors} />
@@ -437,9 +438,11 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
                     onExplain={handleExplain}
                   />
                 ) : (
-                  <pre className="overflow-x-auto whitespace-pre-wrap rounded-lg bg-muted p-3 text-xs leading-relaxed">
-                    {item.content}
-                  </pre>
+                  <MarkdownEditor
+                    value={item.content}
+                    readOnly
+                    minRows={3}
+                  />
                 )
               )
             )}

@@ -1,29 +1,16 @@
-# Current Feature: AI Explain Code
+# Current Feature
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Complete -->
 
 ## Goals
 
-- [ ] Create `explainCode` server action with auth, Pro gating, Zod validation, and rate limiting
-- [ ] Add "Explain" button (Sparkles icon) to code editor window controls header (next to Copy button)
-- [ ] Only show explain button for snippet and command types in the item drawer
-- [ ] Add Code/Explain tab headers in the editor to toggle between views after generation
-- [ ] Render explanation as markdown in the same container space as the code editor
-- [ ] Show Loader2 spinner while generating
-- [ ] Pro gating in UI: Crown icon + tooltip for free users
-- [ ] Error handling via toast (Pro gating, rate limit, AI service errors)
-- [ ] Pass `isPro` as a prop to the item drawer / code editor
-- [ ] Unit tests for server action
+<!-- Goals for the current feature -->
 
 ## Notes
 
-- Explanations are not saved to the database — regenerated on each click
-- Not available in create/edit forms, only in the item drawer read view
-- Uses Google Gemini "gemini-1.5-flash" model
-- Pro-only feature
-- See `docs/ai-integration-plan.md` for full architectural context
+<!-- Additional context and implementation notes -->
 
 ## History
 
@@ -78,4 +65,4 @@ In Progress
 - 2026-06-28: Stripe Phase 2 — Integration & UI: API routes (checkout, portal, webhook), feature gating on server actions + upload, settings subscription card with monthly/yearly toggle, PricingCards wired to checkout, sidebar + create dialog gating for file/image types, SessionProvider in root layout [Completed]
 - 2026-06-30: Upgrade Flow — New `/upgrade` page with Free vs Pro comparison cards and monthly/yearly toggle, Upgrade ghost button in dashboard header for free users, checkout redirects to Stripe [Completed]
 - 2026-07-01: Language Select Dropdown — Replaced free-text language Input with Base UI Select in create item dialog and item drawer edit mode; moved language selector above content editor; shared LANGUAGE_OPTIONS (34 languages); fixed z-index and overflow clipping by removing overflow-hidden from dialog/sheet popups and rendering Positioner inline with z-[60] [Completed]
-
+- 2026-07-01: AI Explain Code — Google Gemini-powered code explanation for snippets and commands in item drawer. Sparkles button, Code/Explain tabs, Pro gating, rate limiting, mock fallback for dev, 7 unit tests [Completed]

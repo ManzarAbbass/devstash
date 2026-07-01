@@ -2,26 +2,15 @@
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Complete -->
 
 ## Goals
 
-- Add an "Optimize" button in the prompt ItemDrawer content section header (same position as "Explain" button in CodeEditor)
-- AI analyzes the current prompt and suggests an improved version via Gemini API (gemini-1.5-flash)
-- Show the optimized prompt inline with "Use this?" — Accept / Reject buttons
-- Accept replaces the item content with the optimized version via server action
-- Pro-only feature (Crown icon with tooltip for free users)
-- Rate limited (20 req/min) following the same pattern as explainCode
+<!-- Goals for the current feature -->
 
 ## Notes
 
-- Follows the same patterns as ai-explain-spec:
-  - Server action in `src/actions/ai.ts` with auth, Zod validation, Pro gating, rate limiting, try/catch
-  - Reuses existing `generate()` from `@/lib/ai` (DeepSeek via OpenRouter)
-  - Rate limiter in `src/lib/rate-limit.ts`
-  - Client-side Pro gating with Crown icon for free users
-  - Unit tests in `src/actions/__tests__/ai.test.ts`
-- Uses existing OpenRouter setup — no additional API key needed
+<!-- Additional context and implementation notes -->
 
 ## History
 
@@ -80,3 +69,4 @@ In Progress
 - 2026-07-01: AI Explain — Switched to DeepSeek via OpenRouter (free tier). Direct fetch to chat completions API, env var OPENROUTER_API_KEY, removed mock fallback [Completed]
 - 2026-07-01: AI Tag Suggestions — suggestTags server action, "Suggest Tags" button with Sparkles icon in create dialog and item drawer edit mode, AI generates 1-5 tags with accept/reject chips, Pro gated and rate limited [Completed]
 - 2026-07-01: AI Suggest Description — suggestDescription server action, rate limiter, "Suggest Description" button with Sparkles icon in create dialog and item drawer edit mode, AI generates 1-2 sentence description and fills textarea directly, Pro gated and rate limited, hidden scrollbar on description textarea [Completed]
+- 2026-07-01: AI Prompt Optimizer — optimizePrompt server action, Optimize button in MarkdownEditor header for prompt items, Gemini-powered (switched to DeepSeek via OpenRouter), optimized prompt shown with Accept/Reject, Accept auto-saves via updateItem, Pro gated (Crown for free), rate limited 20/min, hidden scrollbar on optimized display [Completed]

@@ -1,22 +1,16 @@
-# Current Feature: AI Tag Suggestions
+# Current Feature
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Complete -->
 
 ## Goals
 
-- Suggest Tags button appears in tags field when user types a title in the create item dialog
-- Clicking it calls DeepSeek via OpenRouter to generate 1-5 relevant tags
-- Each suggested tag shows ✓ (accept) and ✕ (reject) buttons
-- Accepted tags are appended to the comma-separated tags input
-- Pro gating and rate limiting (10 req/min) applied
+<!-- Goals for the current feature -->
 
 ## Notes
 
-- Server action: `suggestTags` in `src/actions/ai.ts`
-- UI: `src/components/items/create-item-dialog.tsx` — Tags section with inline suggest/reject UI
-- Rate limiter: `rateLimiters.suggestTags` in `src/lib/rate-limit.ts`
+<!-- Additional context and implementation notes -->
 
 ## History
 
@@ -73,3 +67,4 @@ In Progress
 - 2026-07-01: Language Select Dropdown — Replaced free-text language Input with Base UI Select in create item dialog and item drawer edit mode; moved language selector above content editor; shared LANGUAGE_OPTIONS (34 languages); fixed z-index and overflow clipping by removing overflow-hidden from dialog/sheet popups and rendering Positioner inline with z-[60] [Completed]
 - 2026-07-01: AI Explain Code — Google Gemini-powered code explanation for snippets and commands in item drawer. Sparkles button, Code/Explain tabs, Pro gating, rate limiting, mock fallback for dev, 7 unit tests [Completed]
 - 2026-07-01: AI Explain — Switched to DeepSeek via OpenRouter (free tier). Direct fetch to chat completions API, env var OPENROUTER_API_KEY, removed mock fallback [Completed]
+- 2026-07-01: AI Tag Suggestions — suggestTags server action, "Suggest Tags" button with Sparkles icon in create dialog and item drawer edit mode, AI generates 1-5 tags with accept/reject chips, Pro gated and rate limited [Completed]

@@ -2,7 +2,7 @@
 
 import { useRef, useCallback, useState } from "react"
 import Editor, { type BeforeMount, type OnMount } from "@monaco-editor/react"
-import { Copy, Check } from "lucide-react"
+import { Copy, Check, Sparkles, Crown, LoaderCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import type { EditorPreferences } from "@/lib/editor-preferences"
 
@@ -64,9 +64,26 @@ interface CodeEditorProps {
   language?: string | null
   readOnly?: boolean
   preferences?: EditorPreferences
+  showExplain?: boolean
+  explanation?: string | null
+  isExplaining?: boolean
+  isPro?: boolean
+  onExplain?: () => void
 }
 
-export function CodeEditor({ value, onChange, language, readOnly = false, preferences }: CodeEditorProps) {
+export function CodeEditor({
+  value,
+  onChange,
+  language,
+  readOnly = false,
+  preferences,
+  showExplain = false,
+  explanation = null,
+  isExplaining = false,
+  isPro = true,
+  onExplain,
+}: CodeEditorProps) {
+  const [tab, setTab] = useState<"code" | "explain">("code")
   const [copied, setCopied] = useState(false)
   const lineCount = (value.match(/\n/g) || []).length + 1
   const initialHeight = Math.min(Math.max(lineCount * 20 + 16, 80), 250)
@@ -173,11 +190,65 @@ export function CodeEditor({ value, onChange, language, readOnly = false, prefer
           <span className="size-2.5 rounded-full bg-yellow-500" />
           <span className="size-2.5 rounded-full bg-green-500" />
         </div>
+        {showExplain && explanation ? (
+          <div className="flex items-center gap-0.5">
+            <button
+              type="button"
+              onClick={() => setTab("code")}
+              className={`rounded px-2 py-0.5 text-[11px] font-medium transition-colors ${
+                tab === "code"
+                  ? "bg-background text-foreground"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              Code
+            </button>
+            <button
+              type="button"
+              onClick={() => setTab("explain")}
+              className={`rounded px-2 py-0.5 text-[11px] font-medium transition-colors ${
+                tab === "explain"
+                  ? "bg-background text-foreground"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              Explain
+            </button>
+          </div>
+        ) : (
+          <div />
+        )}
         <div className="flex items-center gap-2">
           {language && (
             <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
               {language}
             </span>
+          )}
+          {showExplain && !isExplaining && (
+            isPro ? (
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                aria-label="Explain code"
+                onClick={onExplain}
+                title="Explain this code"
+              >
+                <Sparkles className="size-3.5" />
+              </Button>
+            ) : (
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                aria-label="AI features require Pro"
+                disabled
+                title="AI features require Pro subscription"
+              >
+                <Crown className="size-3.5 text-amber-500" />
+              </Button>
+            )
+          )}
+          {showExplain && isExplaining && (
+            <LoaderCircle className="size-3.5 animate-spin text-muted-foreground" />
           )}
           <Button
             variant="ghost"
@@ -189,44 +260,52 @@ export function CodeEditor({ value, onChange, language, readOnly = false, prefer
           </Button>
         </div>
       </div>
-      <Editor
-        height={editorHeight}
-        language={monacoLanguage}
-        value={value}
-        onChange={onChange}
-        onMount={handleEditorDidMount}
-        beforeMount={handleBeforeMount}
-        theme={preferences?.theme === "github-dark" ? "githubDark" : preferences?.theme === "monokai" ? "monokai" : preferences?.theme ?? "appDark"}
-        options={{
-          readOnly,
-          minimap: { enabled: preferences?.minimap ?? false },
-          lineNumbers: "on",
-          scrollBeyondLastLine: false,
-          folding: false,
-          fontSize: preferences?.fontSize ?? 12,
-          tabSize: preferences?.tabSize ?? 2,
-          wordWrap: preferences?.wordWrap ?? "on",
-          automaticLayout: true,
-          overviewRulerLanes: 0,
-          hideCursorInOverviewRuler: true,
-          overviewRulerBorder: false,
-          scrollbar: {
-            verticalScrollbarSize: 8,
-            horizontalScrollbarSize: 8,
-            alwaysConsumeMouseWheel: false,
-          },
-          padding: { top: 8, bottom: 8 },
-          renderLineHighlight: readOnly ? "none" : "line",
-          contextmenu: !readOnly,
-          cursorStyle: readOnly ? "line-thin" : "line",
-          guides: { indentation: false },
-        }}
-        loading={
-          <div className="flex h-24 items-center justify-center text-xs text-muted-foreground">
-            Loading editor...
+      {showExplain && tab === "explain" && explanation ? (
+        <div className="max-h-[250px] overflow-y-auto p-4 text-sm leading-relaxed">
+          <div className="whitespace-pre-wrap font-mono text-xs leading-relaxed text-foreground">
+            {explanation}
           </div>
-        }
-      />
+        </div>
+      ) : (
+        <Editor
+          height={editorHeight}
+          language={monacoLanguage}
+          value={value}
+          onChange={onChange}
+          onMount={handleEditorDidMount}
+          beforeMount={handleBeforeMount}
+          theme={preferences?.theme === "github-dark" ? "githubDark" : preferences?.theme === "monokai" ? "monokai" : preferences?.theme ?? "appDark"}
+          options={{
+            readOnly,
+            minimap: { enabled: preferences?.minimap ?? false },
+            lineNumbers: "on",
+            scrollBeyondLastLine: false,
+            folding: false,
+            fontSize: preferences?.fontSize ?? 12,
+            tabSize: preferences?.tabSize ?? 2,
+            wordWrap: preferences?.wordWrap ?? "on",
+            automaticLayout: true,
+            overviewRulerLanes: 0,
+            hideCursorInOverviewRuler: true,
+            overviewRulerBorder: false,
+            scrollbar: {
+              verticalScrollbarSize: 8,
+              horizontalScrollbarSize: 8,
+              alwaysConsumeMouseWheel: false,
+            },
+            padding: { top: 8, bottom: 8 },
+            renderLineHighlight: readOnly ? "none" : "line",
+            contextmenu: !readOnly,
+            cursorStyle: readOnly ? "line-thin" : "line",
+            guides: { indentation: false },
+          }}
+          loading={
+            <div className="flex h-24 items-center justify-center text-xs text-muted-foreground">
+              Loading editor...
+            </div>
+          }
+        />
+      )}
     </div>
   )
 }

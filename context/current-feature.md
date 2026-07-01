@@ -1,21 +1,29 @@
-# Current Feature
+# Current Feature: AI Explain Code
 
 ## Status
 
-Complete
+In Progress
 
 ## Goals
 
-- Replace free-text language `Input` with a language dropdown (`Select`) in create item dialog and item drawer edit mode
-- Move language selector above the content editor so syntax highlighting applies as user types
-- Create shared `LANGUAGE_OPTIONS` constant for consistency across the app
+- [ ] Create `explainCode` server action with auth, Pro gating, Zod validation, and rate limiting
+- [ ] Add "Explain" button (Sparkles icon) to code editor window controls header (next to Copy button)
+- [ ] Only show explain button for snippet and command types in the item drawer
+- [ ] Add Code/Explain tab headers in the editor to toggle between views after generation
+- [ ] Render explanation as markdown in the same container space as the code editor
+- [ ] Show Loader2 spinner while generating
+- [ ] Pro gating in UI: Crown icon + tooltip for free users
+- [ ] Error handling via toast (Pro gating, rate limit, AI service errors)
+- [ ] Pass `isPro` as a prop to the item drawer / code editor
+- [ ] Unit tests for server action
 
 ## Notes
 
-- `src/lib/languages.ts` created with 34 language options
-- Both `create-item-dialog.tsx` and `item-drawer.tsx` updated — language dropdown moved above content, free-text `Input` replaced with `Select`
-- CodeEditor already supports syntax highlighting via its `language` prop — dropdown value flows directly to it
-- "None" option clears the language (defaults to `plaintext` in editor)
+- Explanations are not saved to the database — regenerated on each click
+- Not available in create/edit forms, only in the item drawer read view
+- Uses Google Gemini "gemini-1.5-flash" model
+- Pro-only feature
+- See `docs/ai-integration-plan.md` for full architectural context
 
 ## History
 

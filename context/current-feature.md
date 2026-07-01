@@ -1,26 +1,20 @@
-# Current Feature: AI Suggest Description
+# Current Feature
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Complete -->
 
 ## Goals
 
-- Add `suggestDescription` server action in `src/actions/ai.ts` that takes a title and returns a 1-2 sentence description
-- Add rate limiter for `suggestDescription` in `src/lib/rate-limit.ts`
-- In `create-item-dialog.tsx`, show "Suggest Description" button below description field when title is non-empty, with Sparkles icon
-- In `item-drawer.tsx` edit mode, same "Suggest Description" button in description section
-- Generated description populates the description field (not a chip/accept UI — just fill the textarea)
-- Follow existing AI patterns (Pro gated, rate limited, uses `generate()` from `@/lib/ai`)
+<!-- Goals for the current feature -->
 
 ## Notes
 
-- Based on existing `suggestTags` pattern — same Pro gating, rate limiting, and AI generation
-- Description should be concise 1-2 sentences
-- Direct textarea fill (no accept/reject chip UI like tags)
+<!-- Additional context and implementation notes -->
 
 ## History
 
+- 2026-07-01: AI Suggest Description — suggestDescription server action, rate limiter, "Suggest Description" button with Sparkles icon in create dialog and item drawer edit mode, AI generates 1-2 sentence description and fills textarea directly, Pro gated and rate limited, hidden scrollbar on description textarea [Completed]
 - 2026-05-23: Dashboard UI Phase 1 — ShadCN init, layout, dark mode, top bar, placeholders [Completed]
 - 2026-05-23: Dashboard UI Phase 2 — Collapsible sidebar with icon collapse, toggle in sidebar, centered search [Completed]
 - 2026-05-23: Dashboard UI Phase 2 (redo) — Sidebar redesign: collapsible to icons, toggle inside, Nav heading, centered search [Completed]

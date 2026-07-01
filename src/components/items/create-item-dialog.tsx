@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { toast } from "sonner"
+import { Sparkles } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -16,6 +17,7 @@ import { ItemTypeSelector } from "@/components/items/item-type-selector"
 import { CollectionSelect } from "@/components/items/collection-select"
 import { SelectRoot, SelectItem } from "@/components/ui/select"
 import { LANGUAGE_OPTIONS } from "@/lib/languages"
+import { Badge } from "@/components/ui/badge"
 import {
   Dialog,
   DialogContent,
@@ -24,6 +26,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog"
 import { createItem } from "@/actions/items"
+import { suggestTags } from "@/actions/ai"
 import { getUserCollections } from "@/actions/collections"
 import type { ItemTypeWithCount } from "@/lib/db/items"
 
@@ -51,6 +54,8 @@ export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }:
   const [language, setLanguage] = useState("")
   const [url, setUrl] = useState("")
   const [tags, setTags] = useState("")
+  const [suggestedTags, setSuggestedTags] = useState<string[]>([])
+  const [suggestingTags, setSuggestingTags] = useState(false)
   const [fileData, setFileData] = useState<{ fileUrl: string; fileName: string; fileSize: number } | null>(null)
   const [collections, setCollections] = useState<{ id: string; name: string }[]>([])
   const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>([])
@@ -72,6 +77,8 @@ export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }:
     setLanguage("")
     setUrl("")
     setTags("")
+    setSuggestedTags([])
+    setSuggestingTags(false)
     setFileData(null)
     setFormErrors(null)
     setSelectedCollectionIds([])
@@ -134,6 +141,27 @@ export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }:
     handleOpenChange(false)
     router.refresh()
     setSaving(false)
+  }
+
+  async function handleSuggestTags() {
+    if (!title.trim()) return
+    setSuggestingTags(true)
+    const result = await suggestTags({ title: title.trim() })
+    setSuggestingTags(false)
+    if (result.success) {
+      setSuggestedTags(result.tags)
+    } else {
+      toast.error(result.error)
+    }
+  }
+
+  function handleAcceptTag(tag: string) {
+    setTags((prev) => (prev ? `${prev}, ${tag}` : tag))
+    setSuggestedTags((prev) => prev.filter((t) => t !== tag))
+  }
+
+  function handleRejectTag(tag: string) {
+    setSuggestedTags((prev) => prev.filter((t) => t !== tag))
   }
 
   return (
@@ -267,6 +295,46 @@ export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }:
                 placeholder="tag1, tag2, tag3"
                 className="h-8"
               />
+              {title.trim().length > 0 && suggestedTags.length === 0 && (
+                <button
+                  type="button"
+                  onClick={handleSuggestTags}
+                  disabled={suggestingTags}
+                  className="mt-1.5 inline-flex items-center gap-1.5 rounded-md border border-primary/30 bg-primary/5 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/10 hover:text-primary transition-colors"
+                >
+                  <Sparkles className="size-3" />
+                  {suggestingTags ? "Suggesting..." : "Suggest Tags"}
+                </button>
+              )}
+              {suggestedTags.length > 0 && (
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {suggestedTags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="inline-flex items-center gap-1.5 rounded-full border bg-muted/50 pl-2.5 pr-1 py-0.5 text-xs"
+                    >
+                      <span className="text-muted-foreground">#</span>
+                      {tag}
+                      <button
+                        type="button"
+                        onClick={() => handleAcceptTag(tag)}
+                        className="ml-0.5 rounded-full p-0.5 text-green-600 hover:bg-green-500/10 hover:text-green-700 transition-colors"
+                        title="Accept tag"
+                      >
+                        ✓
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleRejectTag(tag)}
+                        className="rounded-full p-0.5 text-red-500 hover:bg-red-500/10 hover:text-red-600 transition-colors"
+                        title="Reject tag"
+                      >
+                        ✕
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
               <FieldError field="tags" errors={formErrors} />
             </div>
 

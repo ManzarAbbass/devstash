@@ -3,6 +3,7 @@
 import { z } from "zod"
 import { auth } from "@/auth"
 import { generate } from "@/lib/ai"
+
 import { checkAiAccess } from "@/lib/pro"
 import { rateLimiters, checkRateLimit } from "@/lib/rate-limit"
 
@@ -108,6 +109,50 @@ export async function suggestDescription(data: SuggestDescriptionData): Promise<
   } catch (err) {
     console.error("suggestDescription error:", err)
     return { success: false, error: "Failed to suggest description. Please try again." }
+  }
+}
+
+const optimizePromptSchema = z.object({
+  content: z.string().min(1).max(10000),
+})
+
+export type OptimizePromptData = z.infer<typeof optimizePromptSchema>
+
+export type OptimizePromptResult =
+  | { success: true; optimized: string }
+  | { success: false; error: string }
+
+export async function optimizePrompt(data: OptimizePromptData): Promise<OptimizePromptResult> {
+  const session = await auth()
+  if (!session?.user?.id) {
+    return { success: false, error: "Unauthorized" }
+  }
+
+  const aiCheck = checkAiAccess(session.user.isPro)
+  if (!aiCheck.allowed) {
+    return { success: false, error: aiCheck.reason }
+  }
+
+  const parsed = optimizePromptSchema.safeParse(data)
+  if (!parsed.success) {
+    return { success: false, error: "Invalid input" }
+  }
+
+  const { success } = await checkRateLimit(rateLimiters.optimizePrompt, session.user.id)
+  if (!success) {
+    return { success: false, error: "Too many AI requests. Try again later." }
+  }
+
+  try {
+    const { text } = await generate(
+      `You are an expert prompt engineer. Rewrite and improve the following prompt to make it clearer, more specific, and more effective. Return ONLY the optimized prompt text, nothing else — no explanations, no meta-commentary.\n\nOriginal prompt:\n${parsed.data.content}`,
+      "You are a prompt optimization assistant. Return only the optimized prompt.",
+    )
+
+    return { success: true, optimized: text.trim() }
+  } catch (err) {
+    console.error("optimizePrompt error:", err)
+    return { success: false, error: "Failed to optimize prompt. Please try again." }
   }
 }
 

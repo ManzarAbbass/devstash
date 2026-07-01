@@ -17,7 +17,7 @@ import { MarkdownEditor } from "@/components/ui/markdown-editor"
 import { useEditorPreferences } from "@/lib/editor-preferences-context"
 import type { ItemWithDetails } from "@/lib/db/items"
 import { updateItem, deleteItem, toggleItemFavorite, toggleItemPin } from "@/actions/items"
-import { explainCode, suggestTags, suggestDescription } from "@/actions/ai"
+import { explainCode, suggestTags, suggestDescription, optimizePrompt } from "@/actions/ai"
 import type { UpdateItemData } from "@/actions/items"
 import { iconMap } from "@/lib/icons"
 import { extractFileKey } from "@/lib/utils"
@@ -74,6 +74,8 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
   const [itemCollectionIds, setItemCollectionIds] = useState<string[]>([])
   const [explanation, setExplanation] = useState<string | null>(null)
   const [isExplaining, setIsExplaining] = useState(false)
+  const [optimizedPrompt, setOptimizedPrompt] = useState<string | null>(null)
+  const [isOptimizing, setIsOptimizing] = useState(false)
 
   useEffect(() => {
     setLoading(true)
@@ -226,6 +228,58 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
 
     setExplanation(result.explanation)
     setIsExplaining(false)
+  }
+
+  async function handleOptimize() {
+    if (!item?.content) return
+    setIsOptimizing(true)
+    setOptimizedPrompt(null)
+
+    const result = await optimizePrompt({
+      content: item.content,
+    })
+
+    if (!result.success) {
+      toast.error(result.error)
+      setIsOptimizing(false)
+      return
+    }
+
+    setOptimizedPrompt(result.optimized)
+    setIsOptimizing(false)
+  }
+
+  async function handleAcceptOptimized() {
+    if (!item || !optimizedPrompt) return
+    setSaving(true)
+
+    const tags = item.tags.map((t) => t.name)
+
+    const data: UpdateItemData = {
+      title: item.title,
+      description: item.description,
+      content: optimizedPrompt,
+      tags,
+      collectionIds: itemCollectionIds,
+    }
+
+    const result = await updateItem(item.id, data)
+
+    if (!result.success) {
+      toast.error(typeof result.error === "string" ? result.error : "Failed to update")
+      setSaving(false)
+      return
+    }
+
+    setItem(result.data)
+    setOptimizedPrompt(null)
+    setSaving(false)
+    toast.success("Prompt optimized")
+    router.refresh()
+  }
+
+  function handleRejectOptimized() {
+    setOptimizedPrompt(null)
   }
 
   async function handleSuggestDescription() {
@@ -424,27 +478,65 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
                 <FieldError field="content" errors={formErrors} />
               </div>
             ) : (
-              item.content && (
-                contentTypesWithLanguage.includes(typeName) ? (
-                  <CodeEditor
-                    value={item.content}
-                    language={item.language}
-                    readOnly
-                    preferences={editorPrefs}
-                    showExplain={!isEditing}
-                    explanation={explanation}
-                    isExplaining={isExplaining}
-                    isPro={session?.user?.isPro ?? false}
-                    onExplain={handleExplain}
-                  />
-                ) : (
-                  <MarkdownEditor
-                    value={item.content}
-                    readOnly
-                    minRows={3}
-                  />
-                )
-              )
+              <div>
+                {item.content && (
+                  contentTypesWithLanguage.includes(typeName) ? (
+                    <CodeEditor
+                      value={item.content}
+                      language={item.language}
+                      readOnly
+                      preferences={editorPrefs}
+                      showExplain={!isEditing}
+                      explanation={explanation}
+                      isExplaining={isExplaining}
+                      isPro={session?.user?.isPro ?? false}
+                      onExplain={handleExplain}
+                    />
+                  ) : (
+                    <MarkdownEditor
+                      value={item.content}
+                      readOnly
+                      minRows={3}
+                      showOptimize={typeName === "prompt"}
+                      isOptimizing={isOptimizing}
+                      isPro={session?.user?.isPro ?? false}
+                      onOptimize={handleOptimize}
+                    />
+                  )
+                )}
+                {optimizedPrompt && (
+                  <div className="mt-3 rounded-lg border border-border overflow-hidden">
+                    <div className="flex items-center justify-between bg-muted px-3 py-1.5">
+                      <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                        Optimized
+                      </span>
+                      <span className="text-[10px] font-medium text-muted-foreground">
+                        Use this?
+                      </span>
+                    </div>
+                    <div className="max-h-[250px] overflow-y-auto p-3 text-sm whitespace-pre-wrap leading-relaxed [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                      {optimizedPrompt}
+                    </div>
+                    <div className="flex items-center justify-end gap-2 border-t border-border px-3 py-2">
+                      <button
+                        type="button"
+                        onClick={handleRejectOptimized}
+                        className="inline-flex items-center gap-1 rounded-md border border-border px-2.5 py-1 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                      >
+                        ✕ Reject
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleAcceptOptimized}
+                        disabled={saving}
+                        className="inline-flex items-center gap-1 rounded-md bg-primary px-2.5 py-1 text-xs font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+                      >
+                        ✓ Accept
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             )}
           </div>
         )}

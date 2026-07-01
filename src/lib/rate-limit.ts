@@ -49,6 +49,11 @@ export const rateLimiters = {
     limiter: Ratelimit.slidingWindow(10, "1 m"),
     prefix: "ratelimit:suggest-tags",
   }),
+  suggestDescription: new Ratelimit({
+    redis,
+    limiter: Ratelimit.slidingWindow(10, "1 m"),
+    prefix: "ratelimit:suggest-description",
+  }),
 }
 
 export function getIP(request: Request): string {

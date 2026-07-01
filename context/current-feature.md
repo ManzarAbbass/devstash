@@ -1,16 +1,23 @@
-# Current Feature
+# Current Feature: AI Suggest Description
 
 ## Status
 
-<!-- Not Started | In Progress | Complete -->
+In Progress
 
 ## Goals
 
-<!-- Goals for the current feature -->
+- Add `suggestDescription` server action in `src/actions/ai.ts` that takes a title and returns a 1-2 sentence description
+- Add rate limiter for `suggestDescription` in `src/lib/rate-limit.ts`
+- In `create-item-dialog.tsx`, show "Suggest Description" button below description field when title is non-empty, with Sparkles icon
+- In `item-drawer.tsx` edit mode, same "Suggest Description" button in description section
+- Generated description populates the description field (not a chip/accept UI — just fill the textarea)
+- Follow existing AI patterns (Pro gated, rate limited, uses `generate()` from `@/lib/ai`)
 
 ## Notes
 
-<!-- Additional context and implementation notes -->
+- Based on existing `suggestTags` pattern — same Pro gating, rate limiting, and AI generation
+- Description should be concise 1-2 sentences
+- Direct textarea fill (no accept/reject chip UI like tags)
 
 ## History
 

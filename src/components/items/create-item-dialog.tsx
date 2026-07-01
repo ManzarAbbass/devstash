@@ -26,7 +26,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog"
 import { createItem } from "@/actions/items"
-import { suggestTags } from "@/actions/ai"
+import { suggestTags, suggestDescription } from "@/actions/ai"
 import { getUserCollections } from "@/actions/collections"
 import type { ItemTypeWithCount } from "@/lib/db/items"
 
@@ -56,6 +56,7 @@ export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }:
   const [tags, setTags] = useState("")
   const [suggestedTags, setSuggestedTags] = useState<string[]>([])
   const [suggestingTags, setSuggestingTags] = useState(false)
+  const [suggestingDescription, setSuggestingDescription] = useState(false)
   const [fileData, setFileData] = useState<{ fileUrl: string; fileName: string; fileSize: number } | null>(null)
   const [collections, setCollections] = useState<{ id: string; name: string }[]>([])
   const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>([])
@@ -79,6 +80,7 @@ export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }:
     setTags("")
     setSuggestedTags([])
     setSuggestingTags(false)
+    setSuggestingDescription(false)
     setFileData(null)
     setFormErrors(null)
     setSelectedCollectionIds([])
@@ -143,6 +145,18 @@ export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }:
     setSaving(false)
   }
 
+  async function handleSuggestDescription() {
+    if (!title.trim()) return
+    setSuggestingDescription(true)
+    const result = await suggestDescription({ title: title.trim() })
+    setSuggestingDescription(false)
+    if (result.success) {
+      setDescription(result.description)
+    } else {
+      toast.error(result.error)
+    }
+  }
+
   async function handleSuggestTags() {
     if (!title.trim()) return
     setSuggestingTags(true)
@@ -203,7 +217,19 @@ export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }:
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Description (optional)"
                 rows={2}
+                className="scrollbar-none"
               />
+              {title.trim().length > 0 && (
+                <button
+                  type="button"
+                  onClick={handleSuggestDescription}
+                  disabled={suggestingDescription}
+                  className="mt-1.5 inline-flex items-center gap-1.5 rounded-md border border-primary/30 bg-primary/5 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/10 hover:text-primary transition-colors"
+                >
+                  <Sparkles className="size-3" />
+                  {suggestingDescription ? "Generating..." : "Suggest Description"}
+                </button>
+              )}
               <FieldError field="description" errors={formErrors} />
             </div>
 

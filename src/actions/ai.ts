@@ -67,6 +67,50 @@ export async function suggestTags(data: SuggestTagsData): Promise<SuggestTagsRes
   }
 }
 
+const suggestDescriptionSchema = z.object({
+  title: z.string().min(1).max(500),
+})
+
+export type SuggestDescriptionData = z.infer<typeof suggestDescriptionSchema>
+
+export type SuggestDescriptionResult =
+  | { success: true; description: string }
+  | { success: false; error: string }
+
+export async function suggestDescription(data: SuggestDescriptionData): Promise<SuggestDescriptionResult> {
+  const session = await auth()
+  if (!session?.user?.id) {
+    return { success: false, error: "Unauthorized" }
+  }
+
+  const aiCheck = checkAiAccess(session.user.isPro)
+  if (!aiCheck.allowed) {
+    return { success: false, error: aiCheck.reason }
+  }
+
+  const parsed = suggestDescriptionSchema.safeParse(data)
+  if (!parsed.success) {
+    return { success: false, error: "Invalid input" }
+  }
+
+  const { success } = await checkRateLimit(rateLimiters.suggestDescription, session.user.id)
+  if (!success) {
+    return { success: false, error: "Too many AI requests. Try again later." }
+  }
+
+  try {
+    const { text } = await generate(
+      `Given the title "${parsed.data.title}", write a concise 1-2 sentence description for a developer's knowledge stash item. Be specific and descriptive. Return ONLY the description text, nothing else.`,
+      "You are a description generation assistant. Return only the description text.",
+    )
+
+    return { success: true, description: text.trim() }
+  } catch (err) {
+    console.error("suggestDescription error:", err)
+    return { success: false, error: "Failed to suggest description. Please try again." }
+  }
+}
+
 export async function explainCode(data: ExplainCodeData): Promise<ExplainCodeResult> {
   const session = await auth()
   if (!session?.user?.id) {

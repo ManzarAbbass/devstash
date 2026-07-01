@@ -16,7 +16,7 @@ import { CodeEditor } from "@/components/ui/code-editor"
 import { useEditorPreferences } from "@/lib/editor-preferences-context"
 import type { ItemWithDetails } from "@/lib/db/items"
 import { updateItem, deleteItem, toggleItemFavorite, toggleItemPin } from "@/actions/items"
-import { explainCode, suggestTags } from "@/actions/ai"
+import { explainCode, suggestTags, suggestDescription } from "@/actions/ai"
 import type { UpdateItemData } from "@/actions/items"
 import { iconMap } from "@/lib/icons"
 import { extractFileKey } from "@/lib/utils"
@@ -66,6 +66,7 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
   const [formTags, setFormTags] = useState("")
   const [suggestedTags, setSuggestedTags] = useState<string[]>([])
   const [suggestingTags, setSuggestingTags] = useState(false)
+  const [suggestingDescription, setSuggestingDescription] = useState(false)
   const [formErrors, setFormErrors] = useState<Record<string, string[]> | null>(null)
   const [collections, setCollections] = useState<{ id: string; name: string }[]>([])
   const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>([])
@@ -143,6 +144,7 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
     setFormTags(item.tags.map((t) => t.name).join(", "))
     setSuggestedTags([])
     setSuggestingTags(false)
+    setSuggestingDescription(false)
     setSelectedCollectionIds(itemCollectionIds)
     setFormErrors(null)
     setIsEditing(true)
@@ -152,6 +154,7 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
     setIsEditing(false)
     setSuggestedTags([])
     setSuggestingTags(false)
+    setSuggestingDescription(false)
     setFormErrors(null)
   }
 
@@ -222,6 +225,18 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
 
     setExplanation(result.explanation)
     setIsExplaining(false)
+  }
+
+  async function handleSuggestDescription() {
+    if (!formTitle.trim()) return
+    setSuggestingDescription(true)
+    const result = await suggestDescription({ title: formTitle.trim() })
+    setSuggestingDescription(false)
+    if (result.success) {
+      setFormDescription(result.description)
+    } else {
+      toast.error(result.error)
+    }
   }
 
   async function handleSuggestTags() {
@@ -330,6 +345,17 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
                 placeholder="Description (optional)"
                 rows={3}
               />
+              {formTitle.trim().length > 0 && (
+                <button
+                  type="button"
+                  onClick={handleSuggestDescription}
+                  disabled={suggestingDescription}
+                  className="mt-1.5 inline-flex items-center gap-1.5 rounded-md border border-primary/30 bg-primary/5 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/10 hover:text-primary transition-colors"
+                >
+                  <Sparkles className="size-3" />
+                  {suggestingDescription ? "Generating..." : "Suggest Description"}
+                </button>
+              )}
               <FieldError field="description" errors={formErrors} />
             </div>
           ) : (

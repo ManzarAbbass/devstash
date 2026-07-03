@@ -1,36 +1,89 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js&style=flat-square)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&style=flat-square)
+![Vercel](https://img.shields.io/badge/Vercel-Deployed-000?logo=vercel&style=flat-square)
+
+# DevStash
+
+A developer knowledge hub for centralizing scattered resources — commands, code snippets, prompts, notes, files, images, and links — into one organized place for quick access.
+
+> **Live:** [https://devlstash.vercel.app](https://devlstash.vercel.app)  
+> **GitHub:** [https://github.com/ManzarAbbass/devstash](https://github.com/ManzarAbbass/devstash)
+
+---
+
+## Features
+
+- **AI-powered item creation** — auto-generates tags, descriptions, and suggestions via OpenRouter API
+- **AI in item drawer** — code explanation, prompt/notes optimization
+- **Clean dashboard** — collections, global search, and pagination
+- **Item drawer** — detailed view and management of saved resources
+- **Authentication** — GitHub OAuth and email via NextAuth v5
+- **File management** — Supabase Storage
+- **Rate limiting** — Upstash Redis
+- **Subscriptions** — Stripe payment infrastructure
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | Next.js 15, React 19 |
+| Language | TypeScript |
+| Database ORM | Prisma 7 |
+| Database | Neon PostgreSQL |
+| Auth | NextAuth v5 |
+| Styling | Tailwind CSS v4, ShadCN UI |
+| AI | OpenRouter API |
+| Storage | Supabase Storage |
+| Rate Limiting | Upstash Redis |
+| Payments | Stripe |
+
+## Target Users
+
+Developers and software teams who work with multiple tools and need a centralized place for their reusable resources.
 
 ## Getting Started
 
-First, run the development server:
+1. **Clone the repository**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+   ```bash
+   git clone https://github.com/ManzarAbbass/devstash.git
+   cd devstash
+   ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. **Install dependencies**
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+   ```bash
+   npm install
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. **Set up environment variables**
 
-## Learn More
+   Copy `.env.example` to `.env.local` and fill in the required values:
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   cp .env.example .env.local
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   At minimum, set:
+   - `DATABASE_URL` — your Neon PostgreSQL connection string
+   - `AUTH_SECRET` — run `npx auth secret` to generate one
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   See `.env.example` for all optional configuration (GitHub OAuth, Resend, Upstash, OpenRouter, Supabase, Stripe).
 
-## Deploy on Vercel
+4. **Run database migrations**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   ```bash
+   npx prisma db push
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+5. **Start the development server**
+
+   ```bash
+   npm run dev
+   ```
+
+   Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Environment Variables
+
+Refer to [`.env.example`](./.env.example) for the full list of available variables and their descriptions.

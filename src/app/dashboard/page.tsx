@@ -1,7 +1,9 @@
+import { Suspense } from "react"
 import { redirect } from "next/navigation"
 import { auth } from "@/auth"
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
 import { MainContent } from "@/components/dashboard/main-content"
+import { DashboardContentSkeleton } from "@/components/dashboard/dashboard-skeleton"
 import { getSidebarData } from "@/lib/db/items"
 import { getSearchData } from "@/lib/db/search"
 
@@ -18,7 +20,9 @@ export default async function DashboardPage() {
 
   return (
     <DashboardLayout sidebarData={sidebarData} searchData={searchData}>
-      <MainContent userId={userId} />
+      <Suspense fallback={<DashboardContentSkeleton />}>
+        <MainContent userId={userId} />
+      </Suspense>
     </DashboardLayout>
   )
 }

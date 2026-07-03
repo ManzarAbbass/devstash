@@ -1,8 +1,9 @@
 "use server"
 
 import { z } from "zod"
-import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
+import { requireAuth, validateInput, withVoidHandling } from "@/actions/shared"
+import type { VoidResult } from "@/types/actions"
 
 const editorPreferencesSchema = z.object({
   fontSize: z.number().min(8).max(32),
@@ -14,30 +15,22 @@ const editorPreferencesSchema = z.object({
 
 export type EditorPreferencesInput = z.infer<typeof editorPreferencesSchema>
 
-export type UpdateEditorPreferencesResult =
-  | { success: true }
-  | { success: false; error: string }
+export type UpdateEditorPreferencesResult = VoidResult
 
 export async function updateEditorPreferences(
   data: EditorPreferencesInput
 ): Promise<UpdateEditorPreferencesResult> {
-  const session = await auth()
-  if (!session?.user?.id) {
-    return { success: false, error: "Unauthorized" }
-  }
+  const auth = await requireAuth()
+  if (!auth.success) return auth
 
-  const parsed = editorPreferencesSchema.safeParse(data)
-  if (!parsed.success) {
-    return { success: false, error: parsed.error.issues.map((i) => i.message).join(", ") }
-  }
+  const parsed = validateInput(editorPreferencesSchema, data)
+  if (!parsed.success) return parsed
 
-  try {
-    await prisma.user.update({
-      where: { id: session.user.id },
+  return withVoidHandling(
+    () => prisma.user.update({
+      where: { id: auth.data.user.id },
       data: { editorPreferences: parsed.data },
-    })
-    return { success: true }
-  } catch {
-    return { success: false, error: "Failed to update preferences" }
-  }
+    }),
+    "Failed to update preferences"
+  )
 }

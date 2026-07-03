@@ -1,16 +1,40 @@
-# Current Feature
+# Current Feature: Actions Refactor — Extract shared helpers and types
 
 ## Status
 
 <!-- Not Started | In Progress | Complete -->
 
+In Progress
+
 ## Goals
 
-<!-- Goals for the current feature -->
+- [x] Create `src/types/actions.ts` with shared result types (`DataResult`, `FieldResult`, `VoidResult`)
+- [x] Create `src/actions/shared.ts` with reusable action helpers (`requireAuth`, `parseFormData`, `validateInput`, `withErrorHandling`, `withVoidHandling`, `withAiGuard`)
+- [x] Refactor `src/actions/items.ts` — use shared auth, zod parsing, error handling, and result types
+- [x] Refactor `src/actions/collections.ts` — use shared auth, zod parsing, error handling, and result types
+- [x] Refactor `src/actions/settings.ts` — use shared auth, input validation, and void error handling
+- [x] Refactor `src/actions/ai.ts` — use shared auth, AI guard (access + rate limit), and input validation
+- [x] All 25 existing action tests pass
+- [x] Zero TypeScript errors in action source files
 
 ## Notes
 
-<!-- Additional context and implementation notes -->
+Driven by refactor scanner analysis. 6 duplicate patterns addressed:
+
+| Pattern | Occurrences | Solution |
+|---------|-------------|----------|
+| Auth/session check | 15× across 4 files | `requireAuth()` in shared.ts |
+| Zod field error formatting | 4× in items + collections | `parseFormData()` in shared.ts |
+| try/catch error wrapper | ~12× across all files | `withErrorHandling()` / `withVoidHandling()` |
+| Zod simple validation | 4× in ai.ts | `validateInput()` in shared.ts |
+| Result type definitions | 14× across all files | `DataResult<T>`, `FieldResult<T>`, `VoidResult` in types/actions.ts |
+| AI action boilerplate | 4× in ai.ts | `withAiGuard()` in shared.ts |
+
+`withAiGuard` uses dynamic imports to avoid pulling `@/lib/rate-limit` into the module graph of non-AI actions (prevents test env issues).
+
+Files changed:
+- **New:** `src/types/actions.ts`, `src/actions/shared.ts`
+- **Edited:** `src/actions/items.ts`, `src/actions/collections.ts`, `src/actions/settings.ts`, `src/actions/ai.ts`
 
 ## History
 
@@ -21,7 +45,7 @@
 - 2026-05-25: Prisma + Neon PostgreSQL Setup — Initial setup and schema generation [Completed]
 - 2026-05-25: Seed Script — Populate database with sample data for development and demos [Completed]
 - 2026-05-25: Dashboard Collections — Replace mock data with real data from the database [Completed]
-- 2026-05-25: Dashboard Items — Replace dummy item data with real data from the database [Completed]
+- 2026-05-25: Dashboard Items — Replace mock data with real data from the database [Completed]
 - 2026-05-25: Stats & Sidebar — Replace mock data with real database stats and populate sidebar with item types + collections [Completed]
 - 2026-06-03: Add Pro Badge to Sidebar — Added PRO badge to Files and Images item types in the sidebar using ShadCN UI Badge [Completed]
 - 2026-06-10: Fix N+1 queries in collection stats and sidebar — Replaced eager-loading N+1 with aggregation queries in `getCollections()` and `getSidebarCollections()`, added `@@index([collectionId])` on ItemCollection [Completed]
@@ -53,7 +77,7 @@
 - 2026-06-24: Pagination — Added pagination to /items/[type], /collections/[id], and /collections pages with numbered page links and prev/next controls; created PaginationControls component; seeded 22+ snippets for pagination test data; added sidebar scrolling with hidden scrollbar; DASHBOARD_COLLECTIONS_LIMIT = 6 [Completed]
 - 2026-06-25: Settings Page — New /settings route with Change Password + Delete Account, Settings link in sidebar dropdown, removed account actions from profile [Completed]
 - 2026-06-25: Editor Preferences Settings — Editor pref card on /settings with font/tab size, word wrap/minimap toggles, theme dropdown; auto-save to editorPreferences JSON column; context provider; applied to Monaco editor across app; 16 unit tests [Completed]
-- 2026-06-25: Favorites Page — `/favorites` route with auth protection, compact terminal-style list view, separate sections for items and collections with counts, ItemDrawer on click, collection link navigation, empty state, toggle favorite server actions, star icon in TopBar [Completed]
+- 2026-06-25: Favorites Page — `/favorites` route with auth protection, compact terminal-style list view, separate sections for items and collections with counts, ItemDrawer on click, collection link navigation, empty state, favorite toggle server actions, star icon in TopBar [Completed]
 - 2026-06-27: Favorite Toggle Buttons — Wired toggleItemFavorite/toggleCollectionFavorite server actions to star buttons in ItemDrawerActions, ItemCard (via ItemCardWithDrawer), CollectionCard dropdown, and CollectionDetailHeader [Completed]
 - 2026-06-27: Favorites Client-Side Sorting — Added sort by Name / Date / Type to favorites page using Base UI Select, client-side useMemo sorting (no DB changes), matches terminal aesthetic [Completed]
 - 2026-06-27: Pinned Items — toggleItemPin server action, Pin button wired in ItemDrawer, optimistic UI + toast, pinned items sort to top of all listings, static Pin indicator on ItemCard [Completed]
@@ -71,3 +95,4 @@
 - 2026-07-01: AI Suggest Description — suggestDescription server action, rate limiter, "Suggest Description" button with Sparkles icon in create dialog and item drawer edit mode, AI generates 1-2 sentence description and fills textarea directly, Pro gated and rate limited, hidden scrollbar on description textarea [Completed]
 - 2026-07-01: AI Prompt Optimizer — optimizePrompt server action, Optimize button in MarkdownEditor header for prompt items, Gemini-powered (switched to DeepSeek via OpenRouter), optimized prompt shown with Accept/Reject, Accept auto-saves via updateItem, Pro gated (Crown for free), rate limited 20/min, hidden scrollbar on optimized display [Completed]
 - 2026-07-02: UI Review & Register GitHub Button — Playwright audit of all pages, added GitHub OAuth button + "Or continue with" divider to register form, updated subtitle, changed confirm password icon Lock→KeyRound [Completed]
+- 2026-07-03: Actions Refactor — Extract shared helpers and types from src/actions/ [In Progress]

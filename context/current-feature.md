@@ -1,40 +1,16 @@
-# Current Feature: Actions Refactor — Extract shared helpers and types
+# Current Feature
 
 ## Status
 
 <!-- Not Started | In Progress | Complete -->
 
-In Progress
-
 ## Goals
 
-- [x] Create `src/types/actions.ts` with shared result types (`DataResult`, `FieldResult`, `VoidResult`)
-- [x] Create `src/actions/shared.ts` with reusable action helpers (`requireAuth`, `parseFormData`, `validateInput`, `withErrorHandling`, `withVoidHandling`, `withAiGuard`)
-- [x] Refactor `src/actions/items.ts` — use shared auth, zod parsing, error handling, and result types
-- [x] Refactor `src/actions/collections.ts` — use shared auth, zod parsing, error handling, and result types
-- [x] Refactor `src/actions/settings.ts` — use shared auth, input validation, and void error handling
-- [x] Refactor `src/actions/ai.ts` — use shared auth, AI guard (access + rate limit), and input validation
-- [x] All 25 existing action tests pass
-- [x] Zero TypeScript errors in action source files
+<!-- Goals for the current feature -->
 
 ## Notes
 
-Driven by refactor scanner analysis. 6 duplicate patterns addressed:
-
-| Pattern | Occurrences | Solution |
-|---------|-------------|----------|
-| Auth/session check | 15× across 4 files | `requireAuth()` in shared.ts |
-| Zod field error formatting | 4× in items + collections | `parseFormData()` in shared.ts |
-| try/catch error wrapper | ~12× across all files | `withErrorHandling()` / `withVoidHandling()` |
-| Zod simple validation | 4× in ai.ts | `validateInput()` in shared.ts |
-| Result type definitions | 14× across all files | `DataResult<T>`, `FieldResult<T>`, `VoidResult` in types/actions.ts |
-| AI action boilerplate | 4× in ai.ts | `withAiGuard()` in shared.ts |
-
-`withAiGuard` uses dynamic imports to avoid pulling `@/lib/rate-limit` into the module graph of non-AI actions (prevents test env issues).
-
-Files changed:
-- **New:** `src/types/actions.ts`, `src/actions/shared.ts`
-- **Edited:** `src/actions/items.ts`, `src/actions/collections.ts`, `src/actions/settings.ts`, `src/actions/ai.ts`
+<!-- Additional context and implementation notes -->
 
 ## History
 
@@ -95,4 +71,4 @@ Files changed:
 - 2026-07-01: AI Suggest Description — suggestDescription server action, rate limiter, "Suggest Description" button with Sparkles icon in create dialog and item drawer edit mode, AI generates 1-2 sentence description and fills textarea directly, Pro gated and rate limited, hidden scrollbar on description textarea [Completed]
 - 2026-07-01: AI Prompt Optimizer — optimizePrompt server action, Optimize button in MarkdownEditor header for prompt items, Gemini-powered (switched to DeepSeek via OpenRouter), optimized prompt shown with Accept/Reject, Accept auto-saves via updateItem, Pro gated (Crown for free), rate limited 20/min, hidden scrollbar on optimized display [Completed]
 - 2026-07-02: UI Review & Register GitHub Button — Playwright audit of all pages, added GitHub OAuth button + "Or continue with" divider to register form, updated subtitle, changed confirm password icon Lock→KeyRound [Completed]
-- 2026-07-03: Actions Refactor — Extract shared helpers and types from src/actions/ [In Progress]
+- 2026-07-03: Actions Refactor — Extract shared helpers (`requireAuth`, `parseFormData`, `validateInput`, `withErrorHandling`, `withVoidHandling`, `withAiGuard`) and types (`DataResult`, `FieldResult`, `VoidResult`) from 4 action files into `src/actions/shared.ts` + `src/types/actions.ts`, removing ~125 lines of duplication [Completed]

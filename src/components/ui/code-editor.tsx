@@ -261,7 +261,7 @@ export function CodeEditor({
         </div>
       </div>
       {showExplain && tab === "explain" && explanation ? (
-        <div className="max-h-[250px] overflow-y-auto p-4 text-sm leading-relaxed">
+        <div className="max-h-[250px] overflow-y-auto scrollbar-none p-4 text-sm leading-relaxed">
           <div className="whitespace-pre-wrap font-mono text-xs leading-relaxed text-foreground">
             {explanation}
           </div>

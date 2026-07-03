@@ -52,7 +52,8 @@ next-env.d.ts
 # playwright test artifacts
 .playwright-mcp/
 
-# AI assistant / project config (not website code)
+# AI assistant / project config / docs (not website code)
 /AGENTS.md
 /context/
 /.opencode/
+/docs/

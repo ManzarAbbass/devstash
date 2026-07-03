@@ -1,25 +1,16 @@
-# Current Feature: UI Review & Register GitHub Button Fix
+# Current Feature
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Complete -->
 
 ## Goals
 
-- Browse all pages via Playwright and audit for UI inconsistencies
-- Identify missing GitHub OAuth button on /register page
-- Add GitHub sign-up button + "Or continue with" divider to register form
-- Update register subtitle to reflect GitHub option
-- Change confirm password icon from Lock to KeyRound for visual distinction
-- Verify fix renders correctly via Playwright snapshot
+<!-- Goals for the current feature -->
 
 ## Notes
 
-- Sign-in page had GitHub button, register page didn't — inconsistency fixed
-- All pages checked: landing, sign-in, register, forgot-password, dashboard, collections, items (all types), favorites, profile, settings, upgrade, new-item modal, item drawer, new-collection modal
-- Mobile responsive (375px viewport tested)
-- Empty states present for item types with 0 items
-- No other UI layout issues found
+<!-- Additional context and implementation notes -->
 
 ## History
 
@@ -79,3 +70,4 @@ In Progress
 - 2026-07-01: AI Tag Suggestions — suggestTags server action, "Suggest Tags" button with Sparkles icon in create dialog and item drawer edit mode, AI generates 1-5 tags with accept/reject chips, Pro gated and rate limited [Completed]
 - 2026-07-01: AI Suggest Description — suggestDescription server action, rate limiter, "Suggest Description" button with Sparkles icon in create dialog and item drawer edit mode, AI generates 1-2 sentence description and fills textarea directly, Pro gated and rate limited, hidden scrollbar on description textarea [Completed]
 - 2026-07-01: AI Prompt Optimizer — optimizePrompt server action, Optimize button in MarkdownEditor header for prompt items, Gemini-powered (switched to DeepSeek via OpenRouter), optimized prompt shown with Accept/Reject, Accept auto-saves via updateItem, Pro gated (Crown for free), rate limited 20/min, hidden scrollbar on optimized display [Completed]
+- 2026-07-02: UI Review & Register GitHub Button — Playwright audit of all pages, added GitHub OAuth button + "Or continue with" divider to register form, updated subtitle, changed confirm password icon Lock→KeyRound [Completed]

@@ -1,9 +1,10 @@
 "use server"
 
 import { z } from "zod"
-import { auth } from "@/auth"
 import { getUserCollections as getUserCollectionsQuery, createCollection as createCollectionQuery, updateCollection as updateCollectionQuery, deleteCollection as deleteCollectionQuery, toggleCollectionFavorite as toggleCollectionFavoriteQuery } from "@/lib/db/collections"
 import { checkCollectionLimit } from "@/lib/pro"
+import { requireAuth, parseFormData, withErrorHandling, withVoidHandling } from "@/actions/shared"
+import type { DataResult, FieldResult, VoidResult } from "@/types/actions"
 
 const createCollectionSchema = z.object({
   name: z.string().trim().min(1, "Name is required"),
@@ -12,61 +13,39 @@ const createCollectionSchema = z.object({
 
 export type CreateCollectionData = z.infer<typeof createCollectionSchema>
 
-export type CreateCollectionResult =
-  | { success: true; data: { id: string; name: string; description: string | null; createdAt: Date } }
-  | { success: false; error: Record<string, string[]> | string }
+type CollectionData = { id: string; name: string; description: string | null; createdAt: Date }
+
+export type CreateCollectionResult = FieldResult<CollectionData>
 
 export async function getUserCollections() {
-  const session = await auth()
-  if (!session?.user?.id) {
-    return []
-  }
-  return getUserCollectionsQuery(session.user.id)
+  const auth = await requireAuth()
+  if (!auth.success) return []
+  return getUserCollectionsQuery(auth.data.user.id)
 }
 
 export async function createCollection(
   data: CreateCollectionData
 ): Promise<CreateCollectionResult> {
-  const session = await auth()
-  if (!session?.user?.id) {
-    return { success: false, error: "Unauthorized" }
-  }
+  const auth = await requireAuth()
+  if (!auth.success) return auth
 
-  const parsed = createCollectionSchema.safeParse(data)
-  if (!parsed.success) {
-    const fieldErrors: Record<string, string[]> = {}
-    for (const issue of parsed.error.issues) {
-      const key = issue.path.join(".")
-      if (!fieldErrors[key]) fieldErrors[key] = []
-      fieldErrors[key].push(issue.message)
-    }
-    return { success: false, error: fieldErrors }
-  }
+  const parsed = parseFormData(createCollectionSchema, data)
+  if (!parsed.success) return parsed
 
   const { name, description } = parsed.data
 
-  const limitCheck = await checkCollectionLimit(session.user.id, session.user.isPro)
+  const limitCheck = await checkCollectionLimit(auth.data.user.id, auth.data.user.isPro)
   if (!limitCheck.allowed) {
     return { success: false, error: limitCheck.reason }
   }
 
-  try {
-    const created = await createCollectionQuery(session.user.id, {
+  return withErrorHandling(
+    () => createCollectionQuery(auth.data.user.id, {
       name,
       description: description ?? null,
-    })
-    return {
-      success: true,
-      data: {
-        id: created.id,
-        name: created.name,
-        description: created.description,
-        createdAt: created.createdAt,
-      },
-    }
-  } catch {
-    return { success: false, error: "Failed to create collection" }
-  }
+    }),
+    "Failed to create collection"
+  )
 }
 
 const updateCollectionSchema = z.object({
@@ -76,85 +55,51 @@ const updateCollectionSchema = z.object({
 
 export type UpdateCollectionData = z.infer<typeof updateCollectionSchema>
 
-export type UpdateCollectionResult =
-  | { success: true; data: { id: string; name: string; description: string | null; createdAt: Date } }
-  | { success: false; error: Record<string, string[]> | string }
+export type UpdateCollectionResult = FieldResult<CollectionData>
 
 export async function updateCollection(
   collectionId: string,
   data: UpdateCollectionData
 ): Promise<UpdateCollectionResult> {
-  const session = await auth()
-  if (!session?.user?.id) {
-    return { success: false, error: "Unauthorized" }
-  }
+  const auth = await requireAuth()
+  if (!auth.success) return auth
 
-  const parsed = updateCollectionSchema.safeParse(data)
-  if (!parsed.success) {
-    const fieldErrors: Record<string, string[]> = {}
-    for (const issue of parsed.error.issues) {
-      const key = issue.path.join(".")
-      if (!fieldErrors[key]) fieldErrors[key] = []
-      fieldErrors[key].push(issue.message)
-    }
-    return { success: false, error: fieldErrors }
-  }
+  const parsed = parseFormData(updateCollectionSchema, data)
+  if (!parsed.success) return parsed
 
   const { name, description } = parsed.data
 
-  try {
-    const updated = await updateCollectionQuery(session.user.id, collectionId, {
+  return withErrorHandling(
+    () => updateCollectionQuery(auth.data.user.id, collectionId, {
       name,
       description: description ?? null,
-    })
-    return {
-      success: true,
-      data: {
-        id: updated.id,
-        name: updated.name,
-        description: updated.description,
-        createdAt: updated.createdAt,
-      },
-    }
-  } catch {
-    return { success: false, error: "Failed to update collection" }
-  }
+    }),
+    "Failed to update collection"
+  )
 }
 
-export type DeleteCollectionResult =
-  | { success: true }
-  | { success: false; error: string }
+export type DeleteCollectionResult = VoidResult
 
-export type ToggleFavoriteResult =
-  | { success: true; data: { id: string; name: string; isFavorite: boolean } }
-  | { success: false; error: string }
+export type ToggleFavoriteResult = DataResult<{ id: string; name: string; isFavorite: boolean }>
 
 export async function toggleCollectionFavorite(collectionId: string): Promise<ToggleFavoriteResult> {
-  const session = await auth()
-  if (!session?.user?.id) {
-    return { success: false, error: "Unauthorized" }
-  }
+  const auth = await requireAuth()
+  if (!auth.success) return auth
 
-  try {
-    const updated = await toggleCollectionFavoriteQuery(session.user.id, collectionId)
-    return { success: true, data: { id: updated.id, name: updated.name, isFavorite: updated.isFavorite } }
-  } catch {
-    return { success: false, error: "Failed to toggle favorite" }
-  }
+  return withErrorHandling(
+    () => toggleCollectionFavoriteQuery(auth.data.user.id, collectionId),
+    "Failed to toggle favorite"
+  )
 }
 
 export async function deleteCollection(
   collectionId: string
 ): Promise<DeleteCollectionResult> {
-  const session = await auth()
-  if (!session?.user?.id) {
-    return { success: false, error: "Unauthorized" }
-  }
+  const auth = await requireAuth()
+  if (!auth.success) return auth
 
-  try {
-    await deleteCollectionQuery(session.user.id, collectionId)
-    return { success: true }
-  } catch {
-    return { success: false, error: "Failed to delete collection" }
-  }
+  return withVoidHandling(
+    () => deleteCollectionQuery(auth.data.user.id, collectionId),
+    "Failed to delete collection"
+  )
 }

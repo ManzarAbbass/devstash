@@ -1,7 +1,6 @@
 "use server"
 
 import { z } from "zod"
-import { auth } from "@/auth"
 import {
   createItem as createItemQuery,
   updateItem as updateItemQuery,
@@ -11,6 +10,8 @@ import {
 } from "@/lib/db/items"
 import { supabaseAdmin, STORAGE_BUCKET } from "@/lib/supabase"
 import { checkItemLimit } from "@/lib/pro"
+import { requireAuth, parseFormData, withErrorHandling, withVoidHandling } from "@/actions/shared"
+import type { DataResult, FieldResult, VoidResult } from "@/types/actions"
 
 const updateItemSchema = z.object({
   title: z.string().trim().min(1, "Title is required"),
@@ -24,34 +25,22 @@ const updateItemSchema = z.object({
 
 export type UpdateItemData = z.infer<typeof updateItemSchema>
 
-export type UpdateItemResult =
-  | { success: true; data: import("@/lib/db/items").ItemWithDetails }
-  | { success: false; error: Record<string, string[]> | string }
+export type UpdateItemResult = FieldResult<import("@/lib/db/items").ItemWithDetails>
 
 export async function updateItem(
   itemId: string,
   data: UpdateItemData
 ): Promise<UpdateItemResult> {
-  const session = await auth()
-  if (!session?.user?.id) {
-    return { success: false, error: "Unauthorized" }
-  }
+  const auth = await requireAuth()
+  if (!auth.success) return auth
 
-  const parsed = updateItemSchema.safeParse(data)
-  if (!parsed.success) {
-    const fieldErrors: Record<string, string[]> = {}
-    for (const issue of parsed.error.issues) {
-      const key = issue.path.join(".")
-      if (!fieldErrors[key]) fieldErrors[key] = []
-      fieldErrors[key].push(issue.message)
-    }
-    return { success: false, error: fieldErrors }
-  }
+  const parsed = parseFormData(updateItemSchema, data)
+  if (!parsed.success) return parsed
 
   const { title, tags, description, content, url, language, collectionIds } = parsed.data
 
-  try {
-    const updated = await updateItemQuery(session.user.id, itemId, {
+  return withErrorHandling(
+    () => updateItemQuery(auth.data.user.id, itemId, {
       title,
       tags,
       description: description ?? null,
@@ -59,16 +48,12 @@ export async function updateItem(
       url: url ?? null,
       language: language ?? null,
       collectionIds,
-    })
-    return { success: true, data: updated }
-  } catch {
-    return { success: false, error: "Failed to update item" }
-  }
+    }),
+    "Failed to update item"
+  )
 }
 
-export type DeleteItemResult =
-  | { success: true }
-  | { success: false; error: string }
+export type DeleteItemResult = VoidResult
 
 const createItemSchema = z.object({
   title: z.string().trim().min(1, "Title is required"),
@@ -87,28 +72,16 @@ const createItemSchema = z.object({
 
 export type CreateItemData = z.infer<typeof createItemSchema>
 
-export type CreateItemResult =
-  | { success: true; data: import("@/lib/db/items").ItemWithDetails }
-  | { success: false; error: Record<string, string[]> | string }
+export type CreateItemResult = FieldResult<import("@/lib/db/items").ItemWithDetails>
 
 export async function createItem(
   data: CreateItemData
 ): Promise<CreateItemResult> {
-  const session = await auth()
-  if (!session?.user?.id) {
-    return { success: false, error: "Unauthorized" }
-  }
+  const auth = await requireAuth()
+  if (!auth.success) return auth
 
-  const parsed = createItemSchema.safeParse(data)
-  if (!parsed.success) {
-    const fieldErrors: Record<string, string[]> = {}
-    for (const issue of parsed.error.issues) {
-      const key = issue.path.join(".")
-      if (!fieldErrors[key]) fieldErrors[key] = []
-      fieldErrors[key].push(issue.message)
-    }
-    return { success: false, error: fieldErrors }
-  }
+  const parsed = parseFormData(createItemSchema, data)
+  if (!parsed.success) return parsed
 
   const { title, contentType, itemTypeId, tags, description, content, url, language, fileUrl, fileName, fileSize, collectionIds } = parsed.data
 
@@ -116,13 +89,13 @@ export async function createItem(
     return { success: false, error: { url: ["URL is required for link type"] } }
   }
 
-  const limitCheck = await checkItemLimit(session.user.id, session.user.isPro)
+  const limitCheck = await checkItemLimit(auth.data.user.id, auth.data.user.isPro)
   if (!limitCheck.allowed) {
     return { success: false, error: limitCheck.reason }
   }
 
-  try {
-    const created = await createItemQuery(session.user.id, {
+  return withErrorHandling(
+    () => createItemQuery(auth.data.user.id, {
       title,
       contentType,
       itemTypeId,
@@ -135,23 +108,19 @@ export async function createItem(
       fileName: fileName ?? null,
       fileSize: fileSize ?? null,
       collectionIds,
-    })
-    return { success: true, data: created }
-  } catch {
-    return { success: false, error: "Failed to create item" }
-  }
+    }),
+    "Failed to create item"
+  )
 }
 
 export async function deleteItem(
   itemId: string
 ): Promise<DeleteItemResult> {
-  const session = await auth()
-  if (!session?.user?.id) {
-    return { success: false, error: "Unauthorized" }
-  }
+  const auth = await requireAuth()
+  if (!auth.success) return auth
 
   try {
-    const { fileUrl } = await deleteItemQuery(session.user.id, itemId)
+    const { fileUrl } = await deleteItemQuery(auth.data.user.id, itemId)
 
     if (fileUrl) {
       const key = extractStorageKey(fileUrl)
@@ -166,40 +135,28 @@ export async function deleteItem(
   }
 }
 
-export type ToggleFavoriteResult =
-  | { success: true; data: import("@/lib/db/items").ItemWithDetails }
-  | { success: false; error: string }
+export type ToggleFavoriteResult = DataResult<import("@/lib/db/items").ItemWithDetails>
 
 export async function toggleItemFavorite(itemId: string): Promise<ToggleFavoriteResult> {
-  const session = await auth()
-  if (!session?.user?.id) {
-    return { success: false, error: "Unauthorized" }
-  }
+  const auth = await requireAuth()
+  if (!auth.success) return auth
 
-  try {
-    const updated = await toggleItemFavoriteQuery(session.user.id, itemId)
-    return { success: true, data: updated }
-  } catch {
-    return { success: false, error: "Failed to toggle favorite" }
-  }
+  return withErrorHandling(
+    () => toggleItemFavoriteQuery(auth.data.user.id, itemId),
+    "Failed to toggle favorite"
+  )
 }
 
-export type TogglePinResult =
-  | { success: true; data: import("@/lib/db/items").ItemWithDetails }
-  | { success: false; error: string }
+export type TogglePinResult = DataResult<import("@/lib/db/items").ItemWithDetails>
 
 export async function toggleItemPin(itemId: string): Promise<TogglePinResult> {
-  const session = await auth()
-  if (!session?.user?.id) {
-    return { success: false, error: "Unauthorized" }
-  }
+  const auth = await requireAuth()
+  if (!auth.success) return auth
 
-  try {
-    const updated = await toggleItemPinQuery(session.user.id, itemId)
-    return { success: true, data: updated }
-  } catch {
-    return { success: false, error: "Failed to toggle pin" }
-  }
+  return withErrorHandling(
+    () => toggleItemPinQuery(auth.data.user.id, itemId),
+    "Failed to toggle pin"
+  )
 }
 
 function extractStorageKey(publicUrl: string): string | null {

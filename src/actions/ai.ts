@@ -1,11 +1,10 @@
 "use server"
 
 import { z } from "zod"
-import { auth } from "@/auth"
 import { generate } from "@/lib/ai"
-
-import { checkAiAccess } from "@/lib/pro"
-import { rateLimiters, checkRateLimit } from "@/lib/rate-limit"
+import { rateLimiters } from "@/lib/rate-limit"
+import { requireAuth, validateInput, withAiGuard } from "@/actions/shared"
+import type { DataResult } from "@/types/actions"
 
 const explainCodeSchema = z.object({
   content: z.string().min(1).max(10000),
@@ -29,25 +28,14 @@ export type SuggestTagsResult =
   | { success: false; error: string }
 
 export async function suggestTags(data: SuggestTagsData): Promise<SuggestTagsResult> {
-  const session = await auth()
-  if (!session?.user?.id) {
-    return { success: false, error: "Unauthorized" }
-  }
+  const auth = await requireAuth()
+  if (!auth.success) return auth
 
-  const aiCheck = checkAiAccess(session.user.isPro)
-  if (!aiCheck.allowed) {
-    return { success: false, error: aiCheck.reason }
-  }
+  const guard = await withAiGuard(rateLimiters.suggestTags, auth.data.user.id, auth.data.user.isPro)
+  if (!guard.success) return guard
 
-  const parsed = suggestTagsSchema.safeParse(data)
-  if (!parsed.success) {
-    return { success: false, error: "Invalid input" }
-  }
-
-  const { success } = await checkRateLimit(rateLimiters.suggestTags, session.user.id)
-  if (!success) {
-    return { success: false, error: "Too many AI requests. Try again later." }
-  }
+  const parsed = validateInput(suggestTagsSchema, data)
+  if (!parsed.success) return parsed
 
   try {
     const { text } = await generate(
@@ -79,25 +67,14 @@ export type SuggestDescriptionResult =
   | { success: false; error: string }
 
 export async function suggestDescription(data: SuggestDescriptionData): Promise<SuggestDescriptionResult> {
-  const session = await auth()
-  if (!session?.user?.id) {
-    return { success: false, error: "Unauthorized" }
-  }
+  const auth = await requireAuth()
+  if (!auth.success) return auth
 
-  const aiCheck = checkAiAccess(session.user.isPro)
-  if (!aiCheck.allowed) {
-    return { success: false, error: aiCheck.reason }
-  }
+  const guard = await withAiGuard(rateLimiters.suggestDescription, auth.data.user.id, auth.data.user.isPro)
+  if (!guard.success) return guard
 
-  const parsed = suggestDescriptionSchema.safeParse(data)
-  if (!parsed.success) {
-    return { success: false, error: "Invalid input" }
-  }
-
-  const { success } = await checkRateLimit(rateLimiters.suggestDescription, session.user.id)
-  if (!success) {
-    return { success: false, error: "Too many AI requests. Try again later." }
-  }
+  const parsed = validateInput(suggestDescriptionSchema, data)
+  if (!parsed.success) return parsed
 
   try {
     const { text } = await generate(
@@ -123,25 +100,14 @@ export type OptimizePromptResult =
   | { success: false; error: string }
 
 export async function optimizePrompt(data: OptimizePromptData): Promise<OptimizePromptResult> {
-  const session = await auth()
-  if (!session?.user?.id) {
-    return { success: false, error: "Unauthorized" }
-  }
+  const auth = await requireAuth()
+  if (!auth.success) return auth
 
-  const aiCheck = checkAiAccess(session.user.isPro)
-  if (!aiCheck.allowed) {
-    return { success: false, error: aiCheck.reason }
-  }
+  const guard = await withAiGuard(rateLimiters.optimizePrompt, auth.data.user.id, auth.data.user.isPro)
+  if (!guard.success) return guard
 
-  const parsed = optimizePromptSchema.safeParse(data)
-  if (!parsed.success) {
-    return { success: false, error: "Invalid input" }
-  }
-
-  const { success } = await checkRateLimit(rateLimiters.optimizePrompt, session.user.id)
-  if (!success) {
-    return { success: false, error: "Too many AI requests. Try again later." }
-  }
+  const parsed = validateInput(optimizePromptSchema, data)
+  if (!parsed.success) return parsed
 
   try {
     const { text } = await generate(
@@ -157,25 +123,14 @@ export async function optimizePrompt(data: OptimizePromptData): Promise<Optimize
 }
 
 export async function explainCode(data: ExplainCodeData): Promise<ExplainCodeResult> {
-  const session = await auth()
-  if (!session?.user?.id) {
-    return { success: false, error: "Unauthorized" }
-  }
+  const auth = await requireAuth()
+  if (!auth.success) return auth
 
-  const aiCheck = checkAiAccess(session.user.isPro)
-  if (!aiCheck.allowed) {
-    return { success: false, error: aiCheck.reason }
-  }
+  const guard = await withAiGuard(rateLimiters.explainCode, auth.data.user.id, auth.data.user.isPro)
+  if (!guard.success) return guard
 
-  const parsed = explainCodeSchema.safeParse(data)
-  if (!parsed.success) {
-    return { success: false, error: "Invalid input" }
-  }
-
-  const { success } = await checkRateLimit(rateLimiters.explainCode, session.user.id)
-  if (!success) {
-    return { success: false, error: "Too many AI requests. Try again later." }
-  }
+  const parsed = validateInput(explainCodeSchema, data)
+  if (!parsed.success) return parsed
 
   try {
     const { text } = await generate(

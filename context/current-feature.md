@@ -1,31 +1,16 @@
-# Current Feature: Component Refactoring — Split & Deduplicate
+# Current Feature
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Complete -->
 
 ## Goals
 
-- [ ] Split `item-drawer.tsx` (700 lines) — extract shared form fields, AI hooks, SuggestedTags
-- [ ] Split `create-item-dialog.tsx` (395 lines) — share `ItemFormFields` + `useAISuggestions` with drawer
-- [ ] Merge `create-collection-dialog.tsx` + `edit-collection-dialog.tsx` into `CollectionFormDialog`
-- [ ] Extract `ConfirmDeleteDialog` — replace 3 duplicate delete confirmation patterns
-- [ ] Extract `useToggleFavorite` hook — replace 3 duplicate toggle patterns
-- [ ] Split `sidebar.tsx` (286 lines) — into `SidebarTypesNav`, `SidebarCollectionsNav`, `SidebarUserMenu`
-- [ ] Extract `content-types.ts` constants — eliminate 3 duplicate array definitions
-- [ ] Extract `editor-themes.ts` from `code-editor.tsx` (311 lines)
-- [ ] Extract `FormSection` component — replace ~12 repeated heading patterns
-- [ ] Extract `useFormState` hook — standardize form state across all dialogs
-- [ ] Extract `useFileUpload` hook + split `file-upload.tsx` (190 lines)
-- [ ] Extract `handleDownload` utility — deduplicate in 2 files
-- [ ] Extract `TrafficLights` component — deduplicate in 2 editor files
-- [ ] Extract scrollbar-hiding class constant — replace ~8 repetitions
+<!-- Goals for the current feature -->
 
 ## Notes
 
-Based on refactor-scanner analysis of `src/components/`. See full scan report for line numbers and detailed recommendations.
-
-Priority order: CRITICAL → HIGH → MEDIUM → LOW. Start with `item-drawer.tsx` + `create-item-dialog.tsx` shared extraction (biggest impact ~60% duplication reduction).
+<!-- Additional context and implementation notes -->
 
 ## History
 
@@ -87,3 +72,4 @@ Priority order: CRITICAL → HIGH → MEDIUM → LOW. Start with `item-drawer.ts
 - 2026-07-01: AI Prompt Optimizer — optimizePrompt server action, Optimize button in MarkdownEditor header for prompt items, Gemini-powered (switched to DeepSeek via OpenRouter), optimized prompt shown with Accept/Reject, Accept auto-saves via updateItem, Pro gated (Crown for free), rate limited 20/min, hidden scrollbar on optimized display [Completed]
 - 2026-07-02: UI Review & Register GitHub Button — Playwright audit of all pages, added GitHub OAuth button + "Or continue with" divider to register form, updated subtitle, changed confirm password icon Lock→KeyRound [Completed]
 - 2026-07-03: Actions Refactor — Extract shared helpers (`requireAuth`, `parseFormData`, `validateInput`, `withErrorHandling`, `withVoidHandling`, `withAiGuard`) and types (`DataResult`, `FieldResult`, `VoidResult`) from 4 action files into `src/actions/shared.ts` + `src/types/actions.ts`, removing ~125 lines of duplication [Completed]
+- 2026-07-03: Component Refactoring — Split & Deduplicate: Extract `useAiSuggestions` hook, `content-types.ts` constants, `FormSection`, `SuggestedTags`, `ConfirmDeleteDialog`, `TrafficLights` components; merge create/edit collection dialogs into `CollectionFormDialog`; split `sidebar.tsx` into 3 sub-components; extract `editor-themes.ts` from `code-editor.tsx`; refactor `item-drawer.tsx` (700→647) and `create-item-dialog.tsx` (395→306); delete old create/edit collection dialog files (−904 lines, +895 lines) [Completed]

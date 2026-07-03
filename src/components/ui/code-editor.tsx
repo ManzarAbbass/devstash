@@ -4,6 +4,8 @@ import { useRef, useCallback, useState } from "react"
 import Editor, { type BeforeMount, type OnMount } from "@monaco-editor/react"
 import { Copy, Check, Sparkles, Crown, LoaderCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { TrafficLights } from "@/components/ui/traffic-lights"
+import { defineEditorThemes } from "@/lib/editor-themes"
 import type { EditorPreferences } from "@/lib/editor-preferences"
 
 const languageMap: Record<string, string> = {
@@ -94,75 +96,7 @@ export function CodeEditor({
   const monacoLanguage = language ? (languageMap[language.toLowerCase()] ?? "plaintext") : "plaintext"
 
   const handleBeforeMount: BeforeMount = useCallback((monaco) => {
-    monaco.editor.defineTheme("appDark", {
-      base: "vs-dark",
-      inherit: true,
-      rules: [],
-      colors: {
-        "editor.background": "#171717",
-        "editor.foreground": "#fafafa",
-        "editor.lineHighlightBackground": "#262626",
-        "editor.selectionBackground": "#264f78",
-        "editor.inactiveSelectionBackground": "#3a3d41",
-        "editorCursor.foreground": "#fafafa",
-        "editorLineNumber.foreground": "#6b7280",
-        "editorLineNumber.activeForeground": "#d1d5db",
-        "editorGutter.background": "#171717",
-        "editorRuler.foreground": "#262626",
-        "editorWidget.background": "#171717",
-        "editorWidget.border": "#262626",
-        "editorBracketMatch.background": "#0d0d0d",
-        "editorBracketMatch.border": "#6b7280",
-        "scrollbarSlider.background": "#52525280",
-        "scrollbarSlider.hoverBackground": "#525252cc",
-        "scrollbarSlider.activeBackground": "#737373",
-        "editorOverviewRuler.background": "#171717",
-      },
-    })
-    monaco.editor.defineTheme("monokai", {
-      base: "vs-dark",
-      inherit: true,
-      rules: [
-        { token: "comment", foreground: "#75715e", fontStyle: "italic" },
-        { token: "keyword", foreground: "#f92672" },
-        { token: "string", foreground: "#e6db74" },
-        { token: "number", foreground: "#ae81ff" },
-        { token: "type", foreground: "#66d9ef" },
-        { token: "function", foreground: "#a6e22e" },
-      ],
-      colors: {
-        "editor.background": "#272822",
-        "editor.foreground": "#f8f8f2",
-        "editor.lineHighlightBackground": "#3e3d32",
-        "editor.selectionBackground": "#49483e",
-        "editorCursor.foreground": "#f8f8f0",
-        "editorLineNumber.foreground": "#75715e",
-        "editorLineNumber.activeForeground": "#f8f8f2",
-        "editorGutter.background": "#272822",
-      },
-    })
-    monaco.editor.defineTheme("githubDark", {
-      base: "vs-dark",
-      inherit: true,
-      rules: [
-        { token: "comment", foreground: "#8b949e", fontStyle: "italic" },
-        { token: "keyword", foreground: "#ff7b72" },
-        { token: "string", foreground: "#a5d6ff" },
-        { token: "number", foreground: "#79c0ff" },
-        { token: "type", foreground: "#ffa657" },
-        { token: "function", foreground: "#d2a8ff" },
-      ],
-      colors: {
-        "editor.background": "#0d1117",
-        "editor.foreground": "#c9d1d9",
-        "editor.lineHighlightBackground": "#161b22",
-        "editor.selectionBackground": "#3b5998",
-        "editorCursor.foreground": "#c9d1d9",
-        "editorLineNumber.foreground": "#484f58",
-        "editorLineNumber.activeForeground": "#8b949e",
-        "editorGutter.background": "#0d1117",
-      },
-    })
+    defineEditorThemes(monaco)
   }, [])
 
   const handleEditorDidMount: OnMount = useCallback((editor) => {
@@ -185,11 +119,7 @@ export function CodeEditor({
   return (
     <div ref={containerRef} className="code-editor-wrapper overflow-hidden rounded-lg border border-border">
       <div className="flex items-center justify-between bg-muted px-3 py-1.5">
-        <div className="flex items-center gap-1.5">
-          <span className="size-2.5 rounded-full bg-red-500" />
-          <span className="size-2.5 rounded-full bg-yellow-500" />
-          <span className="size-2.5 rounded-full bg-green-500" />
-        </div>
+        <TrafficLights />
         {showExplain && explanation ? (
           <div className="flex items-center gap-0.5">
             <button

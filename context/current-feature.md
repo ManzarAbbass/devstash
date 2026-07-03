@@ -1,16 +1,31 @@
-# Current Feature
+# Current Feature: Component Refactoring — Split & Deduplicate
 
 ## Status
 
-<!-- Not Started | In Progress | Complete -->
+In Progress
 
 ## Goals
 
-<!-- Goals for the current feature -->
+- [ ] Split `item-drawer.tsx` (700 lines) — extract shared form fields, AI hooks, SuggestedTags
+- [ ] Split `create-item-dialog.tsx` (395 lines) — share `ItemFormFields` + `useAISuggestions` with drawer
+- [ ] Merge `create-collection-dialog.tsx` + `edit-collection-dialog.tsx` into `CollectionFormDialog`
+- [ ] Extract `ConfirmDeleteDialog` — replace 3 duplicate delete confirmation patterns
+- [ ] Extract `useToggleFavorite` hook — replace 3 duplicate toggle patterns
+- [ ] Split `sidebar.tsx` (286 lines) — into `SidebarTypesNav`, `SidebarCollectionsNav`, `SidebarUserMenu`
+- [ ] Extract `content-types.ts` constants — eliminate 3 duplicate array definitions
+- [ ] Extract `editor-themes.ts` from `code-editor.tsx` (311 lines)
+- [ ] Extract `FormSection` component — replace ~12 repeated heading patterns
+- [ ] Extract `useFormState` hook — standardize form state across all dialogs
+- [ ] Extract `useFileUpload` hook + split `file-upload.tsx` (190 lines)
+- [ ] Extract `handleDownload` utility — deduplicate in 2 files
+- [ ] Extract `TrafficLights` component — deduplicate in 2 editor files
+- [ ] Extract scrollbar-hiding class constant — replace ~8 repetitions
 
 ## Notes
 
-<!-- Additional context and implementation notes -->
+Based on refactor-scanner analysis of `src/components/`. See full scan report for line numbers and detailed recommendations.
+
+Priority order: CRITICAL → HIGH → MEDIUM → LOW. Start with `item-drawer.tsx` + `create-item-dialog.tsx` shared extraction (biggest impact ~60% duplication reduction).
 
 ## History
 

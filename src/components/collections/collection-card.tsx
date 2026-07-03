@@ -17,17 +17,8 @@ import {
   DropdownMenuPopup,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu"
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogCancel,
-  AlertDialogAction,
-} from "@/components/ui/alert-dialog"
-import { EditCollectionDialog } from "@/components/collections/edit-collection-dialog"
+import { ConfirmDeleteDialog } from "@/components/ui/confirm-delete-dialog"
+import { CollectionFormDialog } from "@/components/collections/collection-form-dialog"
 
 export function CollectionCard({ collection }: { collection: CollectionWithStats }) {
   const router = useRouter()
@@ -133,32 +124,21 @@ export function CollectionCard({ collection }: { collection: CollectionWithStats
         )}
       </div>
 
-      <EditCollectionDialog
+      <CollectionFormDialog
         open={editOpen}
         onOpenChange={setEditOpen}
+        mode="edit"
         collection={{ id: collection.id, name: collection.name, description: collection.description }}
       />
 
-      <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Collection</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete &quot;{collection.name}&quot;? Items in this collection will not be deleted — they will just no longer belong to this collection.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel render={<Button variant="outline">Cancel</Button>} />
-            <AlertDialogAction
-              render={
-                <Button variant="destructive" onClick={handleDelete} disabled={deleting}>
-                  {deleting ? "Deleting..." : "Delete"}
-                </Button>
-              }
-            />
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <ConfirmDeleteDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        title="Delete Collection"
+        description={`Are you sure you want to delete "${collection.name}"? Items in this collection will not be deleted — they will just no longer belong to this collection.`}
+        onConfirm={handleDelete}
+        isDeleting={deleting}
+      />
     </>
   )
 }

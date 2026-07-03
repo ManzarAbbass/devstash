@@ -1,34 +1,13 @@
 "use client"
 
 import { useState } from "react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { useSession, signOut } from "next-auth/react"
-import { toast } from "sonner"
-import {
-  Code2,
-  Star,
-  ChevronDown,
-  Settings,
-  FolderIcon,
-  PanelLeft,
-  LogOut,
-  User,
-} from "lucide-react"
+import { useSession } from "next-auth/react"
+import { PanelLeft } from "lucide-react"
 
-import { iconMap } from "@/lib/icons"
 import { Separator } from "@/components/ui/separator"
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuPortal,
-  DropdownMenuPositioner,
-  DropdownMenuPopup,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu"
+import { SidebarItemTypes } from "@/components/dashboard/sidebar-item-types"
+import { SidebarCollections } from "@/components/dashboard/sidebar-collections"
+import { SidebarUserMenu } from "@/components/dashboard/sidebar-user-menu"
 import type { SidebarData } from "@/lib/db/items"
 
 export function Sidebar({ data }: { data: SidebarData }) {
@@ -52,16 +31,9 @@ export function SidebarContent({
   collapsed: boolean
   onToggle?: () => void
 }) {
-  const [collectionsOpen, setCollectionsOpen] = useState(true)
-  const router = useRouter()
   const { data: session } = useSession()
   const isPro = session?.user?.isPro ?? false
   const { user, itemTypes, favoriteCollections, recentCollections } = data
-
-  const initials = user.name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
 
   const linkClass =
     "flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-muted"
@@ -89,198 +61,14 @@ export function SidebarContent({
       <Separator />
 
       <div className="flex-1 overflow-y-auto min-h-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-        <div className="flex flex-col gap-1 px-2 py-2">
-          {!collapsed && (
-            <button
-              type="button"
-              className="flex items-center gap-1 px-1 py-1 text-xs font-medium text-muted-foreground"
-            >
-              <ChevronDown className="size-3" />
-              Types
-            </button>
-          )}
-          <nav className="flex flex-col gap-0.5">
-            {itemTypes.map((type) => {
-              const Icon = iconMap[type.icon] || Code2
-              const isLocked = (type.name === "file" || type.name === "image") && !isPro
-              return collapsed ? (
-                isLocked ? (
-                  <span
-                    key={type.id}
-                    className={`${iconOnlyClass} opacity-50`}
-                    title={`${type.name}s (Pro)`}
-                  >
-                    <Icon className="size-4" style={{ color: type.color }} />
-                  </span>
-                ) : (
-                  <Link
-                    key={type.id}
-                    href={`/items/${type.name}s`}
-                    className={iconOnlyClass}
-                    title={`${type.name}s`}
-                  >
-                    <Icon className="size-4" style={{ color: type.color }} />
-                  </Link>
-                )
-              ) : isLocked ? (
-                <button
-                  key={type.id}
-                  type="button"
-                  onClick={() => {
-                    toast.error("This feature requires a Pro subscription")
-                    router.push("/upgrade")
-                  }}
-                  className={`${linkClass} w-full opacity-50`}
-                >
-                  <Icon className="size-4 shrink-0" style={{ color: type.color }} />
-                  <span className="flex-1 capitalize">{type.name}s</span>
-                  <Badge variant="outline" className="text-[10px] leading-none px-1 py-0 h-4 bg-purple-600 text-white border-purple-500">PRO</Badge>
-                  <span className="text-xs text-muted-foreground">{type.count}</span>
-                </button>
-              ) : (
-                <Link
-                  key={type.id}
-                  href={`/items/${type.name}s`}
-                  className={linkClass}
-                >
-                  <Icon className="size-4 shrink-0" style={{ color: type.color }} />
-                  <span className="flex-1 capitalize">{type.name}s</span>
-                  {(type.name === "file" || type.name === "image") && (
-                    <Badge variant="outline" className="text-[10px] leading-none px-1 py-0 h-4 bg-purple-600 text-white border-purple-500">PRO</Badge>
-                  )}
-                  <span className="text-xs text-muted-foreground">{type.count}</span>
-                </Link>
-              )
-            })}
-          </nav>
-        </div>
-
+        <SidebarItemTypes itemTypes={itemTypes} collapsed={collapsed} isPro={isPro} linkClass={linkClass} iconOnlyClass={iconOnlyClass} />
         <Separator />
-
-        <div className="flex flex-col gap-1 px-2 py-2">
-          {collapsed ? (
-            <Link
-              href="/collections"
-              className={iconOnlyClass}
-              title="All Collections"
-            >
-              <FolderIcon className="size-4" />
-            </Link>
-          ) : (
-            <>
-              <button
-                type="button"
-                onClick={() => setCollectionsOpen((v) => !v)}
-                className="flex items-center gap-1 px-1 py-1 text-xs font-medium text-muted-foreground"
-              >
-                <ChevronDown
-                  className={`size-3 transition-transform ${collectionsOpen ? "" : "-rotate-90"}`}
-                />
-                All Collections
-              </button>
-              {collectionsOpen && (
-                <div className="flex flex-col gap-1">
-                  {favoriteCollections.length > 0 && (
-                    <>
-                      <span className="flex items-center gap-1 px-1 pt-1 text-xs font-medium text-muted-foreground/60">
-                        <Star className="size-3 fill-current" />
-                        Favorites
-                      </span>
-                      <nav className="flex flex-col gap-0.5">
-                        {favoriteCollections.map((col) => (
-                          <Link
-                            key={col.id}
-                            href={`/collections/${col.id}`}
-                            className={linkClass}
-                          >
-                            <span className="size-2 shrink-0 rounded-full" style={{ backgroundColor: col.dominantTypeColor ?? "#6b7280" }} />
-                            <span>{col.name}</span>
-                          </Link>
-                        ))}
-                      </nav>
-                    </>
-                  )}
-                  <span className="flex items-center gap-1 px-1 pt-1 text-xs font-medium text-muted-foreground/60">
-                    Recent
-                  </span>
-                  <nav className="flex flex-col gap-0.5">
-                    {recentCollections.map((col) => (
-                      <Link
-                        key={col.id}
-                        href={`/collections/${col.id}`}
-                        className={linkClass}
-                      >
-                        <span
-                          className="size-2 shrink-0 rounded-full"
-                          style={{ backgroundColor: col.dominantTypeColor ?? "#6b7280" }}
-                        />
-                        <span>{col.name}</span>
-                      </Link>
-                    ))}
-                  </nav>
-                </div>
-              )}
-            </>
-          )}
-          {!collapsed && (
-            <Link
-              href="/collections"
-              className="text-xs text-muted-foreground hover:text-foreground px-1"
-            >
-              View all collections
-            </Link>
-          )}
-        </div>
+        <SidebarCollections favoriteCollections={favoriteCollections} recentCollections={recentCollections} collapsed={collapsed} linkClass={linkClass} iconOnlyClass={iconOnlyClass} />
       </div>
 
       <div className="mt-auto" />
-
       <Separator />
-
-      <DropdownMenu>
-        <DropdownMenuTrigger
-          render={collapsed ? (
-            <div className="flex justify-center px-2 py-3" />
-          ) : (
-            <div className="flex items-center gap-3 px-3 py-3" />
-          )}
-        >
-          <Avatar size="sm">
-            <AvatarImage src={user.image ?? undefined} alt={user.name} />
-            <AvatarFallback className={collapsed ? "text-[10px]" : undefined}>
-              {initials}
-            </AvatarFallback>
-          </Avatar>
-          {!collapsed && (
-            <div className="flex min-w-0 flex-1 flex-col">
-              <span className="truncate text-sm font-medium">{user.name}</span>
-              <span className="truncate text-xs text-muted-foreground">{user.email}</span>
-            </div>
-          )}
-          {!collapsed && (
-            <Settings className="size-4 shrink-0 text-muted-foreground" />
-          )}
-        </DropdownMenuTrigger>
-        <DropdownMenuPortal>
-          <DropdownMenuPositioner side="top" align="end" sideOffset={4}>
-            <DropdownMenuPopup>
-            <DropdownMenuItem onClick={() => router.push("/profile")}>
-              <User className="size-4" />
-              Profile
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => router.push("/settings")}>
-              <Settings className="size-4" />
-              Settings
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/sign-in" })}>
-              <LogOut className="size-4" />
-              Sign out
-            </DropdownMenuItem>
-            </DropdownMenuPopup>
-          </DropdownMenuPositioner>
-        </DropdownMenuPortal>
-      </DropdownMenu>
+      <SidebarUserMenu user={user} collapsed={collapsed} />
     </div>
   )
 }

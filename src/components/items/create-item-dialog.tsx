@@ -13,12 +13,14 @@ import { CodeEditor } from "@/components/ui/code-editor"
 import { MarkdownEditor } from "@/components/ui/markdown-editor"
 import { useEditorPreferences } from "@/lib/editor-preferences-context"
 import { FileUpload } from "@/components/items/file-upload"
-import { FieldError } from "@/components/ui/field-error"
+import { FormSection } from "@/components/ui/form-section"
+import { SuggestedTags } from "@/components/ui/suggested-tags"
 import { ItemTypeSelector } from "@/components/items/item-type-selector"
 import { CollectionSelect } from "@/components/items/collection-select"
 import { SelectRoot, SelectItem } from "@/components/ui/select"
 import { LANGUAGE_OPTIONS } from "@/lib/languages"
-import { Badge } from "@/components/ui/badge"
+import { useAiSuggestions } from "@/hooks/use-ai-suggestions"
+import { ALL_CREATION_TYPES, hasContent, hasLanguage, hasUrl, isFileType as checkFileType } from "@/lib/content-types"
 import {
   Dialog,
   DialogContent,
@@ -27,7 +29,6 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog"
 import { createItem } from "@/actions/items"
-import { suggestTags, suggestDescription } from "@/actions/ai"
 import { getUserCollections } from "@/actions/collections"
 import type { ItemTypeWithCount } from "@/lib/db/items"
 
@@ -38,14 +39,15 @@ interface CreateItemDialogProps {
   initialType?: string
 }
 
-const creationTypes = ["snippet", "prompt", "command", "note", "file", "image", "link"] as const
-
 export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }: CreateItemDialogProps) {
   const router = useRouter()
   const { data: session } = useSession()
   const isPro = session?.user?.isPro ?? false
   const { preferences: editorPrefs } = useEditorPreferences()
-  const [selectedType, setSelectedType] = useState(initialType && creationTypes.includes(initialType as typeof creationTypes[number]) ? initialType : "snippet")
+  const ai = useAiSuggestions()
+  const [selectedType, setSelectedType] = useState(
+    initialType && (ALL_CREATION_TYPES as readonly string[]).includes(initialType) ? initialType : "snippet"
+  )
   const [saving, setSaving] = useState(false)
   const [formErrors, setFormErrors] = useState<Record<string, string[]> | null>(null)
 
@@ -55,22 +57,19 @@ export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }:
   const [language, setLanguage] = useState("")
   const [url, setUrl] = useState("")
   const [tags, setTags] = useState("")
-  const [suggestedTags, setSuggestedTags] = useState<string[]>([])
-  const [suggestingTags, setSuggestingTags] = useState(false)
-  const [suggestingDescription, setSuggestingDescription] = useState(false)
   const [fileData, setFileData] = useState<{ fileUrl: string; fileName: string; fileSize: number } | null>(null)
   const [collections, setCollections] = useState<{ id: string; name: string }[]>([])
   const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>([])
+
+  const showContent = hasContent(selectedType)
+  const showLanguage = hasLanguage(selectedType)
+  const showUrl = hasUrl(selectedType)
+  const isFileType = checkFileType(selectedType)
 
   useEffect(() => {
     if (!open) return
     getUserCollections().then(setCollections)
   }, [open])
-
-  const showContent = ["snippet", "prompt", "command", "note"].includes(selectedType)
-  const showLanguage = ["snippet", "command"].includes(selectedType)
-  const showUrl = selectedType === "link"
-  const isFileType = ["file", "image"].includes(selectedType)
 
   function resetForm() {
     setTitle("")
@@ -79,13 +78,13 @@ export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }:
     setLanguage("")
     setUrl("")
     setTags("")
-    setSuggestedTags([])
-    setSuggestingTags(false)
-    setSuggestingDescription(false)
+    ai.resetSuggestions()
     setFileData(null)
     setFormErrors(null)
     setSelectedCollectionIds([])
-    setSelectedType(initialType && creationTypes.includes(initialType as typeof creationTypes[number]) ? initialType : "snippet")
+    setSelectedType(
+      initialType && (ALL_CREATION_TYPES as readonly string[]).includes(initialType) ? initialType : "snippet"
+    )
   }
 
   function handleOpenChange(newOpen: boolean) {
@@ -146,39 +145,6 @@ export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }:
     setSaving(false)
   }
 
-  async function handleSuggestDescription() {
-    if (!title.trim()) return
-    setSuggestingDescription(true)
-    const result = await suggestDescription({ title: title.trim() })
-    setSuggestingDescription(false)
-    if (result.success) {
-      setDescription(result.description)
-    } else {
-      toast.error(result.error)
-    }
-  }
-
-  async function handleSuggestTags() {
-    if (!title.trim()) return
-    setSuggestingTags(true)
-    const result = await suggestTags({ title: title.trim() })
-    setSuggestingTags(false)
-    if (result.success) {
-      setSuggestedTags(result.tags)
-    } else {
-      toast.error(result.error)
-    }
-  }
-
-  function handleAcceptTag(tag: string) {
-    setTags((prev) => (prev ? `${prev}, ${tag}` : tag))
-    setSuggestedTags((prev) => prev.filter((t) => t !== tag))
-  }
-
-  function handleRejectTag(tag: string) {
-    setSuggestedTags((prev) => prev.filter((t) => t !== tag))
-  }
-
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-xl">
@@ -195,24 +161,17 @@ export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }:
             <hr className="border-border" />
 
             {/* Title */}
-            <div>
-              <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Title <span className="text-destructive">*</span>
-              </h3>
+            <FormSection label="Title" required fieldName="title" errors={formErrors}>
               <Input
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Item title"
                 className="h-8"
               />
-              <FieldError field="title" errors={formErrors} />
-            </div>
+            </FormSection>
 
             {/* Description */}
-            <div>
-              <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Description
-              </h3>
+            <FormSection label="Description" fieldName="description" errors={formErrors}>
               <Textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
@@ -223,39 +182,31 @@ export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }:
               {title.trim().length > 0 && (
                 <button
                   type="button"
-                  onClick={handleSuggestDescription}
-                  disabled={suggestingDescription}
+                  onClick={() => ai.handleSuggestDescription(title, setDescription)}
+                  disabled={ai.suggestingDescription}
                   className="mt-1.5 inline-flex items-center gap-1.5 rounded-md border border-primary/30 bg-primary/5 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/10 hover:text-primary transition-colors"
                 >
                   <Sparkles className="size-3" />
-                  {suggestingDescription ? "Generating..." : "Suggest Description"}
+                  {ai.suggestingDescription ? "Generating..." : "Suggest Description"}
                 </button>
               )}
-              <FieldError field="description" errors={formErrors} />
-            </div>
+            </FormSection>
 
             {/* Language */}
             {showLanguage && (
-              <div>
-                <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  Language
-                </h3>
+              <FormSection label="Language" fieldName="language" errors={formErrors}>
                 <SelectRoot value={language} onValueChange={(v) => setLanguage(v ?? "")}>
                   <SelectItem value="">None</SelectItem>
                   {LANGUAGE_OPTIONS.map((lang) => (
                     <SelectItem key={lang.value} value={lang.value}>{lang.label}</SelectItem>
                   ))}
                 </SelectRoot>
-                <FieldError field="language" errors={formErrors} />
-              </div>
+              </FormSection>
             )}
 
             {/* Content */}
             {showContent && (
-              <div>
-                <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  Content
-                </h3>
+              <FormSection label="Content" fieldName="content" errors={formErrors}>
                 {showLanguage ? (
                   <CodeEditor
                     value={content}
@@ -271,32 +222,24 @@ export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }:
                     minRows={5}
                   />
                 )}
-                <FieldError field="content" errors={formErrors} />
-              </div>
+              </FormSection>
             )}
 
             {/* URL */}
             {showUrl && (
-              <div>
-                <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  URL <span className="text-destructive">*</span>
-                </h3>
+              <FormSection label="URL" required fieldName="url" errors={formErrors}>
                 <Input
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
                   placeholder="https://example.com"
                   className="h-8"
                 />
-                <FieldError field="url" errors={formErrors} />
-              </div>
+              </FormSection>
             )}
 
             {/* File / Image upload */}
             {isFileType && (
-              <div>
-                <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  {selectedType === "image" ? "Image" : "File"}
-                </h3>
+              <FormSection label={selectedType === "image" ? "Image" : "File"} fieldName="fileUrl" errors={formErrors}>
                 <FileUpload
                   accept={
                     selectedType === "image"
@@ -307,76 +250,44 @@ export function CreateItemDialog({ open, onOpenChange, itemTypes, initialType }:
                   onUploadComplete={(data) => setFileData(data)}
                   onRemove={() => setFileData(null)}
                 />
-                <FieldError field="fileUrl" errors={formErrors} />
-              </div>
+              </FormSection>
             )}
 
             {/* Tags */}
-            <div>
-              <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Tags
-              </h3>
+            <FormSection label="Tags" fieldName="tags" errors={formErrors}>
               <Input
                 value={tags}
                 onChange={(e) => setTags(e.target.value)}
                 placeholder="tag1, tag2, tag3"
                 className="h-8"
               />
-              {title.trim().length > 0 && suggestedTags.length === 0 && (
+              {title.trim().length > 0 && ai.suggestedTags.length === 0 && (
                 <button
                   type="button"
-                  onClick={handleSuggestTags}
-                  disabled={suggestingTags}
+                  onClick={() => ai.handleSuggestTags(title)}
+                  disabled={ai.suggestingTags}
                   className="mt-1.5 inline-flex items-center gap-1.5 rounded-md border border-primary/30 bg-primary/5 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/10 hover:text-primary transition-colors"
                 >
                   <Sparkles className="size-3" />
-                  {suggestingTags ? "Suggesting..." : "Suggest Tags"}
+                  {ai.suggestingTags ? "Suggesting..." : "Suggest Tags"}
                 </button>
               )}
-              {suggestedTags.length > 0 && (
-                <div className="mt-2 flex flex-wrap gap-1.5">
-                  {suggestedTags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="inline-flex items-center gap-1.5 rounded-full border bg-muted/50 pl-2.5 pr-1 py-0.5 text-xs"
-                    >
-                      <span className="text-muted-foreground">#</span>
-                      {tag}
-                      <button
-                        type="button"
-                        onClick={() => handleAcceptTag(tag)}
-                        className="ml-0.5 rounded-full p-0.5 text-green-600 hover:bg-green-500/10 hover:text-green-700 transition-colors"
-                        title="Accept tag"
-                      >
-                        ✓
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleRejectTag(tag)}
-                        className="rounded-full p-0.5 text-red-500 hover:bg-red-500/10 hover:text-red-600 transition-colors"
-                        title="Reject tag"
-                      >
-                        ✕
-                      </button>
-                    </span>
-                  ))}
-                </div>
-              )}
-              <FieldError field="tags" errors={formErrors} />
-            </div>
+              <SuggestedTags
+                tags={ai.suggestedTags}
+                onAccept={(tag) => ai.handleAcceptTag(tag, tags, setTags)}
+                onReject={ai.handleRejectTag}
+              />
+            </FormSection>
 
             {/* Collections */}
-            <div>
-              <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Collections
-              </h3>
+            <FormSection label="Collections">
               <CollectionSelect
                 collections={collections}
                 selectedIds={selectedCollectionIds}
                 onChange={setSelectedCollectionIds}
                 disabled={saving}
               />
-            </div>
+            </FormSection>
           </div>
         </div>
 

@@ -4,6 +4,7 @@ import { useState } from "react"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import { Sparkles, Crown, LoaderCircle } from "lucide-react"
+import { TrafficLights } from "@/components/ui/traffic-lights"
 
 interface MarkdownEditorProps {
   value: string
@@ -35,11 +36,7 @@ export function MarkdownEditor({
   return (
     <div className="overflow-hidden rounded-lg border border-border">
       <div className="flex items-center justify-between bg-muted px-3 py-1.5">
-        <div className="flex items-center gap-1.5">
-          <span className="size-2.5 rounded-full bg-red-500" />
-          <span className="size-2.5 rounded-full bg-yellow-500" />
-          <span className="size-2.5 rounded-full bg-green-500" />
-        </div>
+        <TrafficLights />
         {!readOnly && (
           <div className="flex items-center gap-0.5">
             <button

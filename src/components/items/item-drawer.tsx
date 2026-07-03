@@ -17,23 +17,26 @@ import { MarkdownEditor } from "@/components/ui/markdown-editor"
 import { useEditorPreferences } from "@/lib/editor-preferences-context"
 import type { ItemWithDetails } from "@/lib/db/items"
 import { updateItem, deleteItem, toggleItemFavorite, toggleItemPin } from "@/actions/items"
-import { explainCode, suggestTags, suggestDescription, optimizePrompt } from "@/actions/ai"
+import { explainCode, optimizePrompt } from "@/actions/ai"
 import type { UpdateItemData } from "@/actions/items"
 import { iconMap } from "@/lib/icons"
 import { extractFileKey } from "@/lib/utils"
-import { FieldError } from "@/components/ui/field-error"
+import { FormSection } from "@/components/ui/form-section"
+import { SuggestedTags } from "@/components/ui/suggested-tags"
+import { useAiSuggestions } from "@/hooks/use-ai-suggestions"
 import { CollectionSelect } from "@/components/items/collection-select"
 import { SelectRoot, SelectItem } from "@/components/ui/select"
 import { LANGUAGE_OPTIONS } from "@/lib/languages"
 import { getUserCollections } from "@/actions/collections"
+import {
+  CONTENT_TYPES_WITH_CONTENT,
+  CONTENT_TYPES_WITH_LANGUAGE,
+  CONTENT_TYPES_WITH_URL,
+  CONTENT_TYPES_WITH_FILE,
+} from "@/lib/content-types"
 import { ItemDrawerHeader } from "./item-drawer-header"
 import { ItemDrawerActions } from "./item-drawer-actions"
 import { FileDisplay } from "./file-display"
-
-const contentTypesWithContent = ["snippet", "prompt", "command", "note"]
-const contentTypesWithLanguage = ["snippet", "command"]
-const contentTypesWithUrl = ["link"]
-const contentTypesWithFile = ["file", "image"]
 
 function DrawerSkeleton() {
   return (
@@ -65,9 +68,7 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
   const [formLanguage, setFormLanguage] = useState("")
   const [formUrl, setFormUrl] = useState("")
   const [formTags, setFormTags] = useState("")
-  const [suggestedTags, setSuggestedTags] = useState<string[]>([])
-  const [suggestingTags, setSuggestingTags] = useState(false)
-  const [suggestingDescription, setSuggestingDescription] = useState(false)
+  const ai = useAiSuggestions()
   const [formErrors, setFormErrors] = useState<Record<string, string[]> | null>(null)
   const [collections, setCollections] = useState<{ id: string; name: string }[]>([])
   const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>([])
@@ -145,9 +146,7 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
     setFormLanguage(item.language ?? "")
     setFormUrl(item.url ?? "")
     setFormTags(item.tags.map((t) => t.name).join(", "))
-    setSuggestedTags([])
-    setSuggestingTags(false)
-    setSuggestingDescription(false)
+    ai.resetSuggestions()
     setSelectedCollectionIds(itemCollectionIds)
     setFormErrors(null)
     setIsEditing(true)
@@ -155,9 +154,7 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
 
   function handleCancelEdit() {
     setIsEditing(false)
-    setSuggestedTags([])
-    setSuggestingTags(false)
-    setSuggestingDescription(false)
+    ai.resetSuggestions()
     setFormErrors(null)
   }
 
@@ -282,39 +279,6 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
     setOptimizedPrompt(null)
   }
 
-  async function handleSuggestDescription() {
-    if (!formTitle.trim()) return
-    setSuggestingDescription(true)
-    const result = await suggestDescription({ title: formTitle.trim() })
-    setSuggestingDescription(false)
-    if (result.success) {
-      setFormDescription(result.description)
-    } else {
-      toast.error(result.error)
-    }
-  }
-
-  async function handleSuggestTags() {
-    if (!formTitle.trim()) return
-    setSuggestingTags(true)
-    const result = await suggestTags({ title: formTitle.trim() })
-    setSuggestingTags(false)
-    if (result.success) {
-      setSuggestedTags(result.tags)
-    } else {
-      toast.error(result.error)
-    }
-  }
-
-  function handleAcceptTag(tag: string) {
-    setFormTags((prev) => (prev ? `${prev}, ${tag}` : tag))
-    setSuggestedTags((prev) => prev.filter((t) => t !== tag))
-  }
-
-  function handleRejectTag(tag: string) {
-    setSuggestedTags((prev) => prev.filter((t) => t !== tag))
-  }
-
   async function handleSave() {
     if (!item) return
     setSaving(true)
@@ -328,9 +292,9 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
     const data: UpdateItemData = {
       title: formTitle,
       description: formDescription || null,
-      content: contentTypesWithContent.includes(typeName) ? (formContent || null) : null,
-      language: contentTypesWithLanguage.includes(typeName) ? (formLanguage || null) : null,
-      url: contentTypesWithUrl.includes(typeName) ? (formUrl || null) : null,
+      content: (CONTENT_TYPES_WITH_CONTENT as readonly string[]).includes(typeName) ? (formContent || null) : null,
+      language: (CONTENT_TYPES_WITH_LANGUAGE as readonly string[]).includes(typeName) ? (formLanguage || null) : null,
+      url: (CONTENT_TYPES_WITH_URL as readonly string[]).includes(typeName) ? (formUrl || null) : null,
       tags,
       collectionIds: selectedCollectionIds,
     }
@@ -388,38 +352,39 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
 
       <div className="flex flex-col gap-5 overflow-y-auto px-4 pb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         {/* Description */}
-        <div>
-          <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Description
-          </h3>
-          {isEditing ? (
+        {isEditing ? (
+          <FormSection label="Description" fieldName="description" errors={formErrors}>
+            <Textarea
+              value={formDescription}
+              onChange={(e) => setFormDescription(e.target.value)}
+              placeholder="Description (optional)"
+              rows={3}
+            />
+            {formTitle.trim().length > 0 && (
+              <button
+                type="button"
+                onClick={() => ai.handleSuggestDescription(formTitle, setFormDescription)}
+                disabled={ai.suggestingDescription}
+                className="mt-1.5 inline-flex items-center gap-1.5 rounded-md border border-primary/30 bg-primary/5 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/10 hover:text-primary transition-colors"
+              >
+                <Sparkles className="size-3" />
+                {ai.suggestingDescription ? "Generating..." : "Suggest Description"}
+              </button>
+            )}
+          </FormSection>
+        ) : (
+          item.description && (
             <div>
-              <Textarea
-                value={formDescription}
-                onChange={(e) => setFormDescription(e.target.value)}
-                placeholder="Description (optional)"
-                rows={3}
-              />
-              {formTitle.trim().length > 0 && (
-                <button
-                  type="button"
-                  onClick={handleSuggestDescription}
-                  disabled={suggestingDescription}
-                  className="mt-1.5 inline-flex items-center gap-1.5 rounded-md border border-primary/30 bg-primary/5 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/10 hover:text-primary transition-colors"
-                >
-                  <Sparkles className="size-3" />
-                  {suggestingDescription ? "Generating..." : "Suggest Description"}
-                </button>
-              )}
-              <FieldError field="description" errors={formErrors} />
+              <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Description
+              </h3>
+              <p className="text-sm leading-relaxed">{item.description}</p>
             </div>
-          ) : (
-            item.description && <p className="text-sm leading-relaxed">{item.description}</p>
-          )}
-        </div>
+          )
+        )}
 
         {/* File / Image */}
-        {contentTypesWithFile.includes(typeName) && item.fileUrl && (
+        {(CONTENT_TYPES_WITH_FILE as readonly string[]).includes(typeName) && item.fileUrl && (
           <FileDisplay
             fileUrl={item.fileUrl}
             fileName={item.fileName}
@@ -431,56 +396,56 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
         )}
 
         {/* Language */}
-        {contentTypesWithLanguage.includes(typeName) && (
-          <div>
-            <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Language
-            </h3>
-            {isEditing ? (
+        {(CONTENT_TYPES_WITH_LANGUAGE as readonly string[]).includes(typeName) && (
+          isEditing ? (
+            <FormSection label="Language" fieldName="language" errors={formErrors}>
+              <SelectRoot value={formLanguage} onValueChange={(v) => setFormLanguage(v ?? "")}>
+                <SelectItem value="">None</SelectItem>
+                {LANGUAGE_OPTIONS.map((lang) => (
+                  <SelectItem key={lang.value} value={lang.value}>{lang.label}</SelectItem>
+                ))}
+              </SelectRoot>
+            </FormSection>
+          ) : (
+            item.language && (
               <div>
-                <SelectRoot value={formLanguage} onValueChange={(v) => setFormLanguage(v ?? "")}>
-                  <SelectItem value="">None</SelectItem>
-                  {LANGUAGE_OPTIONS.map((lang) => (
-                    <SelectItem key={lang.value} value={lang.value}>{lang.label}</SelectItem>
-                  ))}
-                </SelectRoot>
-                <FieldError field="language" errors={formErrors} />
+                <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  Language
+                </h3>
+                <p className="text-sm">{item.language}</p>
               </div>
-            ) : (
-              item.language && <p className="text-sm">{item.language}</p>
-            )}
-          </div>
+            )
+          )
         )}
 
         {/* Content */}
-        {contentTypesWithContent.includes(typeName) && (
-          <div>
-            <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Content
-            </h3>
-            {isEditing ? (
-              <div>
-                {contentTypesWithLanguage.includes(typeName) ? (
-                  <CodeEditor
-                    value={formContent}
-                    onChange={(v) => setFormContent(v ?? "")}
-                    language={formLanguage || "plaintext"}
-                    preferences={editorPrefs}
-                  />
-                ) : (
-                  <MarkdownEditor
-                    value={formContent}
-                    onChange={(v) => setFormContent(v)}
-                    placeholder="Content (optional)"
-                    minRows={6}
-                  />
-                )}
-                <FieldError field="content" errors={formErrors} />
-              </div>
-            ) : (
-              <div>
-                {item.content && (
-                  contentTypesWithLanguage.includes(typeName) ? (
+        {(CONTENT_TYPES_WITH_CONTENT as readonly string[]).includes(typeName) && (
+          isEditing ? (
+            <FormSection label="Content" fieldName="content" errors={formErrors}>
+              {(CONTENT_TYPES_WITH_LANGUAGE as readonly string[]).includes(typeName) ? (
+                <CodeEditor
+                  value={formContent}
+                  onChange={(v) => setFormContent(v ?? "")}
+                  language={formLanguage || "plaintext"}
+                  preferences={editorPrefs}
+                />
+              ) : (
+                <MarkdownEditor
+                  value={formContent}
+                  onChange={(v) => setFormContent(v)}
+                  placeholder="Content (optional)"
+                  minRows={6}
+                />
+              )}
+            </FormSection>
+          ) : (
+            <div>
+              {item.content && (
+                <div>
+                  <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    Content
+                  </h3>
+                  {(CONTENT_TYPES_WITH_LANGUAGE as readonly string[]).includes(typeName) ? (
                     <CodeEditor
                       value={item.content}
                       language={item.language}
@@ -502,9 +467,8 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
                       isPro={session?.user?.isPro ?? false}
                       onOptimize={handleOptimize}
                     />
-                  )
-                )}
-                {optimizedPrompt && (
+                  )}
+                  {optimizedPrompt && (
                   <div className="mt-3 rounded-lg border border-border overflow-hidden">
                     <div className="flex items-center justify-between bg-muted px-3 py-1.5">
                       <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
@@ -534,31 +498,30 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
                         ✓ Accept
                       </button>
                     </div>
-                  </div>
-                )}
+          </div>
+        )}
               </div>
             )}
           </div>
-        )}
+        ))}
 
         {/* URL */}
-        {contentTypesWithUrl.includes(typeName) && (
-          <div>
-            <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              URL
-            </h3>
-            {isEditing ? (
+        {(CONTENT_TYPES_WITH_URL as readonly string[]).includes(typeName) && (
+          isEditing ? (
+            <FormSection label="URL" required fieldName="url" errors={formErrors}>
+              <Input
+                value={formUrl}
+                onChange={(e) => setFormUrl(e.target.value)}
+                placeholder="https://example.com"
+                className="h-8"
+              />
+            </FormSection>
+          ) : (
+            item.url && (
               <div>
-                <Input
-                  value={formUrl}
-                  onChange={(e) => setFormUrl(e.target.value)}
-                  placeholder="https://example.com"
-                  className="h-8"
-                />
-                <FieldError field="url" errors={formErrors} />
-              </div>
-            ) : (
-              item.url && (
+                <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  URL
+                </h3>
                 <a
                   href={item.url}
                   target="_blank"
@@ -567,68 +530,43 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
                 >
                   {item.url}
                 </a>
-              )
-            )}
-          </div>
+              </div>
+            )
+          )
         )}
 
         {/* Tags */}
-        <div>
-          <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Tags
-          </h3>
-          {isEditing ? (
+        {isEditing ? (
+          <FormSection label="Tags" fieldName="tags" errors={formErrors}>
+            <Input
+              value={formTags}
+              onChange={(e) => setFormTags(e.target.value)}
+              placeholder="tag1, tag2, tag3"
+              className="h-8"
+            />
+            {formTitle.trim().length > 0 && ai.suggestedTags.length === 0 && (
+              <button
+                type="button"
+                onClick={() => ai.handleSuggestTags(formTitle)}
+                disabled={ai.suggestingTags}
+                className="mt-1.5 inline-flex items-center gap-1.5 rounded-md border border-primary/30 bg-primary/5 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/10 hover:text-primary transition-colors"
+              >
+                <Sparkles className="size-3" />
+                {ai.suggestingTags ? "Suggesting..." : "Suggest Tags"}
+              </button>
+            )}
+            <SuggestedTags
+              tags={ai.suggestedTags}
+              onAccept={(tag) => ai.handleAcceptTag(tag, formTags, setFormTags)}
+              onReject={ai.handleRejectTag}
+            />
+          </FormSection>
+        ) : (
+          item.tags.length > 0 && (
             <div>
-              <Input
-                value={formTags}
-                onChange={(e) => setFormTags(e.target.value)}
-                placeholder="tag1, tag2, tag3"
-                className="h-8"
-              />
-              {formTitle.trim().length > 0 && suggestedTags.length === 0 && (
-                <button
-                  type="button"
-                  onClick={handleSuggestTags}
-                  disabled={suggestingTags}
-                  className="mt-1.5 inline-flex items-center gap-1.5 rounded-md border border-primary/30 bg-primary/5 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/10 hover:text-primary transition-colors"
-                >
-                  <Sparkles className="size-3" />
-                  {suggestingTags ? "Suggesting..." : "Suggest Tags"}
-                </button>
-              )}
-              {suggestedTags.length > 0 && (
-                <div className="mt-2 flex flex-wrap gap-1.5">
-                  {suggestedTags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="inline-flex items-center gap-1.5 rounded-full border bg-muted/50 pl-2.5 pr-1 py-0.5 text-xs"
-                    >
-                      <span className="text-muted-foreground">#</span>
-                      {tag}
-                      <button
-                        type="button"
-                        onClick={() => handleAcceptTag(tag)}
-                        className="ml-0.5 rounded-full p-0.5 text-green-600 hover:bg-green-500/10 hover:text-green-700 transition-colors"
-                        title="Accept tag"
-                      >
-                        ✓
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleRejectTag(tag)}
-                        className="rounded-full p-0.5 text-red-500 hover:bg-red-500/10 hover:text-red-600 transition-colors"
-                        title="Reject tag"
-                      >
-                        ✕
-                      </button>
-                    </span>
-                  ))}
-                </div>
-              )}
-              <FieldError field="tags" errors={formErrors} />
-            </div>
-          ) : (
-            item.tags.length > 0 && (
+              <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Tags
+              </h3>
               <div className="flex flex-wrap gap-1.5">
                 {item.tags.map((tag) => (
                   <Badge key={tag.id} variant="secondary" className="text-[10px]">
@@ -636,23 +574,25 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
                   </Badge>
                 ))}
               </div>
-            )
-          )}
-        </div>
+            </div>
+          )
+        )}
 
         {/* Collections */}
-        <div>
-          <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Collections
-          </h3>
-          {isEditing ? (
+        {isEditing ? (
+          <FormSection label="Collections">
             <CollectionSelect
               collections={collections}
               selectedIds={selectedCollectionIds}
               onChange={setSelectedCollectionIds}
               disabled={saving}
             />
-          ) : itemCollections.length > 0 ? (
+          </FormSection>
+        ) : itemCollections.length > 0 ? (
+          <div>
+            <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Collections
+            </h3>
             <div className="flex flex-wrap gap-1.5">
               {itemCollections.map((c) => (
                 <Badge key={c.id} variant="secondary" className="text-[10px]">
@@ -660,10 +600,15 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
                 </Badge>
               ))}
             </div>
-          ) : (
+          </div>
+        ) : (
+          <div>
+            <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Collections
+            </h3>
             <p className="text-xs text-muted-foreground">Not in any collection</p>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* Details — non-editable */}
         <div>
@@ -679,7 +624,7 @@ export function ItemDrawer({ itemId }: { itemId: string }) {
                 year: "numeric",
               })}
             </p>
-            {!isEditing && item.url && contentTypesWithUrl.includes(typeName) && (
+            {!isEditing && item.url && (CONTENT_TYPES_WITH_URL as readonly string[]).includes(typeName) && (
               <p className="truncate">
                 URL:{" "}
                 <a

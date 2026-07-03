@@ -1,16 +1,7 @@
+import { useState } from "react"
 import { Star, Pin, Copy, Pencil, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import {
-  AlertDialog,
-  AlertDialogTrigger,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogFooter,
-  AlertDialogTitle,
-  AlertDialogDescription,
-  AlertDialogAction,
-  AlertDialogCancel,
-} from "@/components/ui/alert-dialog"
+import { ConfirmDeleteDialog } from "@/components/ui/confirm-delete-dialog"
 
 interface ItemDrawerActionsProps {
   isEditing: boolean
@@ -43,6 +34,8 @@ export function ItemDrawerActions({
   onToggleFavorite,
   onTogglePin,
 }: ItemDrawerActionsProps) {
+  const [deleteOpen, setDeleteOpen] = useState(false)
+
   if (isEditing) {
     return (
       <div className="flex items-center gap-2 px-4">
@@ -71,33 +64,17 @@ export function ItemDrawerActions({
         <Pencil className="size-4" />
       </Button>
       <div className="ml-auto">
-        <AlertDialog>
-          <AlertDialogTrigger
-            render={
-              <Button variant="ghost" size="icon-sm" aria-label="Delete" className="text-destructive">
-                <Trash2 className="size-4" />
-              </Button>
-            }
-          />
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Delete item</AlertDialogTitle>
-              <AlertDialogDescription>
-                Are you sure you want to delete "{itemTitle}"? This action cannot be undone.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel render={<Button variant="outline">Cancel</Button>} />
-              <AlertDialogAction
-                render={
-                  <Button variant="destructive" onClick={onDelete} disabled={deleting}>
-                    {deleting ? "Deleting..." : "Delete"}
-                  </Button>
-                }
-              />
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+        <Button variant="ghost" size="icon-sm" aria-label="Delete" className="text-destructive" onClick={() => setDeleteOpen(true)}>
+          <Trash2 className="size-4" />
+        </Button>
+        <ConfirmDeleteDialog
+          open={deleteOpen}
+          onOpenChange={setDeleteOpen}
+          title="Delete item"
+          description={`Are you sure you want to delete "${itemTitle}"? This action cannot be undone.`}
+          onConfirm={onDelete}
+          isDeleting={deleting}
+        />
       </div>
     </div>
   )

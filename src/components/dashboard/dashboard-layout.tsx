@@ -20,7 +20,7 @@ import { Input } from "@/components/ui/input"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Sidebar, SidebarContent } from "@/components/dashboard/sidebar"
 import { CreateItemDialog } from "@/components/items/create-item-dialog"
-import { CreateCollectionDialog } from "@/components/collections/create-collection-dialog"
+import { CollectionFormDialog } from "@/components/collections/collection-form-dialog"
 import { CreateItemContext } from "@/lib/create-item-context"
 import { EditorPreferencesContext } from "@/lib/editor-preferences-context"
 import { CommandPalette } from "@/components/search/command-palette"
@@ -175,9 +175,10 @@ export function DashboardLayout({ children, sidebarData, searchData }: { childre
               itemTypes={sidebarData.itemTypes}
               initialType={dialogInitialType}
             />
-            <CreateCollectionDialog
+            <CollectionFormDialog
               open={collectionDialogOpen}
               onOpenChange={setCollectionDialogOpen}
+              mode="create"
             />
             <CommandPalette open={searchOpen} onOpenChange={setSearchOpen} data={searchData} />
           </div>

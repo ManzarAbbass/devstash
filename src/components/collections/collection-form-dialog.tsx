@@ -7,7 +7,7 @@ import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { FieldError } from "@/components/ui/field-error"
+import { FormSection } from "@/components/ui/form-section"
 import {
   Dialog,
   DialogContent,
@@ -15,24 +15,32 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog"
-import { createCollection } from "@/actions/collections"
+import { createCollection, updateCollection } from "@/actions/collections"
 
-interface CreateCollectionDialogProps {
+interface CollectionFormDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
+  mode: "create" | "edit"
+  collection?: {
+    id: string
+    name: string
+    description: string | null
+  }
 }
 
-export function CreateCollectionDialog({ open, onOpenChange }: CreateCollectionDialogProps) {
+export function CollectionFormDialog({ open, onOpenChange, mode, collection }: CollectionFormDialogProps) {
   const router = useRouter()
   const [saving, setSaving] = useState(false)
   const [formErrors, setFormErrors] = useState<Record<string, string[]> | null>(null)
 
-  const [name, setName] = useState("")
-  const [description, setDescription] = useState("")
+  const [name, setName] = useState(collection?.name ?? "")
+  const [description, setDescription] = useState(collection?.description ?? "")
+
+  const isEdit = mode === "edit"
 
   function resetForm() {
-    setName("")
-    setDescription("")
+    setName(collection?.name ?? "")
+    setDescription(collection?.description ?? "")
     setFormErrors(null)
   }
 
@@ -45,10 +53,9 @@ export function CreateCollectionDialog({ open, onOpenChange }: CreateCollectionD
     setSaving(true)
     setFormErrors(null)
 
-    const result = await createCollection({
-      name: name.trim(),
-      description: description.trim() || null,
-    })
+    const result = isEdit
+      ? await updateCollection(collection!.id, { name: name.trim(), description: description.trim() || null })
+      : await createCollection({ name: name.trim(), description: description.trim() || null })
 
     if (!result.success) {
       if (typeof result.error === "object") {
@@ -60,7 +67,7 @@ export function CreateCollectionDialog({ open, onOpenChange }: CreateCollectionD
       return
     }
 
-    toast.success("Collection created")
+    toast.success(isEdit ? "Collection updated" : "Collection created")
     handleOpenChange(false)
     router.refresh()
     setSaving(false)
@@ -70,36 +77,30 @@ export function CreateCollectionDialog({ open, onOpenChange }: CreateCollectionD
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>New Collection</DialogTitle>
-          <DialogDescription>Create a new collection to organize your items.</DialogDescription>
+          <DialogTitle>{isEdit ? "Edit Collection" : "New Collection"}</DialogTitle>
+          <DialogDescription>
+            {isEdit ? "Update the collection name and description." : "Create a new collection to organize your items."}
+          </DialogDescription>
         </DialogHeader>
 
         <div className="flex flex-col gap-5">
-          <div>
-            <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Name <span className="text-destructive">*</span>
-            </h3>
+          <FormSection label="Name" required fieldName="name" errors={formErrors}>
             <Input
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Collection name"
               className="h-8"
             />
-            <FieldError field="name" errors={formErrors} />
-          </div>
+          </FormSection>
 
-          <div>
-            <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Description
-            </h3>
+          <FormSection label="Description" fieldName="description" errors={formErrors}>
             <Textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Description (optional)"
               rows={2}
             />
-            <FieldError field="description" errors={formErrors} />
-          </div>
+          </FormSection>
         </div>
 
         <div className="flex justify-end gap-2 pt-4">
@@ -107,7 +108,7 @@ export function CreateCollectionDialog({ open, onOpenChange }: CreateCollectionD
             Cancel
           </Button>
           <Button onClick={handleSubmit} disabled={saving || !name.trim()}>
-            {saving ? "Creating..." : "Create Collection"}
+            {saving ? (isEdit ? "Saving..." : "Creating...") : (isEdit ? "Save Changes" : "Create Collection")}
           </Button>
         </div>
       </DialogContent>

@@ -1,16 +1,25 @@
-# Current Feature
+# Current Feature: UI Review & Register GitHub Button Fix
 
 ## Status
 
-<!-- Not Started | In Progress | Complete -->
+In Progress
 
 ## Goals
 
-<!-- Goals for the current feature -->
+- Browse all pages via Playwright and audit for UI inconsistencies
+- Identify missing GitHub OAuth button on /register page
+- Add GitHub sign-up button + "Or continue with" divider to register form
+- Update register subtitle to reflect GitHub option
+- Change confirm password icon from Lock to KeyRound for visual distinction
+- Verify fix renders correctly via Playwright snapshot
 
 ## Notes
 
-<!-- Additional context and implementation notes -->
+- Sign-in page had GitHub button, register page didn't — inconsistency fixed
+- All pages checked: landing, sign-in, register, forgot-password, dashboard, collections, items (all types), favorites, profile, settings, upgrade, new-item modal, item drawer, new-collection modal
+- Mobile responsive (375px viewport tested)
+- Empty states present for item types with 0 items
+- No other UI layout issues found
 
 ## History
 
